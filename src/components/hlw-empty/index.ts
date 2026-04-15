@@ -1,4 +1,4 @@
-import { defineComponent, useSlots } from 'vue';
+import { defineComponent, useSlots, h } from 'vue';
 
 export default defineComponent({
   name: 'Empty',

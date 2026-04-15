@@ -3,7 +3,8 @@
  */
 
 export { default as HlwAd } from './components/hlw-ad/index.vue';
-export { default as HlwAvatar } from './components/hlw-avatar/index';
-export { default as HlwEmpty } from './components/hlw-empty/index';
-export { default as HlwLoading } from './components/hlw-loading/index';
-export { default as HlwMenuList, type MenuItem } from './components/hlw-menu-list/index';
+export { default as HlwAvatar } from './components/hlw-avatar/index.vue';
+export { default as HlwEmpty } from './components/hlw-empty/index.vue';
+export { default as HlwLoading } from './components/hlw-loading/index.vue';
+export { default as HlwMenuList } from './components/hlw-menu-list/index.vue';
+export type { MenuItem } from './components/hlw-menu-list/types';

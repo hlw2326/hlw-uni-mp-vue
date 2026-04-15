@@ -1,4 +1,4 @@
-import { defineComponent, ref, computed } from 'vue';
+import { defineComponent, ref, computed, h } from 'vue';
 
 export interface AvatarProps {
   src?: string;
