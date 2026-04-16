@@ -1,3 +1,6 @@
+<template>
+    <ad :unit-id="unitId" @load="onLoad" @close="onClose" @error="onError" />
+</template>
 <script setup lang="ts">
 /**
  * HlwAd — 小程序信息流 / Banner 广告组件
@@ -19,38 +22,29 @@
  * ```
  */
 
-defineOptions({ name: 'HlwAd' });
+defineOptions({ name: "HlwAd" });
 
 defineProps<{
-  /** 广告单元 ID */
-  unitId: string;
+    /** 广告单元 ID */
+    unitId: string;
 }>();
 
 const emit = defineEmits<{
-  (e: 'load', event: any): void;
-  (e: 'close', event: any): void;
-  (e: 'error', event: any): void;
+    (e: "load", event: any): void;
+    (e: "close", event: any): void;
+    (e: "error", event: any): void;
 }>();
 
 function onLoad(event: any) {
-  emit('load', event);
+    emit("load", event);
 }
 
 function onClose(event: any) {
-  emit('close', event);
+    emit("close", event);
 }
 
 function onError(event: any) {
-  console.error('[HlwAd] 广告错误:', event?.detail?.errCode, event?.detail?.errMsg);
-  emit('error', event);
+    console.error("[HlwAd] 广告错误:", event?.detail?.errCode, event?.detail?.errMsg);
+    emit("error", event);
 }
 </script>
-
-<template>
-  <ad
-    :unit-id="unitId"
-    @load="onLoad"
-    @close="onClose"
-    @error="onError"
-  />
-</template>
