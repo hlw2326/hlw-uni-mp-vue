@@ -1,6 +1,6 @@
 {
     "name": "@hlw-uni/mp-vue",
-    "version": "1.0.32",
+    "version": "1.0.33",
     "description": "hlw-uni Vue 组件库 — 供小程序业务方使用的 UI 组件集合",
     "main": "src/index.ts",
     "module": "src/index.ts",
