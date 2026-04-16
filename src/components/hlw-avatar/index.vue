@@ -59,7 +59,7 @@ const initial = computed(() => {
     font-weight: bold;
 }
 
-.hlw-avatar--small  .hlw-avatar__initial { font-size: 22rpx; }
-.hlw-avatar--medium .hlw-avatar__initial { font-size: 30rpx; }
-.hlw-avatar--large  .hlw-avatar__initial { font-size: 46rpx; }
+.hlw-avatar--small  .hlw-avatar__initial { font-size: var(--font-xs, 20rpx); }
+.hlw-avatar--medium .hlw-avatar__initial { font-size: var(--font-base, 28rpx); }
+.hlw-avatar--large  .hlw-avatar__initial { font-size: var(--font-xl, 40rpx); }
 </style>

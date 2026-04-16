@@ -8,6 +8,8 @@ export default defineConfig({
     vue(),
     dts({
       include: ['src/**/*.ts', 'src/**/*.d.ts', 'src/**/*.vue'],
+      tsconfigPath: './tsconfig.json',
+      staticImport: true,
     }),
   ],
   resolve: {
