@@ -1,6 +1,6 @@
 {
     "name": "@hlw-uni/mp-vue",
-    "version": "1.0.33",
+    "version": "1.0.35",
     "description": "hlw-uni Vue 组件库 — 供小程序业务方使用的 UI 组件集合",
     "main": "src/index.ts",
     "module": "src/index.ts",
@@ -26,19 +26,19 @@
         "access": "public"
     },
     "peerDependencies": {
-        "vue": ">=3.4.0",
-        "pinia": ">=2.0.0"
+        "pinia": ">=2.0.0",
+        "vue": ">=3.4.0"
     },
     "devDependencies": {
-        "@dcloudio/types": "^3.4.8",
-        "@types/node": "^20.11.0",
-        "@vitejs/plugin-vue": "^5.0.0",
-        "typescript": "^4.9.4",
+        "@dcloudio/types": "^3.4.30",
+        "@types/node": "^20.19.39",
+        "@vitejs/plugin-vue": "^5.2.4",
+        "typescript": "^4.9.5",
         "vite": "5.2.8",
         "vite-plugin-dts": "^4.5.4",
-        "vue": "^3.4.0"
+        "vue": "^3.5.32"
     },
     "dependencies": {
-        "@hlw-uni/mp-core": "^1.0.10"
+        "@hlw-uni/mp-core": "^1.0.28"
     }
 }

@@ -28,6 +28,7 @@ export default defineConfig({
     rollupOptions: {
       external: [
         'vue',
+        'pinia',
         '@hlw-uni/mp-core',
         /^@dcloudio\//,
         /^node:/,

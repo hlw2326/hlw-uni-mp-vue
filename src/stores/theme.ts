@@ -10,8 +10,8 @@ import {
     DEFAULT_THEMES,
     THEME_COLOR_KEY,
     THEME_CHANGE_EVENT,
-} from "../composables/theme-presets";
-import type { FontScale, ThemeColor } from "../composables/theme-presets";
+} from "../composables/theme";
+import type { FontScale, ThemeColor } from "../composables/theme";
 
 export const useThemeStore = defineStore(
     "theme",

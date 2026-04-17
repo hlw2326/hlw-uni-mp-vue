@@ -11,6 +11,6 @@ export { default as HlwLoading } from "./components/hlw-loading/index.vue";
 export { default as HlwMenu } from "./components/hlw-menu/index.vue";
 export type { HlwMenuItem } from "./components/hlw-menu/types";
 export { default as HlwPage } from "./components/hlw-page/index.vue";
-export type { FontScale, FontPreset, ThemeColor } from "./composables/theme-presets";
-export { FONT_PRESETS, FONT_SCALE_KEY, DEFAULT_THEMES, THEME_COLOR_KEY, THEME_CHANGE_EVENT, getCurrentFontScale, getCurrentFontStyle, getCurrentThemeColor, getCurrentThemeStyle, useThemePageStyle } from "./composables/theme-presets";
+export type { FontScale, FontPreset, ThemeColor } from "./composables/theme";
+export { FONT_PRESETS, FONT_SCALE_KEY, DEFAULT_THEMES, THEME_COLOR_KEY, THEME_CHANGE_EVENT, getCurrentFontScale, getCurrentFontVars, getCurrentThemeColor, getCurrentThemeVars, buildThemeStyle, useThemePageStyle } from "./composables/theme";
 export { useThemeStore } from "./stores/theme";
