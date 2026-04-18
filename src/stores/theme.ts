@@ -38,7 +38,7 @@ export const useThemeStore = defineStore(
 
         /** 当前激活的主题信息 */
         const activeTheme = computed<ThemeColor>(() =>
-            themes.find((t) => t.value === primaryColor.value)
+            themes.find((t: ThemeColor) => t.value === primaryColor.value)
                 ?? { label: "自定义", value: primaryColor.value },
         );
 

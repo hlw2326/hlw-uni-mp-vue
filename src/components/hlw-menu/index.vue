@@ -152,6 +152,10 @@ const handleClick = (item: HlwMenuItem) => {
 
 <style lang="scss" scoped>
 .hlw-menu {
+    --hlw-menu-icon-size: var(--font-sm, 24rpx);
+    --hlw-menu-icon-box-size: calc(var(--hlw-menu-icon-size) + 40rpx);
+    --hlw-menu-grid-icon-size: var(--font-lg, 36rpx);
+    --hlw-menu-grid-icon-box-size: calc(var(--hlw-menu-grid-icon-size) + 52rpx);
     background: #fff;
     border-radius: var(--radius-lg, 24rpx);
     border: 1rpx solid var(--border-color, #e2e8f0);
@@ -254,8 +258,8 @@ const handleClick = (item: HlwMenuItem) => {
 
 /* ========== 图标 ========== */
 .hlw-menu-icon {
-    width: 64rpx;
-    height: 64rpx;
+    width: var(--hlw-menu-icon-box-size);
+    height: var(--hlw-menu-icon-box-size);
     border-radius: var(--radius-md, 16rpx);
     display: flex;
     align-items: center;
@@ -263,15 +267,15 @@ const handleClick = (item: HlwMenuItem) => {
     flex-shrink: 0;
 
     text {
-        font-size: 20rpx;
+        font-size: var(--hlw-menu-icon-size);
     }
 
     &--grid {
-        width: 88rpx;
-        height: 88rpx;
+        width: var(--hlw-menu-grid-icon-box-size);
+        height: var(--hlw-menu-grid-icon-box-size);
         border-radius: var(--radius-lg, 24rpx);
         text {
-            font-size: 32rpx;
+            font-size: var(--hlw-menu-grid-icon-size);
         }
     }
 
@@ -365,14 +369,14 @@ const handleClick = (item: HlwMenuItem) => {
 
 .hlw-menu-arrow {
     color: #d1d5db;
-    font-size: var(--font-xs, 20rpx);
+    font-size: var(--font-sm, 24rpx);
 }
 .hlw-menu-spin {
     animation: icon-spin 1s linear infinite;
 }
 .hlw-menu-muted {
     color: #94a3b8;
-    font-size: var(--font-xs, 20rpx);
+    font-size: var(--font-sm, 24rpx);
 }
 
 @keyframes icon-spin {

@@ -5,7 +5,7 @@
         "module": "ESNext",
         "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "skipLibCheck": true,
-        "moduleResolution": "bundler",
+        "moduleResolution": "node",
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
@@ -17,16 +17,14 @@
         "noFallthroughCasesInSwitch": true,
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"],
-            "vue": ["node_modules/vue"]
+            "@/*": ["src/*"]
         },
         "types": ["@dcloudio/types", "vite/client", "node"]
     },
     "include": [
         "src/**/*.ts",
         "src/**/*.d.ts",
-        "src/**/*.vue",
-        "node_modules/vue/**/*.d.ts"
+        "src/**/*.vue"
     ],
     "exclude": ["node_modules", "dist"]
 }

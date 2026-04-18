@@ -2,48 +2,52 @@
     <button
         class="hlw-btn"
         :class="[
-            `hlw-btn--${type}`,
-            `hlw-btn--${size}`,
-            { 'hlw-btn--block': block, 'hlw-btn--round': round, 'hlw-btn--disabled': disabled, 'hlw-btn--loading': loading },
+            `hlw-btn--${props.type}`,
+            `hlw-btn--${props.size}`,
+            {
+                'hlw-btn--block': props.block,
+                'hlw-btn--round': props.round,
+                'hlw-btn--disabled': props.disabled,
+                'hlw-btn--loading': props.loading,
+            },
         ]"
-        :disabled="disabled || loading"
-        :open-type="openType"
-        @tap="$emit('click')"
+        :style="buttonStyle"
+        :disabled="props.disabled || props.loading"
+        :open-type="props.openType"
+        @tap="handleTap"
     >
-        <view v-if="loading" class="hlw-btn-spinner" />
-        <view v-else-if="icon" :class="icon" class="hlw-btn-icon" />
-        <slot />
+        <view v-if="props.loading" class="hlw-btn-spinner" />
+        <template v-else>
+            <view v-if="hasIcon" class="hlw-btn-icon-wrap">
+                <slot name="icon">
+                    <view v-if="props.icon" :class="props.icon" class="hlw-btn-icon" />
+                </slot>
+            </view>
+            <view class="hlw-btn-content">
+                <slot />
+            </view>
+        </template>
     </button>
 </template>
 
 <script setup lang="ts">
-/**
- * HlwButton — 主题按钮
- *
- * 跟随 --primary-color 主题色，支持多种类型、尺寸和状态。
- *
- * @props
- *   type     - 按钮类型：primary / outline / text / ghost，默认 primary
- *   size     - 尺寸：small / medium / large，默认 medium
- *   loading  - 加载状态（显示 spinner 并禁止点击），默认 false
- *   disabled - 禁用状态，默认 false
- *   block    - 块级按钮（占满父容器宽度），默认 false
- *   round    - 圆角药丸形状，默认 false
- *   icon     - 左侧图标 class（如 i-fa6-solid-plus）
- *   openType - 微信原生 open-type（如 share、getPhoneNumber）
- *
- * @events
- *   click - 点击事件
- *
- * @example
- * ```vue
- * <HlwButton type="primary" @click="submit">提交</HlwButton>
- * <HlwButton type="outline" loading>加载中</HlwButton>
- * <HlwButton type="text" icon="i-fa6-solid-plus">新增</HlwButton>
- * ```
- */
+import { computed, useSlots } from "vue";
+
+type ButtonType =
+    | "primary"
+    | "success"
+    | "warning"
+    | "danger"
+    | "error"
+    | "info"
+    | "outline"
+    | "text"
+    | "ghost";
+
+type NavigateType = "navigateTo" | "redirectTo" | "switchTab" | "reLaunch" | "navigateBack";
+
 interface Props {
-    type?: "primary" | "outline" | "text" | "ghost";
+    type?: ButtonType;
     size?: "small" | "medium" | "large";
     loading?: boolean;
     disabled?: boolean;
@@ -51,9 +55,15 @@ interface Props {
     round?: boolean;
     icon?: string;
     openType?: string;
+    bgColor?: string;
+    textColor?: string;
+    borderColor?: string;
+    url?: string;
+    navigateType?: NavigateType;
+    delta?: number;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
     type: "primary",
     size: "medium",
     loading: false,
@@ -62,38 +72,107 @@ withDefaults(defineProps<Props>(), {
     round: false,
     icon: "",
     openType: "",
+    bgColor: "",
+    textColor: "",
+    borderColor: "",
+    url: "",
+    navigateType: "navigateTo",
+    delta: 1,
 });
 
-defineEmits<{ click: [] }>();
+const emit = defineEmits<{ click: [] }>();
+
+const slots = useSlots();
+const hasIcon = computed(() => Boolean(props.icon || slots.icon));
+
+const buttonStyle = computed(() => {
+    const style: Record<string, string> = {};
+
+    if (props.bgColor) style.background = props.bgColor;
+    if (props.textColor) style.color = props.textColor;
+    if (props.borderColor) style.borderColor = props.borderColor;
+
+    return style;
+});
+
+const handleTap = () => {
+    if (props.disabled || props.loading) return;
+
+    emit("click");
+
+    if (!props.url && props.navigateType !== "navigateBack") return;
+
+    switch (props.navigateType) {
+        case "redirectTo":
+            if (props.url) uni.redirectTo({ url: props.url });
+            break;
+        case "switchTab":
+            if (props.url) uni.switchTab({ url: props.url });
+            break;
+        case "reLaunch":
+            if (props.url) uni.reLaunch({ url: props.url });
+            break;
+        case "navigateBack":
+            uni.navigateBack({ delta: props.delta });
+            break;
+        default:
+            if (props.url) uni.navigateTo({ url: props.url });
+            break;
+    }
+};
 </script>
 
 <style lang="scss" scoped>
+$semantic-colors: (
+    primary: var(--primary-color),
+    success: #10b981,
+    warning: #f59e0b,
+    danger: #ef4444,
+    error: #ef4444,
+    info: #64748b,
+);
+
 .hlw-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8rpx;
+    flex-shrink: 0;
     border: none;
     font-weight: 500;
     line-height: 1;
     transition: opacity 0.2s;
+    box-sizing: border-box;
+    background: transparent;
+    white-space: nowrap;
 
-    &::after { display: none; }
-    &:active { opacity: 0.7; }
-
-    &--primary {
-        background: var(--primary-color);
-        color: #fff;
+    &::after {
+        display: none;
     }
+
+    &:active {
+        opacity: 0.7;
+    }
+
+    @each $name, $color in $semantic-colors {
+        &--#{$name} {
+            background: #{$color};
+            color: #fff;
+            border: none;
+        }
+    }
+
     &--outline {
         background: transparent;
         color: var(--primary-color);
         border: 2rpx solid var(--primary-color);
     }
+
     &--text {
         background: transparent;
         color: var(--primary-color);
     }
+
     &--ghost {
         background: transparent;
         color: #fff;
@@ -101,25 +180,54 @@ defineEmits<{ click: [] }>();
     }
 
     &--small {
-        padding: 8rpx 20rpx;
+        min-height: 56rpx;
+        padding: 12rpx 20rpx;
         font-size: var(--font-xs, 20rpx);
         border-radius: var(--radius-sm, 8rpx);
     }
+
     &--medium {
-        padding: 16rpx 32rpx;
+        min-height: 72rpx;
+        padding: 18rpx 32rpx;
         font-size: var(--font-sm, 24rpx);
         border-radius: var(--radius-md, 16rpx);
     }
+
     &--large {
-        padding: 24rpx 48rpx;
+        min-height: 88rpx;
+        padding: 22rpx 48rpx;
         font-size: var(--font-base, 28rpx);
         border-radius: var(--radius-md, 16rpx);
     }
 
-    &--block { display: flex; width: 100%; }
-    &--round { border-radius: 999rpx; }
-    &--disabled { opacity: 0.4; &:active { opacity: 0.4; } }
-    &--loading { opacity: 0.7; }
+    &--block {
+        display: flex;
+        width: 100%;
+    }
+
+    &--round {
+        border-radius: 999rpx;
+    }
+
+    &--disabled {
+        opacity: 0.4;
+
+        &:active {
+            opacity: 0.4;
+        }
+    }
+
+    &--loading {
+        opacity: 0.7;
+    }
+}
+
+.hlw-btn-icon-wrap,
+.hlw-btn-content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
 }
 
 .hlw-btn-icon {
@@ -136,6 +244,8 @@ defineEmits<{ click: [] }>();
 }
 
 @keyframes hlw-spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 </style>

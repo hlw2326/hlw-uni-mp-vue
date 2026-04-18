@@ -172,10 +172,16 @@ const totalNavBarHeight = computed(() => statusBarHeight.value + NAV_BAR_CONTENT
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    color: #475569;
+
+    &:active {
+        opacity: 0.8;
+    }
 }
 
 .header-back-icon {
-    font-size: 36rpx;
+    font-size: var(--font-md, 32rpx);
+    color: inherit;
 }
 
 .header-title {
