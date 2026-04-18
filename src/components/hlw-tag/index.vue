@@ -6,7 +6,7 @@
         @tap="$emit('click')"
     >
         <slot />
-        <view v-if="closable" class="hlw-tag-close" @tap.stop="$emit('close')">&#215;</view>
+        <view v-if="closable" class="hlw-tag-close i-fa6-solid-xmark" @tap.stop="$emit('close')" />
     </view>
 </template>
 
@@ -68,7 +68,7 @@ $colors: (
 }
 
 .hlw-tag-close {
-    font-size: 1.2em;
+    font-size: 1em;
     line-height: 1;
     margin-left: 2rpx;
     opacity: 0.8;

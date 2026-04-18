@@ -1,14 +1,22 @@
 <template>
     <view v-if="show" class="hlw-modal-mask" @tap.self="onMask">
-        <view class="hlw-modal" :class="{ 'hlw-modal--show': show }">
+        <view class="hlw-modal" :class="{ 'hlw-modal--show': show }" @tap.stop>
             <view v-if="title" class="hlw-modal-title">{{ title }}</view>
             <view class="hlw-modal-body">
                 <slot />
             </view>
             <slot name="footer">
                 <view class="hlw-modal-footer">
-                    <view v-if="showCancel" class="hlw-modal-btn hlw-modal-btn--cancel" @tap="onCancel">{{ cancelText }}</view>
-                    <view class="hlw-modal-btn hlw-modal-btn--confirm" @tap="onConfirm">{{ confirmText }}</view>
+                    <view
+                        v-if="showCancel"
+                        class="hlw-modal-btn hlw-modal-btn--cancel"
+                        @tap.stop="onCancel"
+                    >
+                        {{ cancelText }}
+                    </view>
+                    <view class="hlw-modal-btn hlw-modal-btn--confirm" @tap.stop="onConfirm">
+                        {{ confirmText }}
+                    </view>
                 </view>
             </slot>
         </view>
@@ -25,7 +33,7 @@ interface Props {
     closeOnMask?: boolean;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
     show: false,
     title: "",
     showCancel: true,
@@ -41,6 +49,7 @@ function close() {
 }
 
 function onMask() {
+    if (!props.closeOnMask) return;
     close();
 }
 
@@ -110,6 +119,7 @@ function onCancel() {
         color: #64748b;
         border-right: 1rpx solid var(--border-color-light, #f1f5f9);
     }
+
     &--confirm {
         color: var(--primary-color, #3b82f6);
     }

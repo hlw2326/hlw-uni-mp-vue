@@ -17,6 +17,31 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwButton — 主题按钮
+ *
+ * 跟随 --primary-color 主题色，支持多种类型、尺寸和状态。
+ *
+ * @props
+ *   type     - 按钮类型：primary / outline / text / ghost，默认 primary
+ *   size     - 尺寸：small / medium / large，默认 medium
+ *   loading  - 加载状态（显示 spinner 并禁止点击），默认 false
+ *   disabled - 禁用状态，默认 false
+ *   block    - 块级按钮（占满父容器宽度），默认 false
+ *   round    - 圆角药丸形状，默认 false
+ *   icon     - 左侧图标 class（如 i-fa6-solid-plus）
+ *   openType - 微信原生 open-type（如 share、getPhoneNumber）
+ *
+ * @events
+ *   click - 点击事件
+ *
+ * @example
+ * ```vue
+ * <HlwButton type="primary" @click="submit">提交</HlwButton>
+ * <HlwButton type="outline" loading>加载中</HlwButton>
+ * <HlwButton type="text" icon="i-fa6-solid-plus">新增</HlwButton>
+ * ```
+ */
 interface Props {
     type?: "primary" | "outline" | "text" | "ghost";
     size?: "small" | "medium" | "large";

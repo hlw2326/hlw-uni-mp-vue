@@ -33,6 +33,36 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwCell — 列表单元格
+ *
+ * 通用列表项：左侧 icon + 标题/描述 + 右侧内容/箭头。
+ * 传入 url 自动渲染为 navigator 组件。
+ *
+ * @props
+ *   title  - 标题文字
+ *   label  - 描述文字（标题下方灰色小字）
+ *   value  - 右侧内容文字
+ *   icon   - 左侧图标 class（如 i-fa6-solid-gear）
+ *   isLink - 是否显示右箭头，默认 false
+ *   url    - 跳转地址（有值则渲染为 navigator）
+ *   border - 是否显示底部分割线，默认 true
+ *
+ * @events
+ *   click - 点击事件（url 模式下由 navigator 处理跳转）
+ *
+ * @slots
+ *   icon  - 自定义左侧图标
+ *   title - 自定义标题区域
+ *   value - 自定义右侧内容
+ *   right - 自定义最右侧区域
+ *
+ * @example
+ * ```vue
+ * <HlwCell title="设置" icon="i-fa6-solid-gear" is-link url="/pages/settings/index" />
+ * <HlwCell title="版本号" value="1.0.0" />
+ * ```
+ */
 interface Props {
     title?: string;
     label?: string;

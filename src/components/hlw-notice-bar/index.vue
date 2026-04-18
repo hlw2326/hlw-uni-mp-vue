@@ -1,19 +1,19 @@
 <template>
     <view v-if="!closed" class="hlw-notice" :style="{ color, background }">
         <view v-if="leftIcon" :class="leftIcon" class="hlw-notice-left-icon" />
-        <view v-else class="hlw-notice-left-icon">&#128227;</view>
+        <view v-else class="hlw-notice-left-icon i-fa6-solid-bullhorn" />
         <view class="hlw-notice-wrap" @tap="$emit('click')">
             <view v-if="scrollable" class="hlw-notice-scroll" :style="animStyle">
                 <text class="hlw-notice-text">{{ text }}</text>
             </view>
             <text v-else class="hlw-notice-text hlw-notice-text--ellipsis">{{ text }}</text>
         </view>
-        <view v-if="closable" class="hlw-notice-close" @tap="onClose">&#215;</view>
+        <view v-if="closable" class="hlw-notice-close i-fa6-solid-xmark" @tap="onClose" />
     </view>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
+import { computed, ref } from "vue";
 
 interface Props {
     text?: string;
@@ -86,10 +86,10 @@ function onClose() {
 
 .hlw-notice-close {
     flex-shrink: 0;
-    font-size: 32rpx;
+    font-size: 28rpx;
     line-height: 1;
     opacity: 0.6;
-    padding: 0 4rpx;
+    padding: 4rpx;
 }
 
 @keyframes hlw-notice-scroll {

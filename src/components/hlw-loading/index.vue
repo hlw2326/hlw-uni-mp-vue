@@ -6,6 +6,19 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwLoading — 加载动画组件
+ *
+ * 圆形旋转 spinner，可附带文字提示。
+ *
+ * @props
+ *   text - 加载提示文字（可选）
+ *
+ * @example
+ * ```vue
+ * <HlwLoading text="加载中..." />
+ * ```
+ */
 defineProps<{
     text?: string;
 }>();

@@ -1,7 +1,7 @@
 <template>
     <view class="hlw-search" :style="background ? { background } : {}">
         <view class="hlw-search-box" :class="{ 'hlw-search-box--round': shape === 'round' }">
-            <view class="hlw-search-icon">&#128269;</view>
+            <view class="hlw-search-icon i-fa6-solid-magnifying-glass" />
             <input
                 class="hlw-search-input"
                 type="text"
@@ -14,7 +14,7 @@
                 @focus="$emit('focus')"
                 @blur="$emit('blur')"
             />
-            <view v-if="clearable && modelValue" class="hlw-search-clear" @tap="onClear">&#215;</view>
+            <view v-if="clearable && modelValue" class="hlw-search-clear i-fa6-solid-xmark" @tap="onClear" />
         </view>
     </view>
 </template>
@@ -46,8 +46,8 @@ const emit = defineEmits<{
     blur: [];
 }>();
 
-function onInput(e: { detail: { value: string } }) {
-    emit("update:modelValue", e.detail.value);
+function onInput(e: any) {
+    emit("update:modelValue", e?.detail?.value ?? "");
 }
 
 function onClear() {
@@ -86,10 +86,10 @@ function onClear() {
 }
 
 .hlw-search-clear {
-    font-size: 32rpx;
+    font-size: 28rpx;
     color: #94a3b8;
     line-height: 1;
     flex-shrink: 0;
-    padding: 0 4rpx;
+    padding: 4rpx;
 }
 </style>

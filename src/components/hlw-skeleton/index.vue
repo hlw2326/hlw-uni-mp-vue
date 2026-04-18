@@ -10,6 +10,29 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwSkeleton — 骨架屏
+ *
+ * 数据加载占位，支持头像 + 标题 + 多行文字组合。loading 为 false 时显示默认插槽内容。
+ *
+ * @props
+ *   loading    - 是否显示骨架屏，默认 true
+ *   rows       - 文字行数，默认 3
+ *   avatar     - 是否显示头像占位，默认 false
+ *   title      - 是否显示标题占位，默认 true
+ *   animate    - 是否启用脉冲动画，默认 true
+ *   avatarSize - 头像尺寸：small / medium / large，默认 medium
+ *
+ * @slots
+ *   default - 加载完成后显示的真实内容
+ *
+ * @example
+ * ```vue
+ * <HlwSkeleton :loading="loading" avatar :rows="4">
+ *   <view>真实数据内容</view>
+ * </HlwSkeleton>
+ * ```
+ */
 interface Props {
     loading?: boolean;
     rows?: number;

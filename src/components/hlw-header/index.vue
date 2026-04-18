@@ -34,6 +34,34 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwHeader — 页面顶部导航栏
+ *
+ * 自动适配状态栏高度和胶囊按钮位置（微信小程序），支持返回按钮、自定义标题和背景。
+ *
+ * @props
+ *   title       - 标题文字
+ *   titleAlign  - 标题对齐：center / left，默认 center
+ *   titleSize   - 标题字号，默认 var(--font-base)
+ *   titleWeight - 标题字重，默认 500
+ *   titleColor  - 标题颜色
+ *   isBack      - 是否显示返回按钮，默认 false
+ *   bgClass     - 自定义背景 CSS class
+ *   extraHeight - 额外高度（rpx），默认 0
+ *
+ * @events
+ *   back - 点击返回按钮
+ *
+ * @slots
+ *   bg        - 自定义背景层
+ *   title     - 自定义标题区域
+ *   back-icon - 自定义返回图标
+ *
+ * @example
+ * ```vue
+ * <HlwHeader title="我的" is-back @back="goBack" />
+ * ```
+ */
 import { ref, computed, useSlots } from "vue";
 
 const getNavBarContentHeight = (): number => {

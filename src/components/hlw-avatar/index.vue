@@ -14,6 +14,21 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwAvatar — 头像组件
+ *
+ * 显示用户头像，图片加载失败时自动回退到姓名首字母占位。
+ *
+ * @props
+ *   src   - 头像图片地址
+ *   name  - 用户名称，用于提取首字母（图片缺失时显示）
+ *   size  - 尺寸：small(56rpx) / medium(80rpx) / large(120rpx)，默认 medium
+ *
+ * @example
+ * ```vue
+ * <HlwAvatar src="/avatar.png" name="张三" size="large" />
+ * ```
+ */
 import { ref, computed } from 'vue';
 
 const props = defineProps<{

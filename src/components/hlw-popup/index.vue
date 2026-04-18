@@ -1,12 +1,18 @@
 <template>
-    <view v-if="show" class="hlw-popup-mask" @tap.self="onClose" />
-    <view class="hlw-popup" :class="[`hlw-popup--${position}`, { 'hlw-popup--show': show, 'hlw-popup--round': round }]">
-        <view v-if="title || closable" class="hlw-popup-header">
-            <text class="hlw-popup-title">{{ title }}</text>
-            <view v-if="closable" class="hlw-popup-close" @tap="onClose">&#215;</view>
+    <template v-if="show">
+        <view class="hlw-popup-mask" @tap.self="onClose" />
+        <view
+            class="hlw-popup"
+            :class="[`hlw-popup--${position}`, { 'hlw-popup--round': round }]"
+            @tap.stop
+        >
+            <view v-if="title || closable" class="hlw-popup-header">
+                <text class="hlw-popup-title">{{ title }}</text>
+                <view v-if="closable" class="hlw-popup-close i-fa6-solid-xmark" @tap="onClose" />
+            </view>
+            <slot />
         </view>
-        <slot />
-    </view>
+    </template>
 </template>
 
 <script setup lang="ts">
@@ -47,16 +53,17 @@ function onClose() {
     position: fixed;
     z-index: 1001;
     background: #fff;
-    transition: transform 0.3s ease, opacity 0.3s ease;
 
     &--bottom {
         left: 0;
         right: 0;
         bottom: 0;
         max-height: 80vh;
-        transform: translateY(100%);
-        &.hlw-popup--show { transform: translateY(0); }
-        &.hlw-popup--round { border-radius: var(--radius-xl, 32rpx) var(--radius-xl, 32rpx) 0 0; }
+        animation: hlw-popup-slide-up 0.25s ease;
+
+        &.hlw-popup--round {
+            border-radius: var(--radius-xl, 32rpx) var(--radius-xl, 32rpx) 0 0;
+        }
     }
 
     &--top {
@@ -64,19 +71,20 @@ function onClose() {
         right: 0;
         top: 0;
         max-height: 80vh;
-        transform: translateY(-100%);
-        &.hlw-popup--show { transform: translateY(0); }
-        &.hlw-popup--round { border-radius: 0 0 var(--radius-xl, 32rpx) var(--radius-xl, 32rpx); }
+        animation: hlw-popup-slide-down 0.25s ease;
+
+        &.hlw-popup--round {
+            border-radius: 0 0 var(--radius-xl, 32rpx) var(--radius-xl, 32rpx);
+        }
     }
 
     &--center {
         left: 50%;
         top: 50%;
         width: 80%;
-        transform: translate(-50%, -50%) scale(0.9);
-        opacity: 0;
+        transform: translate(-50%, -50%);
         border-radius: var(--radius-xl, 32rpx);
-        &.hlw-popup--show { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        animation: hlw-popup-scale-in 0.22s ease;
     }
 }
 
@@ -95,14 +103,29 @@ function onClose() {
 }
 
 .hlw-popup-close {
-    font-size: 40rpx;
+    font-size: 32rpx;
     color: #94a3b8;
     line-height: 1;
-    padding: 0 8rpx;
+    padding: 4rpx;
 }
 
 @keyframes hlw-fade-in {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+
+@keyframes hlw-popup-slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes hlw-popup-slide-down {
+    from { transform: translateY(-100%); }
+    to { transform: translateY(0); }
+}
+
+@keyframes hlw-popup-scale-in {
+    from { transform: translate(-50%, -50%) scale(0.92); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
 }
 </style>

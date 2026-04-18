@@ -1,8 +1,8 @@
 <template>
     <view class="hlw-empty">
         <image v-if="image" class="hlw-empty__image" :src="image" mode="aspectFit" />
-        <text v-else class="hlw-empty__icon">📦</text>
-        <text class="hlw-empty__text">{{ text || '暂无数据' }}</text>
+        <view v-else class="hlw-empty__icon i-fa6-solid-box-open" />
+        <text class="hlw-empty__text">{{ text || "暂无数据" }}</text>
         <slot />
     </view>
 </template>
@@ -32,6 +32,7 @@ defineProps<{
 .hlw-empty__icon {
     font-size: 100rpx;
     margin-bottom: 20rpx;
+    color: #cbd5e1;
 }
 
 .hlw-empty__text {

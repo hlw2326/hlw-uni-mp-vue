@@ -26,6 +26,30 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwPage — 页面布局容器
+ *
+ * 全屏 flex 布局：固定 header + 可滚动 content + 固定 footer。
+ * 传入 title/isBack 自动渲染 HlwHeader，也可通过 header 插槽完全自定义。
+ *
+ * @props
+ *   title   - 页面标题（自动渲染 HlwHeader）
+ *   isBack  - 是否显示返回按钮，默认 false
+ *   bgClass - header 背景 CSS class
+ *
+ * @slots
+ *   header  - 自定义顶部（覆盖默认 HlwHeader）
+ *   default - 主体可滚动内容
+ *   footer  - 固定底部
+ *
+ * @example
+ * ```vue
+ * <HlwPage title="首页" bg-class="header-bg">
+ *   <view>页面内容</view>
+ *   <template #footer><view>底部栏</view></template>
+ * </HlwPage>
+ * ```
+ */
 interface Props {
     title?: string;
     isBack?: boolean;

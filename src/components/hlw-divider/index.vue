@@ -9,6 +9,26 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwDivider — 分割线
+ *
+ * 水平分割线，可带文字说明，支持虚线和文字位置调整。
+ *
+ * @props
+ *   text     - 分割线中间文字
+ *   position - 文字位置：left / center / right，默认 center
+ *   dashed   - 是否虚线，默认 false
+ *
+ * @slots
+ *   default - 自定义分割线中间内容（覆盖 text）
+ *
+ * @example
+ * ```vue
+ * <HlwDivider />
+ * <HlwDivider text="或" />
+ * <HlwDivider text="更多" position="left" dashed />
+ * ```
+ */
 interface Props {
     text?: string;
     position?: "left" | "center" | "right";

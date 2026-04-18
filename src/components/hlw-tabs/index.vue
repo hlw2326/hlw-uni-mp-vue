@@ -20,6 +20,28 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwTabs — 选项卡
+ *
+ * 横向选项卡切换，支持文字 / 对象配置、徽标和滚动模式。
+ * 激活项跟随 --primary-color 主题色。
+ *
+ * @props
+ *   modelValue - 当前选中索引，支持 v-model，默认 0
+ *   items      - 选项列表：string[] 或 { label, badge? }[]
+ *   scrollable - 超出时是否可横向滚动，默认 false
+ *   lineWidth  - 底部指示线宽度，默认 40rpx
+ *
+ * @events
+ *   update:modelValue - 切换时触发
+ *   change            - 切换时触发（携带新索引）
+ *
+ * @example
+ * ```vue
+ * <HlwTabs v-model="activeTab" :items="['推荐', '热门', '最新']" />
+ * <HlwTabs v-model="tab" :items="[{ label: '消息', badge: '3' }, { label: '关注' }]" />
+ * ```
+ */
 export interface HlwTabItem {
     label: string;
     badge?: string;
