@@ -5,7 +5,7 @@
         :style="customStyle"
         @tap="$emit('click')"
     >
-        <slot />
+        <text class="hlw-tag-text"><slot /></text>
         <view v-if="closable" class="hlw-tag-close i-fa6-solid-xmark" @tap.stop="$emit('close')" />
     </view>
 </template>
@@ -53,12 +53,28 @@ $colors: (
 .hlw-tag {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+    vertical-align: middle;
     gap: 4rpx;
     font-weight: 500;
+    line-height: 1.2;
     border: 2rpx solid transparent;
+    box-sizing: border-box;
 
-    &--medium { padding: 4rpx 16rpx; font-size: var(--font-xs, 20rpx); border-radius: var(--radius-sm, 8rpx); }
-    &--small { padding: 2rpx 10rpx; font-size: 18rpx; border-radius: 6rpx; }
+    &--medium {
+        min-height: 36rpx;
+        padding: 4rpx 16rpx;
+        font-size: var(--font-xs, 20rpx);
+        border-radius: var(--radius-sm, 8rpx);
+    }
+
+    &--small {
+        min-height: 28rpx;
+        padding: 2rpx 10rpx;
+        font-size: 18rpx;
+        border-radius: 6rpx;
+    }
+
     &--round { border-radius: 999rpx; }
 
     @each $name, $c in $colors {
@@ -67,9 +83,20 @@ $colors: (
     }
 }
 
+.hlw-tag-text {
+    display: block;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+    line-height: 1.2;
+}
+
 .hlw-tag-close {
     font-size: 1em;
     line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     margin-left: 2rpx;
     opacity: 0.8;
 }

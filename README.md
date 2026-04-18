@@ -48,6 +48,88 @@ import { HlwEmpty, HlwLoading } from '@hlw-uni/mp-vue';
 </template>
 ```
 
+## 主题能力
+
+`mp-vue` 内置了基础主题能力，`useThemePageStyle()` 会返回一组可直接挂到页面根节点上的 CSS 变量样式。
+
+当前内置变量主要包括：
+
+- 主题色：`--primary-color`、`--primary-light`、`--primary-dark`
+- 字体档位：`--font-xs`、`--font-sm`、`--font-base`、`--font-md`、`--font-lg`、`--font-xl`
+
+### 基础用法
+
+```vue
+<script setup lang="ts">
+import { useThemePageStyle } from "@hlw-uni/mp-vue";
+
+const { themePageStyle } = useThemePageStyle();
+</script>
+
+<template>
+  <hlw-page :style="themePageStyle" title="首页">
+    <view class="demo-card">主题演示</view>
+  </hlw-page>
+</template>
+
+<style scoped lang="scss">
+.demo-card {
+  color: var(--primary-color);
+  background: var(--primary-light);
+  font-size: var(--font-base);
+}
+</style>
+```
+
+### 叠加项目自定义主题变量
+
+如果业务项目还需要自己的主题参数，推荐在 `themePageStyle` 的基础上继续追加，而不是直接修改组件库源码。
+
+```vue
+<script setup lang="ts">
+import { computed } from "vue";
+import { useThemePageStyle } from "@hlw-uni/mp-vue";
+import { useThemeStore } from "@/store";
+
+const { themePageStyle } = useThemePageStyle();
+const themeStore = useThemeStore();
+
+const pageStyle = computed(() => {
+  return [
+    themePageStyle.value,
+    `--page-bg: ${themeStore.primaryColor}10`,
+    `--card-shadow: 0 12rpx 40rpx ${themeStore.primaryColor}22`,
+    `--header-gradient: linear-gradient(135deg, ${themeStore.primaryColor}, #0f172a)`,
+    `--brand-text-color: #0f172a`,
+  ].join(";");
+});
+</script>
+
+<template>
+  <hlw-page :style="pageStyle" title="首页">
+    <view class="hero">项目自定义主题</view>
+  </hlw-page>
+</template>
+
+<style scoped lang="scss">
+.hero {
+  background: var(--header-gradient);
+  box-shadow: var(--card-shadow);
+  color: var(--brand-text-color);
+}
+</style>
+```
+
+### 推荐做法
+
+当项目里有较多业务主题变量时，建议再封装一层自己的组合式函数，例如 `useAppThemeStyle()`，统一输出：
+
+- `mp-vue` 基础变量
+- 项目自定义变量
+- 页面级视觉变量
+
+这样可以保持组件库主题和业务主题解耦，后续升级 `mp-vue` 时也更稳定。
+
 ## 组件
 
 ### HlwAd — 广告组件

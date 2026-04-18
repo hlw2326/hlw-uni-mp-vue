@@ -1,5 +1,5 @@
 <template>
-    <view class="hlw-page">
+    <view class="hlw-page" :style="themePageStyle">
         <view class="hlw-page-header">
             <slot name="header">
                 <hlw-header
@@ -16,6 +16,7 @@
             :enable-flex="true"
             :enhanced="true"
             :show-scrollbar="false"
+            :style="themePageStyle"
         >
             <slot></slot>
         </scroll-view>
@@ -26,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import { useThemePageStyle } from "../../composables/theme";
 /**
  * HlwPage — 页面布局容器
  *
@@ -61,6 +63,8 @@ const props = withDefaults(defineProps<Props>(), {
     isBack: false,
     bgClass: "",
 });
+
+const { themePageStyle } = useThemePageStyle();
 </script>
 
 <style lang="scss" scoped>
