@@ -23,7 +23,7 @@
                     <view v-if="props.icon" :class="props.icon" class="hlw-btn-icon" />
                 </slot>
             </view>
-            <view class="hlw-btn-content">
+            <view v-if="hasContent" class="hlw-btn-content">
                 <slot />
             </view>
         </template>
@@ -85,6 +85,13 @@ const emit = defineEmits<{ click: [] }>();
 const slots = useSlots();
 const hasIcon = computed(() => Boolean(props.icon || slots.icon));
 
+/**
+ * 默认 slot 是否有内容，用于避免空 slot 占位影响 flex 布局。
+ * 小程序 Vue runtime 的 VNode 结构与标准 Vue 不同，这里仅检测 slot 函数是否存在 —
+ * `<hlw-button />` 自闭合时 slots.default 为 undefined；有任何 slot 内容（含 `<hlw-button></hlw-button>` 之外）时为函数。
+ */
+const hasContent = computed(() => Boolean(slots.default));
+
 const buttonStyle = computed(() => {
     const style: Record<string, string> = {};
 
@@ -124,12 +131,12 @@ const handleTap = () => {
 
 <style lang="scss" scoped>
 $semantic-colors: (
-    primary: var(--primary-color),
-    success: #10b981,
-    warning: #f59e0b,
-    danger: #ef4444,
-    error: #ef4444,
-    info: #64748b,
+    primary: var(--primary-color, #3b82f6),
+    success: var(--primary-success, #10b981),
+    warning: var(--primary-warning, #f59e0b),
+    danger: var(--primary-error, #ef4444),
+    error: var(--primary-error, #ef4444),
+    info: var(--primary-info, #64748b),
 );
 
 .hlw-btn {

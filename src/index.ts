@@ -9,11 +9,13 @@
 
 export type { FontScale, FontPreset, ThemeColor } from "./composables/theme";
 export type { HlwMenuItem } from "./components/hlw-menu/types";
+export type { HlwPagingRef, HlwPagingInstance } from "./components/hlw-paging/types";
 export {
     FONT_PRESETS,
     FONT_SCALE_KEY,
     DEFAULT_THEMES,
     THEME_COLOR_KEY,
+    THEME_SEMANTIC_COLORS,
     THEME_CHANGE_EVENT,
     getCurrentFontScale,
     getCurrentFontVars,

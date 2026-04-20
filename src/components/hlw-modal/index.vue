@@ -2,7 +2,7 @@
     <view v-if="show" class="hlw-modal-mask" @tap.self="onMask">
         <view class="hlw-modal" :class="{ 'hlw-modal--show': show }" @tap.stop>
             <view v-if="title" class="hlw-modal-title">{{ title }}</view>
-            <view class="hlw-modal-body">
+            <view class="hlw-modal-body" :style="{ padding: props.bodyPadding }">
                 <slot />
             </view>
             <slot name="footer">
@@ -31,6 +31,8 @@ interface Props {
     confirmText?: string;
     cancelText?: string;
     closeOnMask?: boolean;
+    /** 内容区内边距。默认 `32rpx`，需要自定义内容贴边时传 `"0"` */
+    bodyPadding?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -40,6 +42,7 @@ const props = withDefaults(defineProps<Props>(), {
     confirmText: "确定",
     cancelText: "取消",
     closeOnMask: true,
+    bodyPadding: "32rpx",
 });
 
 const emit = defineEmits<{ "update:show": [value: boolean]; confirm: []; cancel: [] }>();
@@ -94,7 +97,6 @@ function onCancel() {
 }
 
 .hlw-modal-body {
-    padding: 32rpx;
     font-size: var(--font-base, 28rpx);
     color: #475569;
     text-align: center;

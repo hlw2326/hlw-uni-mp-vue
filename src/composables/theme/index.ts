@@ -30,4 +30,10 @@ export function useThemePageStyle() {
 export type { FontScale, FontPreset } from "./font";
 export { FONT_SCALE_KEY, FONT_PRESETS, getCurrentFontScale, getCurrentFontVars } from "./font";
 export type { ThemeColor } from "./palette";
-export { THEME_COLOR_KEY, DEFAULT_THEMES, getCurrentThemeColor, getCurrentThemeVars } from "./palette";
+export {
+    THEME_COLOR_KEY,
+    THEME_SEMANTIC_COLORS,
+    DEFAULT_THEMES,
+    getCurrentThemeColor,
+    getCurrentThemeVars,
+} from "./palette";

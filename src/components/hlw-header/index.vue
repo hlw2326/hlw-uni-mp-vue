@@ -118,7 +118,20 @@ const emit = defineEmits<{
 
 const handleBack = () => {
     emit("back");
-    uni.navigateBack({ delta: 1 });
+
+    const pages = getCurrentPages();
+    if (pages.length > 1) {
+        uni.navigateBack({ delta: 1 });
+        return;
+    }
+
+    const homeUrl = "/pages/index/index";
+    uni.switchTab({
+        url: homeUrl,
+        fail: () => {
+            uni.reLaunch({ url: homeUrl });
+        },
+    });
 };
 
 const titleStyle = computed(() => ({
@@ -180,7 +193,7 @@ const totalNavBarHeight = computed(() => statusBarHeight.value + NAV_BAR_CONTENT
 }
 
 .header-back-icon {
-    font-size: var(--font-md, 32rpx);
+    font-size: var(--font-base, 28rpx);
     color: inherit;
 }
 

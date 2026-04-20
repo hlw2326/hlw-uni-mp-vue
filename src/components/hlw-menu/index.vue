@@ -23,6 +23,34 @@
                     </view>
                 </navigator>
 
+                <button
+                    v-else-if="item.openType"
+                    class="hlw-menu-item hlw-menu-item-btn"
+                    hover-class="hlw-menu-item--active"
+                    :open-type="item.openType"
+                    :session-from="item.sessionFrom"
+                    :send-message-title="item.sendMessageTitle"
+                    :send-message-path="item.sendMessagePath"
+                    :send-message-img="item.sendMessageImg"
+                    :show-message-card="item.showMessageCard"
+                    @click="handleClick(item)"
+                    @contact="handleContact(item, $event)"
+                    @getphonenumber="handleGetPhoneNumber(item, $event)"
+                >
+                    <view class="hlw-menu-left">
+                        <view class="hlw-menu-icon" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
+                            <text :class="item.icon"></text>
+                        </view>
+                        <text class="hlw-menu-label">{{ item.label }}</text>
+                    </view>
+                    <view class="hlw-menu-right">
+                        <text v-if="item.loading" class="i-fa6-solid-circle-notch hlw-menu-spin hlw-menu-muted"></text>
+                        <text v-if="item.value" class="hlw-menu-value">{{ item.value }}</text>
+                        <text v-if="item.tag" class="hlw-menu-tag" :class="[`hlw-menu-tag--${item.tagTheme || 'rose'}`, item.tagPulse ? 'hlw-menu-tag-pulse' : '']">{{ item.tag }}</text>
+                        <text class="i-fa6-solid-chevron-right hlw-menu-arrow"></text>
+                    </view>
+                </button>
+
                 <view v-else class="hlw-menu-item" hover-class="hlw-menu-item--active" @click="handleClick(item)">
                     <view class="hlw-menu-left">
                         <view class="hlw-menu-icon" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
@@ -141,12 +169,28 @@ const emit = defineEmits<{
      * @param item 被点击的菜单项
      */
     click: [item: HlwMenuItem];
+    /**
+     * `openType="contact"` 的菜单项，打开客服会话时触发。
+     */
+    contact: [item: HlwMenuItem, event: unknown];
+    /**
+     * `openType="getPhoneNumber"` 的菜单项，获取手机号回调时触发。
+     */
+    getphonenumber: [item: HlwMenuItem, event: unknown];
 }>();
 
 const visibleItems = computed(() => props.items.filter((item) => item.visible !== false));
 
 const handleClick = (item: HlwMenuItem) => {
     emit("click", item);
+};
+
+const handleContact = (item: HlwMenuItem, event: unknown) => {
+    emit("contact", item, event);
+};
+
+const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
+    emit("getphonenumber", item, event);
 };
 </script>
 
@@ -192,6 +236,30 @@ const handleClick = (item: HlwMenuItem) => {
 
     &--active {
         background: #f8fafc;
+    }
+}
+
+/* open-type button 模式：去除微信 button 原生样式，对齐 .hlw-menu-item 布局 */
+.hlw-menu-item-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    padding: 24rpx 32rpx;
+    background: transparent;
+    color: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    border-radius: 0;
+    border: none;
+    text-align: left;
+    box-sizing: border-box;
+
+    &::after {
+        border: none;
+        display: none;
     }
 }
 

@@ -52,4 +52,38 @@ export interface HlwMenuItem {
      * @default true
      */
     visible?: boolean;
+    /**
+     * 微信小程序 `<button open-type>` 能力。设置后菜单项用 `<button>` 渲染，
+     * 支持触发客服会话、获取手机号、分享等原生能力。
+     *
+     * 常用值：
+     * - `contact` — 打开客服会话（需在后台配置客服）
+     * - `share` — 触发分享
+     * - `getPhoneNumber` — 获取手机号
+     * - `launchApp` — 打开 App（仅 App 内）
+     *
+     * 参考：https://developers.weixin.qq.com/miniprogram/dev/component/button.html
+     */
+    openType?: string;
+    /**
+     * 会话来源，`openType="contact"` 时有效。
+     */
+    sessionFrom?: string;
+    /**
+     * 会话内消息卡片标题，`openType="contact"` 时有效。
+     */
+    sendMessageTitle?: string;
+    /**
+     * 会话内消息卡片点击跳转小程序路径，`openType="contact"` 时有效。
+     */
+    sendMessagePath?: string;
+    /**
+     * 会话内消息卡片图片，`openType="contact"` 时有效。
+     */
+    sendMessageImg?: string;
+    /**
+     * 是否显示会话内消息卡片，`openType="contact"` 时有效。
+     * @default false
+     */
+    showMessageCard?: boolean;
 }

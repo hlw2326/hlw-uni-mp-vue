@@ -32,7 +32,7 @@ pnpm add @hlw-uni/mp-vue
 
 ```ts
 import { HlwAd, HlwAvatar, HlwEmpty, HlwLoading, HlwMenuList } from '@hlw-uni/mp-vue';
-import type { MenuItem } from '@hlw-uni/mp-vue';
+import type { MenuItem, HlwPagingRef } from '@hlw-uni/mp-vue';
 ```
 
 可在页面或组件中直接注册并使用：
@@ -287,6 +287,95 @@ mp-vue/
 ├── tsconfig.json
 └── vite.config.ts
 ```
+
+## HlwPaging
+
+基于 `z-paging` 的包装组件。保留 `z-paging` 原始 props、事件和大部分插槽，同时默认接入 `hlw-loading` 和 `hlw-empty` 作为加载态与空态展示。
+
+**额外 Props**
+
+| 属性 | 类型 | 默认值 | 说明 |
+| --- | --- | --- | --- |
+| `loadingText` | `string` | `'加载中...'` | 默认 loading 文案 |
+| `emptyText` | `string` | `'暂无数据'` | 默认空态文案 |
+| `errorText` | `string` | `'加载失败，请稍后重试'` | 默认失败文案 |
+| `emptyImage` | `string` | `''` | 自定义空态图片 |
+| `useDefaultLoading` | `boolean` | `true` | 是否启用默认 loading 插槽 |
+| `useDefaultEmpty` | `boolean` | `true` | 是否启用默认 empty 插槽 |
+
+**插槽**
+
+- 继续支持 `z-paging` 的原始插槽，如 `loading`、`empty`、`refresher`、`top`、`bottom`
+- 额外支持 `empty-extra`，用于在默认空态下方插入自定义内容
+
+**Ref 类型**
+
+```ts
+import type { HlwPagingRef } from '@hlw-uni/mp-vue';
+```
+
+**基础示例**
+
+```vue
+<script setup lang="ts">
+import { ref } from 'vue';
+import type { HlwPagingRef } from '@hlw-uni/mp-vue';
+
+interface ListItem {
+  id: number;
+  title: string;
+}
+
+const paging = ref<HlwPagingRef<ListItem> | null>(null);
+const dataList = ref<ListItem[]>([]);
+
+const queryList = async (pageNo: number, pageSize: number) => {
+  const list = Array.from({ length: pageSize }, (_, index) => ({
+    id: (pageNo - 1) * pageSize + index + 1,
+    title: `第 ${pageNo} 页数据 ${index + 1}`,
+  }));
+
+  paging.value?.completeByNoMore(list, pageNo >= 3);
+};
+</script>
+
+<template>
+  <hlw-paging
+    ref="paging"
+    v-model="dataList"
+    @query="queryList"
+    loading-text="正在同步数据"
+    empty-text="还没有任何记录"
+  >
+    <view v-for="item in dataList" :key="item.id" class="demo-row">
+      {{ item.title }}
+    </view>
+  </hlw-paging>
+</template>
+```
+
+**自定义空态**
+
+```vue
+<hlw-paging v-model="dataList" @query="queryList" :use-default-empty="false">
+  <template #empty="{ isLoadFailed }">
+    <hlw-empty :text="isLoadFailed ? '请求失败，请重试' : '这里暂时还是空的'" />
+  </template>
+</hlw-paging>
+```
+
+**常用 Ref 方法**
+
+- `reload(animate?)`
+- `refresh()`
+- `complete(list)`
+- `completeByTotal(list, total)`
+- `completeByNoMore(list, noMore)`
+- `completeByError(cause)`
+- `clear()`
+- `scrollToTop()`
+
+更多分页能力和原始参数可参考 `z-paging` 文档：https://z-paging.zxlee.cn
 
 ## License
 

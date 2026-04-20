@@ -14,7 +14,7 @@
 import { computed } from "vue";
 
 interface Props {
-    type?: "primary" | "success" | "warning" | "danger" | "info";
+    type?: "primary" | "success" | "warning" | "danger" | "error" | "info";
     plain?: boolean;
     closable?: boolean;
     size?: "small" | "medium";
@@ -44,10 +44,11 @@ const customStyle = computed(() => {
 <style lang="scss" scoped>
 $colors: (
     primary: var(--primary-color, #3b82f6),
-    success: #10b981,
-    warning: #f59e0b,
-    danger: #ef4444,
-    info: #64748b,
+    success: var(--primary-success, #10b981),
+    warning: var(--primary-warning, #f59e0b),
+    danger: var(--primary-error, #ef4444),
+    error: var(--primary-error, #ef4444),
+    info: var(--primary-info, #64748b),
 );
 
 .hlw-tag {
