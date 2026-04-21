@@ -185,7 +185,7 @@ const totalNavBarHeight = computed(() => statusBarHeight.value + NAV_BAR_CONTENT
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    color: #475569;
+    color: var(--text-secondary, #475569);
 
     &:active {
         opacity: 0.8;
@@ -219,7 +219,7 @@ const totalNavBarHeight = computed(() => statusBarHeight.value + NAV_BAR_CONTENT
     letter-spacing: 1rpx;
     font-size: var(--font-base, 28rpx);
     font-weight: 500;
-    color: #14181f;
+    color: var(--text-primary, #14181f);
 }
 
 .header-placeholder {

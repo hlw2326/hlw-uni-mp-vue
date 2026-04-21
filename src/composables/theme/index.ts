@@ -4,6 +4,7 @@ import { useColor } from "@hlw-uni/mp-core";
 const { varsToStyle } = useColor();
 import { getCurrentFontVars } from "./font";
 import { getCurrentThemeVars } from "./palette";
+import { getCurrentAppearanceVars } from "./appearance";
 
 export const THEME_CHANGE_EVENT = "hlw:theme-change";
 
@@ -11,6 +12,7 @@ export function buildThemeStyle(): string {
     return varsToStyle({
         ...getCurrentFontVars(),
         ...getCurrentThemeVars(),
+        ...getCurrentAppearanceVars(),
     });
 }
 
@@ -37,3 +39,13 @@ export {
     getCurrentThemeColor,
     getCurrentThemeVars,
 } from "./palette";
+export type { Appearance, AppearanceMode, AppearancePreset } from "./appearance";
+export {
+    APPEARANCE_KEY,
+    APPEARANCE_PRESETS,
+    APPEARANCE_VAR_MAP,
+    getCurrentAppearance,
+    getCurrentAppearanceMode,
+    getCurrentAppearanceVars,
+    resolveAppearance,
+} from "./appearance";

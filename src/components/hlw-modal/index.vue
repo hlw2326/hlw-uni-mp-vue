@@ -82,7 +82,7 @@ function onCancel() {
 .hlw-modal {
     width: 80%;
     max-width: 600rpx;
-    background: #fff;
+    background: var(--surface-card, #ffffff);
     border-radius: var(--radius-xl, 32rpx);
     overflow: hidden;
     animation: hlw-scale-in 0.25s ease;
@@ -93,12 +93,12 @@ function onCancel() {
     text-align: center;
     font-size: var(--font-md, 32rpx);
     font-weight: 600;
-    color: #1e293b;
+    color: var(--text-primary, #1e293b);
 }
 
 .hlw-modal-body {
     font-size: var(--font-base, 28rpx);
-    color: #475569;
+    color: var(--text-secondary, #475569);
     text-align: center;
     line-height: 1.6;
 }
@@ -115,10 +115,10 @@ function onCancel() {
     font-size: var(--font-base, 28rpx);
     font-weight: 500;
 
-    &:active { background: #f8fafc; }
+    &:active { background: var(--surface-card-muted, #f8fafc); }
 
     &--cancel {
-        color: #64748b;
+        color: var(--text-muted, #64748b);
         border-right: 1rpx solid var(--border-color-light, #f1f5f9);
     }
 

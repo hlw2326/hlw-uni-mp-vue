@@ -187,6 +187,8 @@ defineExpose(exposed as {
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background: var(--bg-page, #f6f6f6);
+    color: var(--text-primary, #0f172a);
 }
 
 .hlw-page-header {

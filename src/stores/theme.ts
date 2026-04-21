@@ -10,8 +10,11 @@ import {
     DEFAULT_THEMES,
     THEME_COLOR_KEY,
     THEME_CHANGE_EVENT,
+    APPEARANCE_KEY,
+    APPEARANCE_PRESETS,
+    resolveAppearance,
 } from "../composables/theme";
-import type { FontScale, ThemeColor } from "../composables/theme";
+import type { FontScale, ThemeColor, Appearance, AppearanceMode } from "../composables/theme";
 
 export const useThemeStore = defineStore(
     "theme",
@@ -49,6 +52,23 @@ export const useThemeStore = defineStore(
             uni.$emit(THEME_CHANGE_EVENT);
         }
 
+        // ─── 外观模式（light / dark / auto） ─────────
+        const appearance = ref<Appearance>("auto");
+
+        const appearanceOptions = APPEARANCE_PRESETS;
+
+        /** 当前实际生效的模式（auto 会被解析为 light/dark） */
+        const appearanceMode = computed<AppearanceMode>(() => resolveAppearance(appearance.value));
+
+        /** 是否深色模式（业务组件可直接读取做条件渲染） */
+        const isDark = computed(() => appearanceMode.value === "dark");
+
+        function setAppearance(a: Appearance) {
+            appearance.value = a;
+            uni.setStorageSync(APPEARANCE_KEY, a);
+            uni.$emit(THEME_CHANGE_EVENT);
+        }
+
         return {
             // 字体
             scale,
@@ -59,6 +79,12 @@ export const useThemeStore = defineStore(
             themes,
             activeTheme,
             setTheme,
+            // 外观模式
+            appearance,
+            appearanceOptions,
+            appearanceMode,
+            isDark,
+            setAppearance,
         };
     },
     { unistorage: true },

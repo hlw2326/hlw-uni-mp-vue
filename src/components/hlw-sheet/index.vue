@@ -180,7 +180,7 @@ onBeforeUnmount(() => {
     left: 0;
     right: 0;
     bottom: 0;
-    background: #ffffff;
+    background: var(--surface-card, #ffffff);
     border-radius: var(--radius-xl, 32rpx) var(--radius-xl, 32rpx) 0 0;
     display: flex;
     flex-direction: column;
@@ -213,7 +213,7 @@ onBeforeUnmount(() => {
 .hlw-sheet-title {
     font-size: var(--font-md, 32rpx);
     font-weight: 700;
-    color: #0f172a;
+    color: var(--text-primary, #0f172a);
 }
 
 .hlw-sheet-close {
@@ -224,7 +224,7 @@ onBeforeUnmount(() => {
     height: 56rpx;
     border-radius: 50%;
     background: var(--border-color-light, #f1f5f9);
-    color: #64748b;
+    color: var(--text-muted, #64748b);
     display: flex;
     align-items: center;
     justify-content: center;

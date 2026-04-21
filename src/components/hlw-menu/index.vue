@@ -200,7 +200,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     --hlw-menu-icon-box-size: calc(var(--hlw-menu-icon-size) + 40rpx);
     --hlw-menu-grid-icon-size: var(--font-lg, 36rpx);
     --hlw-menu-grid-icon-box-size: calc(var(--hlw-menu-grid-icon-size) + 52rpx);
-    background: #fff;
+    background: var(--surface-card, #ffffff);
     border-radius: var(--radius-lg, 24rpx);
     border: 1rpx solid var(--border-color, #e2e8f0);
     overflow: hidden;
@@ -217,7 +217,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     text {
         font-size: var(--font-sm, 24rpx);
         font-weight: 600;
-        color: #94a3b8;
+        color: var(--text-subtle, #94a3b8);
         letter-spacing: 1rpx;
     }
 }
@@ -235,7 +235,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     padding: 24rpx 32rpx;
 
     &--active {
-        background: #f8fafc;
+        background: var(--surface-card-muted, #f8fafc);
     }
 }
 
@@ -295,7 +295,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     padding: 12rpx 8rpx;
 
     &--active {
-        background: #f8fafc;
+        background: var(--surface-card-muted, #f8fafc);
     }
 }
 
@@ -320,7 +320,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 
 .hlw-menu-grid-label {
     font-size: var(--font-sm, 24rpx);
-    color: #334155;
+    color: var(--text-secondary, #334155);
     text-align: center;
 }
 
@@ -389,12 +389,12 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 .hlw-menu-label {
     font-size: var(--font-base, 28rpx);
     font-weight: 500;
-    color: #334155;
+    color: var(--text-secondary, #334155);
 }
 
 .hlw-menu-value {
     font-size: var(--font-sm, 24rpx);
-    color: #94a3b8;
+    color: var(--text-subtle, #94a3b8);
 }
 
 .hlw-menu-tag {
@@ -436,14 +436,14 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 }
 
 .hlw-menu-arrow {
-    color: #d1d5db;
+    color: var(--text-disabled, #d1d5db);
     font-size: var(--font-sm, 24rpx);
 }
 .hlw-menu-spin {
     animation: icon-spin 1s linear infinite;
 }
 .hlw-menu-muted {
-    color: #94a3b8;
+    color: var(--text-subtle, #94a3b8);
     font-size: var(--font-sm, 24rpx);
 }
 
