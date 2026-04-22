@@ -8,6 +8,13 @@ import { getCurrentAppearanceVars } from "./appearance";
 
 export const THEME_CHANGE_EVENT = "hlw:theme-change";
 
+/**
+ * 只注入会随主题变化的变量（字号档位、主题色、外观模式）。
+ *
+ * 语义排版 token（--text-title-size 等）是静态值、不随主题变化，
+ * 放在项目的全局 CSS（static/css/style.scss）里作为 page{} 默认值即可，
+ * 让业务侧可以自由 override，不被运行时注入覆盖。
+ */
 export function buildThemeStyle(): string {
     return varsToStyle({
         ...getCurrentFontVars(),
@@ -49,3 +56,5 @@ export {
     getCurrentAppearanceVars,
     resolveAppearance,
 } from "./appearance";
+export type { TypographyRole } from "./typography";
+export { TYPOGRAPHY_ROLES, getCurrentTypographyVars } from "./typography";

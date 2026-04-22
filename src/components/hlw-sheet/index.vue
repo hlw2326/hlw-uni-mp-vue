@@ -1,7 +1,7 @@
 <template>
     <view v-if="visible" class="hlw-sheet-root" :class="{ show: shown }">
         <view class="hlw-sheet-overlay" @tap="handleMaskTap" />
-        <view class="hlw-sheet-panel" :style="{ height: maxHeight, maxHeight }" @tap.stop>
+        <view class="hlw-sheet-panel" :style="{ maxHeight }" @tap.stop>
             <view class="hlw-sheet-header">
                 <view v-if="showHandle" class="hlw-sheet-handle" />
                 <text v-if="title" class="hlw-sheet-title">{{ title }}</text>
@@ -265,9 +265,9 @@ onBeforeUnmount(() => {
 }
 
 .hlw-sheet-cta-text {
-    font-size: var(--font-base, 28rpx);
-    font-weight: 600;
+    font-size: var(--font-sm, 24rpx);
+    font-weight: 400;
     color: #ffffff;
-    letter-spacing: 1rpx;
+    letter-spacing: 0.5rpx;
 }
 </style>
