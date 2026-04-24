@@ -14,6 +14,10 @@
         :style="buttonStyle"
         :disabled="props.disabled || props.loading"
         :open-type="props.openType"
+        :send-message-title="props.sendMessageTitle || undefined"
+        :send-message-path="props.sendMessagePath || undefined"
+        :send-message-img="props.sendMessageImg || undefined"
+        :show-message-card="props.showMessageCard"
         @tap="handleTap"
     >
         <view v-if="props.loading" class="hlw-btn-spinner" />
@@ -61,6 +65,14 @@ interface Props {
     url?: string;
     navigateType?: NavigateType;
     delta?: number;
+    /** open-type="contact" 时：用户进入会话时展示的自定义消息卡片标题 */
+    sendMessageTitle?: string;
+    /** open-type="contact" 时：消息卡片跳转的页面路径（/ 开头） */
+    sendMessagePath?: string;
+    /** open-type="contact" 时：消息卡片缩略图 URL */
+    sendMessageImg?: string;
+    /** open-type="contact" 时：是否显示会话内的消息卡片（默认 false） */
+    showMessageCard?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -78,6 +90,10 @@ const props = withDefaults(defineProps<Props>(), {
     url: "",
     navigateType: "navigateTo",
     delta: 1,
+    sendMessageTitle: "",
+    sendMessagePath: "",
+    sendMessageImg: "",
+    showMessageCard: false,
 });
 
 const emit = defineEmits<{ click: [] }>();
