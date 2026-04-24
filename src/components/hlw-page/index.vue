@@ -1,5 +1,5 @@
 <template>
-    <view class="hlw-page" :style="themePageStyle">
+    <view class="hlw-page">
         <view class="hlw-page-header">
             <slot name="header">
                 <hlw-header
@@ -17,7 +17,6 @@
             :enable-flex="true"
             :enhanced="true"
             :show-scrollbar="false"
-            :style="themePageStyle"
         >
             <slot />
         </scroll-view>
@@ -29,7 +28,11 @@
 </template>
 
 <script setup lang="ts">
-import { useThemePageStyle } from "../../composables/theme";
+/**
+ * hlw-page 不再负责主题 style 注入。
+ * 业务页面请在 template 顶部放 `<page-meta :page-style="themePageStyle" />`（配合 useThemePageStyle）
+ * —— 这样才能把 CSS 变量注入到 page 根，scroll-view 等小程序原生组件内部也能继承。
+ */
 
 defineOptions({
     name: "HlwPage",
@@ -47,8 +50,6 @@ const props = withDefaults(defineProps<Props>(), {
     isBack: false,
     bgClass: "",
 });
-
-const { themePageStyle } = useThemePageStyle();
 </script>
 
 <style lang="scss" scoped>
