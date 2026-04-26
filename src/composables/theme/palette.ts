@@ -1,4 +1,4 @@
-import { useColor } from "@hlw-uni/mp-core";
+import { useColor } from "@/composables/color";
 
 const { hexToRgba, darkenHex } = useColor();
 

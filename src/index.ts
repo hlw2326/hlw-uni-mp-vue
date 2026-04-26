@@ -1,27 +1,28 @@
 /**
- * @hlw-uni/mp-vue package root exports
+ * @hlw-uni/mp-vue 统一导出
  *
- * Note:
- * Components are resolved through easycom using `@hlw-uni/mp-vue/src/components/...`.
- * The package root only exports plain TS modules so uni-app does not try to bundle
- * compiled SFC runtime helpers from the library entry.
+ * 2.0 起合并了原 @hlw-uni/mp-core 全部内容。
+ * 业务方一处 import，无需再分包：
+ *   import { useAd, useMsg, useColor, useThemePageStyle, ... } from "@hlw-uni/mp-vue";
+ *
+ * UI 组件（hlw-page / hlw-button / hlw-ad 等）走 easycom 自动注册，不在这里 export。
  */
 
-export type { FontScale, FontPreset, ThemeColor } from "./composables/theme";
+// Composables / 工具 / Theme
+export * from "./composables";
+
+// 类型
 export type { HlwMenuItem } from "./components/hlw-menu/types";
 export type { HlwPagingRef, HlwPagingInstance } from "./components/hlw-paging/types";
-export {
-    FONT_PRESETS,
-    FONT_SCALE_KEY,
-    DEFAULT_THEMES,
-    THEME_COLOR_KEY,
-    THEME_SEMANTIC_COLORS,
-    THEME_CHANGE_EVENT,
-    getCurrentFontScale,
-    getCurrentFontVars,
-    getCurrentThemeColor,
-    getCurrentThemeVars,
-    buildThemeStyle,
-    useThemePageStyle,
-} from "./composables/theme";
+
+// Pinia store
 export { useThemeStore } from "./stores/theme";
+
+// App 根上下文
+export { useApp, setupInterceptors } from "./app";
+
+// hlw 全局命名空间
+export { hlw, type HlwInstance } from "./hlw";
+
+// 指令
+export { vCopy } from "./directives";

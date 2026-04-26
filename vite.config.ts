@@ -29,7 +29,6 @@ export default defineConfig({
       external: [
         'vue',
         'pinia',
-        '@hlw-uni/mp-core',
         /^@dcloudio\//,
         /^node:/,
       ],

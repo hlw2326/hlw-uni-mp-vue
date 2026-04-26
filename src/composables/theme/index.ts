@@ -1,11 +1,16 @@
-import { ref, onMounted, onUnmounted } from "vue";
-import { useColor } from "@hlw-uni/mp-core";
+import { computed } from "vue";
+import { useColor } from "@/composables/color";
+import { useThemeStore } from "../../stores/theme";
 
 const { varsToStyle } = useColor();
 import { getCurrentFontVars } from "./font";
 import { getCurrentThemeVars } from "./palette";
 import { getCurrentAppearanceVars } from "./appearance";
 
+/**
+ * @deprecated 历史事件名；现已改用 pinia store 响应式驱动，emit 不再有效。
+ * 保留 export 仅为不破坏外部 import（不影响功能）。
+ */
 export const THEME_CHANGE_EVENT = "hlw:theme-change";
 
 /**
@@ -23,16 +28,26 @@ export function buildThemeStyle(): string {
     });
 }
 
+/**
+ * 获取主题样式字符串，用于注入 <page-meta :page-style>。
+ *
+ * 实现走 pinia store 响应式：store.scale / primaryColor / appearance 任一变化
+ * → computed 重算 → page-meta 自动 setData。
+ *
+ * 注：早期版本用 uni.$emit + onMounted+uni.$on 事件总线驱动，在 vue3 + 小程序部分
+ * 基础库下 emit 后 ref 不响应（导致字号 / 主题色 / 外观切换不生效）。已改成响应式驱动。
+ */
 export function useThemePageStyle() {
-    const themePageStyle = ref(buildThemeStyle());
-
-    const onThemeChange = () => {
-        themePageStyle.value = buildThemeStyle();
-    };
-
-    onMounted(() => uni.$on(THEME_CHANGE_EVENT, onThemeChange));
-    onUnmounted(() => uni.$off(THEME_CHANGE_EVENT, onThemeChange));
-
+    const store = useThemeStore();
+    const themePageStyle = computed(() => {
+        // 显式 track 三个响应字段，触发 computed 重算
+        // setScale / setTheme / setAppearance 内部已先 set storage 再改 ref，
+        // 所以 buildThemeStyle 从 storage 读到的一定是最新值
+        void store.scale;
+        void store.primaryColor;
+        void store.appearance;
+        return buildThemeStyle();
+    });
     return { themePageStyle };
 }
 
