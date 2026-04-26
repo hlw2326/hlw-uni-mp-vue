@@ -20,6 +20,8 @@ export interface ModalOptions {
     cancelText?: string;
     confirmColor?: string;
     cancelColor?: string;
+    /** false=隐藏取消按钮（纯提示弹窗用） */
+    showCancel?: boolean;
 }
 
 export interface HlwMsg {
@@ -87,6 +89,7 @@ export function useMsg(): HlwMsg {
                 cancelText = "取消",
                 confirmColor = "#3b82f6",
                 cancelColor = "#999999",
+                showCancel = true,
             } = opts;
             uni.showModal({
                 title,
@@ -95,6 +98,7 @@ export function useMsg(): HlwMsg {
                 cancelText,
                 confirmColor,
                 cancelColor,
+                showCancel,
                 success: (res) => resolve(res.confirm),
                 fail: () => resolve(false),
             });

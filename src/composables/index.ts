@@ -14,14 +14,11 @@ export {
     useAd,
     setConfigAd,
     destroyAds,
-    confirmReward,
     type AdType,
     type AdConfig,
     type AdError,
     type AdAdapter,
     type AdCloseResult,
-    type AdClaimResult,
-    type AdClaimFn,
 } from "./ad";
 export {
     useShare,
@@ -48,6 +45,7 @@ export {
 export { useUtils, type DownloadFileOptions, type DownloadFileResult, type TapEvent } from "./utils";
 export { useColor } from "./color";
 export { useRouter, type NavigateType, type NavigateOptions } from "./navigator";
+export { useUuid } from "./algo";
 
 // Theme（mp-vue 自带）
 export type { FontScale, FontPreset } from "./theme";

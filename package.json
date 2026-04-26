@@ -1,6 +1,6 @@
 {
     "name": "@hlw-uni/mp-vue",
-    "version": "2.0.4",
+    "version": "2.1.12",
     "description": "hlw-uni 小程序运行时 — Vue 组件 + composables + theme + http + 工具集（合并自原 mp-core）",
     "main": "dist/index.js",
     "module": "dist/index.mjs",

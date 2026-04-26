@@ -47,6 +47,9 @@ import { ref } from "vue";
 import { useMsg, type HlwMsg } from "../msg";
 import { unwrapPayload, type AdapterPayload } from "../_internal/unwrap";
 
+/** showPopup 默认延迟（ms）：避免一进页面就弹打扰用户 */
+const DEFAULT_POPUP_DELAY_MS = 3000;
+
 /** 6 种广告类型 */
 export type AdType = "banner" | "grid" | "custom" | "video" | "reward" | "popup";
 
@@ -88,26 +91,6 @@ export interface AdCloseResult {
     isEnded: boolean;
 }
 
-/** showReward 的 claim 回调返回契约 */
-export interface AdClaimResult {
-    /** 本次结果：true=成功 / false=失败 */
-    ok: boolean;
-    /** 奖励数（用于 toast 显示 +N 积分；无则不 toast） */
-    reward?: number;
-    /** 失败提示语；不传不弹 toast */
-    msg?: string;
-    /** 仅 isEnded=false 时常用：true 让 mp-core 重新 show 一次（业务方挽留确认后用） */
-    retry?: boolean;
-}
-
-/**
- * showReward 的 claim 回调签名 —— 业务方按场景实现（领积分、解锁、抽奖等）。
- * 每次广告关闭后被调用一次（无论是否完整看完），业务方根据 closeRes.isEnded 决定怎么走：
- *   - isEnded=true  → 调发奖接口 → return { ok: true, reward: N }
- *   - isEnded=false → 业务自己决定挽留：return { ok: false, retry: true } 让重新 show
- */
-export type AdClaimFn = (closeRes: AdCloseResult) => Promise<AdClaimResult>;
-
 const EMPTY: AdConfig = {
     banner_unit_id: "",
     grid_unit_id: "",
@@ -118,6 +101,9 @@ const EMPTY: AdConfig = {
 };
 
 let adapter: AdAdapter | null = null;
+
+/** 进行中的 loadConfig promise；并发调用时复用，避免冷启动多发请求 */
+let pending: Promise<void> | null = null;
 
 /**
  * 注入业务回调，应用启动时调用一次。
@@ -156,22 +142,33 @@ export function useAd() {
     const store = useAdStore();
     const { config, loaded } = storeToRefs(store);
 
-    /** 拉取广告配置（小程序冷启动后调一次即可） */
+    /**
+     * 拉取广告配置（小程序冷启动后调一次即可）。
+     * 并发调用复用同一次请求；`force=true` 跳过 loaded/pending 短路重新拉。
+     */
     async function loadConfig(force = false): Promise<void> {
         if (loaded.value && !force) return;
+        if (pending && !force) return pending;
         if (!adapter?.getConfig) {
             console.warn("[useAd] adapter.getConfig 未注入；先调用 setConfigAd()");
             return;
         }
-        try {
-            const cfg = unwrapPayload(await adapter.getConfig());
-            if (cfg) {
-                store.config = cfg;
-                store.loaded = true;
+        const fn = adapter.getConfig;
+        const flight = (async () => {
+            try {
+                const cfg = unwrapPayload(await fn());
+                if (cfg) {
+                    store.config = cfg;
+                    store.loaded = true;
+                }
+            } catch (e) {
+                console.warn("[useAd] load config failed", e);
+            } finally {
+                if (pending === flight) pending = null;
             }
-        } catch (e) {
-            console.warn("[useAd] load config failed", e);
-        }
+        })();
+        pending = flight;
+        return flight;
     }
 
     /** 取指定类型的 unit_id（hlw-ad 组件 / 业务直接调时用） */
@@ -180,61 +177,55 @@ export function useAd() {
     }
 
     /**
-     * 显示激励视频
+     * 显示激励视频 —— 播一次、关闭后调 onClose（带 isEnded），其它都交给业务。
      *
-     * 流程：loading → 广告 UI → 关闭 → 业务 claim 回调（按 closeRes.isEnded 决定怎么走）
+     *   showReward(({ isEnded }) => {
+     *       if (!isEnded) confirm().then(goon => goon && tapReward());
+     *       else claimAdReward().then(...);
+     *   });
      *
-     * @param claim 关闭后业务回调；不传则纯展示，看完即返回 true、未看完返回 false
-     * @returns true=最终成功；false=未看完且业务放弃 / 配置缺失 / claim 失败
+     * @param onClose 关闭回调；不传则只播。retry / toast / 发奖全在业务侧自己写。
      */
-    async function showReward(claim?: AdClaimFn): Promise<boolean> {
+    async function showReward(onClose?: (res: AdCloseResult) => void | Promise<void>): Promise<void> {
         const unitId = getUnitId("reward");
         if (!unitId) {
             msg().toast("激励广告未配置");
-            return false;
+            return;
         }
         if (adapter?.isAuth && !adapter.isAuth()) {
             msg().toast("请先登录");
-            return false;
+            return;
         }
-
-        while (true) {
-            const closeRes = await playRewardedOnce(unitId);
-
-            // 没传 claim：默认行为 = 看完了 true / 没看完弹挽留 + 重试 / 放弃 false
-            if (!claim) {
-                if (closeRes.isEnded) return true;
-                const goon = await confirmReward();
-                if (!goon) return false;
-                continue;
-            }
-
-            // 业务方决定怎么走（包括「未看完是否挽留」）
-            try {
-                const r = await claim(closeRes);
-                if (r.retry) continue;
-                if (!r.ok) {
-                    if (r.msg) msg().error(r.msg);
-                    return false;
-                }
-                if (r.reward && r.reward > 0) msg().success(`+${r.reward} 积分`);
-                return true;
-            } catch (e) {
-                console.warn("[useAd] claim failed", e);
-                msg().error("领取失败，请稍后再试");
-                return false;
-            }
-        }
+        const closeRes = await playRewardedOnce(unitId);
+        if (onClose) await onClose(closeRes);
     }
 
     /**
      * 显示插屏广告
      * @returns true=展示成功；false=配置缺失 / show 失败（如近期已展示过）
      */
-    async function showPopup(): Promise<boolean> {
-        const unitId = getUnitId("popup");
-        if (!unitId) return false;
-        return await showInterstitialAd(unitId);
+    /**
+     * 显示插屏广告，默认延迟 3000ms 避免一进页面就弹打扰；传 0 立即弹。
+     * @returns true=展示成功；false=配置缺失 / show 失败（如近期已展示过）
+     *
+     * 实现注意：用 setTimeout + .then() 串接而非 async/await，保持 WX 插屏
+     * ad.show() 的调用栈跟 setTimeout 回调一致 —— 小程序引擎对插屏的合法
+     * 触发时机敏感，async/await 多插的 microtask 会被判为"非合法触发"导致
+     * 静默不弹。
+     */
+    function showPopup(delayMs: number = DEFAULT_POPUP_DELAY_MS): Promise<boolean> {
+        return new Promise<boolean>((resolve) => {
+            setTimeout(() => {
+                loadConfig().then(() => {
+                    const unitId = getUnitId("popup");
+                    if (!unitId) {
+                        resolve(false);
+                        return;
+                    }
+                    showInterstitialAd(unitId).then(resolve);
+                });
+            }, delayMs);
+        });
     }
 
     return {
@@ -246,6 +237,7 @@ export function useAd() {
         getUnitId,
         showReward,
         showPopup,
+        confirm: confirmModal,
     };
 }
 
@@ -272,20 +264,18 @@ async function playRewardedOnce(unitId: string): Promise<AdCloseResult> {
 }
 
 /**
- * 激励视频中途关闭挽留弹窗 —— 业务方在 claim 回调里也可以复用：
+ * 激励视频中途关闭挽留弹窗 —— 通过 useAd().confirm 暴露给业务方：
  *
- *   showReward(async (closeRes) => {
- *       if (!closeRes.isEnded) {
- *           const goon = await confirmReward();
- *           return { ok: false, retry: goon };
- *       }
+ *   const { showReward, confirm } = useAd();
+ *   showReward(async ({ isEnded }) => {
+ *       if (!isEnded) return { ok: false, retry: await confirm() };
  *       const r = await claimAdReward();
  *       return r.code === 1 ? { ok: true, reward: r.data?.reward } : { ok: false, msg: r.info };
  *   });
  *
  * @returns true=用户选「继续观看」 / false=放弃
  */
-export function confirmReward(): Promise<boolean> {
+function confirmModal(): Promise<boolean> {
     return new Promise((resolve) => {
         uni.showModal({
             title: "提示",
@@ -361,11 +351,17 @@ function showRewardedAd(unitId: string, hooks?: { onShown?: () => void }): Promi
     });
 }
 
-/** 底层插屏广告包装：show 失败兜底 load → 再 show */
+/** 底层插屏广告包装：实例按 unitId 缓存复用，show 失败 console.warn 不重试（频控/网络等失败重试也救不了） */
 function showInterstitialAd(unitId: string): Promise<boolean> {
     return new Promise((resolve) => {
         let ad: any = interstitialCache.get(unitId);
         if (!ad) {
+            // 老基础库可能没有这个 API（对应官方 if (wx.createInterstitialAd)）
+            if (typeof uni.createInterstitialAd !== "function") {
+                console.warn("[useAd] 当前基础库不支持插屏广告");
+                resolve(false);
+                return;
+            }
             ad = uni.createInterstitialAd({ adUnitId: unitId });
             if (!ad) { resolve(false); return; }
             ad.onError?.((err: AdError) => {
@@ -373,15 +369,11 @@ function showInterstitialAd(unitId: string): Promise<boolean> {
             });
             interstitialCache.set(unitId, ad);
         }
-
         ad.show()
             .then(() => resolve(true))
-            .catch(() => {
-                if (typeof ad.load !== "function") { resolve(false); return; }
-                ad.load()
-                    .then(() => ad.show())
-                    .then(() => resolve(true))
-                    .catch(() => resolve(false));
+            .catch((err: any) => {
+                console.warn(`[useAd] popup show error (${unitId})`, err);
+                resolve(false);
             });
     });
 }

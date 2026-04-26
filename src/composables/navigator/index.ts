@@ -24,12 +24,12 @@ export interface NavigateOptions {
     onFail?: (errMsg: string) => void;
     /** 是否禁用默认的 Toast 错误提示，默认 false */
     silent?: boolean;
-    /** 仅 miniprogram：目标小程序的页面路径（如 pages/index/index?id=1），留空则打开首页 */
-    path?: string;
+    /** 仅 miniprogram：目标小程序的页面路径（如 pages/index/index?id=1），留空/null 则打开首页 */
+    path?: string | null;
     /** 仅 miniprogram：目标小程序版本，默认 release */
     envVersion?: "develop" | "trial" | "release";
     /** 仅 miniprogram：传给目标小程序的额外数据，对方从 onLaunch/onShow 读取 */
-    extraData?: Record<string, unknown>;
+    extraData?: Record<string, unknown> | null;
 }
 
 /**
@@ -78,7 +78,7 @@ function doNavigate(type: NavigateType, value: string, options: NavigateOptions 
                 appId: value,
                 path: options.path || "",
                 envVersion: options.envVersion,
-                extraData: options.extraData,
+                extraData: options.extraData ?? undefined,
                 fail,
             });
             break;
