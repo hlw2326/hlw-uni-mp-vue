@@ -43,7 +43,7 @@
  */
 
 import { defineStore, storeToRefs } from "pinia";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useMsg, type HlwMsg } from "../msg";
 import { unwrapPayload, type AdapterPayload } from "../_internal/unwrap";
 
@@ -61,6 +61,8 @@ export interface AdConfig {
     video_unit_id: string;
     reward_unit_id: string;
     popup_unit_id: string;
+    /** VIP 屏蔽展示型广告（reward 除外）：0=否，1=屏蔽 banner/grid/custom/video/popup */
+    vip_no_ad?: 0 | 1;
 }
 
 /** 广告错误对象（onError 回调参数） */
@@ -83,6 +85,13 @@ export interface AdAdapter {
     getConfig: () => Promise<AdapterPayload<AdConfig>>;
     /** 是否已登录；不传 = 不校验（showReward 调用前会问一次） */
     isAuth?: () => boolean;
+    /** 是否 VIP；配合 config.vip_no_ad=1 时屏蔽展示型广告（reward 不受影响） */
+    isVip?: () => boolean;
+    /**
+     * 用户级强制屏蔽：返回 true 直接屏蔽展示型广告（reward 不受影响），
+     * 优先级高于 mp.vip_no_ad + isVip 的联合判断；不传 = 不强制。
+     */
+    userNoAd?: () => boolean;
 }
 
 /** 激励视频关闭回调返回 */
@@ -98,6 +107,7 @@ const EMPTY: AdConfig = {
     video_unit_id: "",
     reward_unit_id: "",
     popup_unit_id: "",
+    vip_no_ad: 0,
 };
 
 let adapter: AdAdapter | null = null;
@@ -140,7 +150,22 @@ const interstitialCache = new Map<string, any>();
 
 export function useAd() {
     const store = useAdStore();
-    const { config, loaded } = storeToRefs(store);
+    const { loaded } = storeToRefs(store);
+
+    /**
+     * 真实生效的广告配置；以下任一命中即屏蔽展示型 unit_id（reward 保留）：
+     *   1. adapter.userNoAd() === true  —— 用户级强制屏蔽，优先级最高
+     *   2. raw.vip_no_ad === 1 && adapter.isVip() —— 小程序级 VIP 隐藏开关
+     */
+    const config = computed<AdConfig>(() => {
+        const raw = store.config;
+        const userForce = adapter?.userNoAd?.() === true;
+        const vipHide   = raw.vip_no_ad === 1 && adapter?.isVip?.() === true;
+        if (userForce || vipHide) {
+            return { ...EMPTY, reward_unit_id: raw.reward_unit_id, vip_no_ad: 1 };
+        }
+        return raw;
+    });
 
     /**
      * 拉取广告配置（小程序冷启动后调一次即可）。
@@ -171,9 +196,9 @@ export function useAd() {
         return flight;
     }
 
-    /** 取指定类型的 unit_id（hlw-ad 组件 / 业务直接调时用） */
+    /** 取指定类型的 unit_id（hlw-ad 组件 / 业务直接调时用），自动应用 VIP 屏蔽 */
     function getUnitId(type: AdType): string {
-        return store.config[`${type}_unit_id` as keyof AdConfig] || "";
+        return (config.value[`${type}_unit_id` as keyof AdConfig] as string) || "";
     }
 
     /**

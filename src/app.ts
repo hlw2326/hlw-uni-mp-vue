@@ -102,6 +102,21 @@ export function setupInterceptors(options: InterceptorOptions & { sigSecret?: st
      * 请求拦截：注入设备信息、签名和 token。
      */
     const offRequest = http.onRequest((config: RequestConfig) => {
+        // GET 请求：把 cfg.data 合并到 url query，并清空 cfg.data。
+        // 否则 uni.request 会在 sig 之后再把 data 自动拼到 URL，导致后端 raw query
+        // 多了未参与签名的字段（如 id/cate_id），sig 校验必然失败。
+        const method = (config.method ?? 'GET').toUpperCase();
+        if (method === 'GET' && config.data && typeof config.data === 'object') {
+            const qs = Object.entries(config.data as Record<string, unknown>)
+                .filter(([, v]) => v !== undefined && v !== null)
+                .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`)
+                .join('&');
+            if (qs) {
+                config.url = config.url + (config.url.includes('?') ? '&' : '?') + qs;
+            }
+            config.data = undefined;
+        }
+
         const device = useDevice();
         if (device.value) {
             const d = device.value;
