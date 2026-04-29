@@ -25,7 +25,7 @@
         <!-- 顶部状态条：左关闭，右模式切换（避开右上角微信胶囊） -->
         <view class="bar">
             <view class="bar-close" hover-class="bar-close--hover" @tap="onExit">
-                <text class="i-fa6-solid-xmark" />
+                <text class="i-fa6-solid-xmark bar-icon" />
             </view>
             <view
                 class="bar-toggle"
@@ -33,7 +33,7 @@
                 hover-class="bar-toggle--hover"
                 @tap="scrollMode = !scrollMode"
             >
-                <text :class="scrollMode ? 'i-ri-arrow-up-down-line' : 'i-ri-pencil-line'" />
+                <text :class="[scrollMode ? 'i-ri-arrow-up-down-line' : 'i-ri-pencil-line', 'bar-icon']" />
                 <text class="bar-toggle-text">{{ scrollMode ? "滚动" : "绘画" }}</text>
             </view>
         </view>
@@ -90,10 +90,10 @@
 
                 <view class="actions">
                     <view class="action" hover-class="action--hover" @tap="onUndo">
-                        <text class="i-ri-arrow-go-back-line" />
+                        <text class="i-ri-arrow-go-back-line action-icon" />
                     </view>
                     <view class="action" hover-class="action--hover" @tap="onClear">
-                        <text class="i-fa6-solid-trash-can" />
+                        <text class="i-fa6-solid-trash-can action-icon" />
                     </view>
                 </view>
             </view>
@@ -212,18 +212,18 @@ function initCanvas() {
         .createSelectorQuery()
         .in(instance.proxy)
         .select("#hlw-canvas-el")
-        .fields({ node: true, size: true })
-        .exec((res: any) => {
-            const node = res?.[0]?.node;
+        .fields({ node: true, size: true }, (res: any) => {
+            const node = res?.node;
             if (!node) return;
             const dpr = uni.getSystemInfoSync().pixelRatio;
-            node.width = res[0].width * dpr;
-            node.height = res[0].height * dpr;
+            node.width = res.width * dpr;
+            node.height = res.height * dpr;
             const context = node.getContext("2d");
             context.scale(dpr, dpr);
             canvas = node;
             ctx = context;
-        });
+        })
+        .exec();
 }
 
 function applyPenStyle(strokeColor: string, width: number) {
@@ -425,18 +425,18 @@ defineOptions({
 /* 浮动触发按钮 */
 .trigger {
     position: fixed;
-    right: 30rpx;
+    right: 32rpx;
     bottom: 40rpx;
     z-index: 100;
     width: 66rpx;
     height: 66rpx;
-    background: #1e293b;
-    color: #ffffff;
+    background: rgba(248, 250, 252, 0.96);
+    color: #64748b;
     border-radius: 50%;
+    border: 1rpx solid rgba(148, 163, 184, 0.32);
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 8rpx 24rpx rgba(15, 23, 42, 0.24);
 }
 
 .trigger--hover {
@@ -497,6 +497,10 @@ defineOptions({
     box-shadow: 0 2rpx 8rpx rgba(15, 23, 42, 0.12);
 }
 
+.bar-icon {
+    font-weight: 400;
+}
+
 .bar-close--hover {
     transform: scale(0.92);
     background: #ffffff;
@@ -513,7 +517,7 @@ defineOptions({
     border-radius: var(--radius-full);
     color: #1e293b;
     font-size: 22rpx;
-    font-weight: 600;
+    font-weight: 400;
     box-shadow: 0 2rpx 8rpx rgba(15, 23, 42, 0.12);
 }
 
@@ -529,6 +533,7 @@ defineOptions({
 .bar-toggle-text {
     letter-spacing: 1rpx;
     font-size: 22rpx;
+    font-weight: 400;
 }
 
 /* 底部工具坞 */
@@ -539,12 +544,11 @@ defineOptions({
     bottom: 50rpx;
     padding: 16rpx 26rpx;
     background: rgba(255, 255, 255, 0.96);
-    border-radius: 10rpx;
+    border-radius: 16rpx;
     display: flex;
     flex-direction: column;
     gap: 12rpx;
     pointer-events: auto;
-    box-shadow: 0 8rpx 32rpx rgba(15, 23, 42, 0.18);
 }
 
 /* 模式行 */
@@ -666,5 +670,9 @@ defineOptions({
 
 .action--hover {
     background: #e2e8f0;
+}
+
+.action-icon {
+    font-size: 18rpx;
 }
 </style>

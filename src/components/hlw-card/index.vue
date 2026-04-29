@@ -84,13 +84,13 @@ interface Props {
     borderColor?: string;
     /** 边框线型：solid（默认）/ dashed / dotted / double */
     borderStyle?: "solid" | "dashed" | "dotted" | "double";
-    /** 边框宽度，CSS 长度值，默认 `1rpx` */
+    /** 边框宽度，CSS 长度值，默认 `0.5rpx` */
     borderWidth?: string;
     /** 圆角大小，对应 CSS 变量体系 */
     radius?: "none" | "sm" | "md" | "lg" | "xl";
     /** 头部与内容之间是否显示虚线分隔，有 #header slot 时默认 true */
     divider?: boolean;
-    /** body 是否有内边距，默认 true */
+    /** body 是否有内边距，默认 false */
     padding?: boolean;
 }
 
@@ -101,7 +101,7 @@ const props = withDefaults(defineProps<Props>(), {
     borderWidth: "",
     radius: "xl",
     divider: undefined,
-    padding: true,
+    padding: false,
 });
 
 const rootStyle = computed<Record<string, string>>(() => {
@@ -156,6 +156,7 @@ const showDivider = computed(() => {
 <style lang="scss" scoped>
 .hlw-card {
     width: 100%;
+    position: relative;
     background: #fff;
     overflow: hidden;
 
@@ -168,36 +169,31 @@ const showDivider = computed(() => {
 
     /* 边框 — width / style / color 全部走 CSS 变量，未设置时回落 */
     &--bordered {
-        border:
-            var(--card-border-width, 1rpx)
-            var(--card-border-style, solid)
-            var(--card-border-color, var(--border-color, #e2e8f0));
+        border-width: var(--card-border-width, 0.5rpx);
+        border-style: var(--card-border-style, solid);
+        border-color: var(--card-border-color, #e2e8f0);
     }
 
     /* 边框 — 单边 */
     &--border-top {
-        border-top:
-            var(--card-border-width, 1rpx)
-            var(--card-border-style, solid)
-            var(--card-border-color, var(--border-color, #e2e8f0));
+        border-top-width: var(--card-border-width, 0.5rpx);
+        border-top-style: var(--card-border-style, solid);
+        border-top-color: var(--card-border-color, #e2e8f0);
     }
     &--border-right {
-        border-right:
-            var(--card-border-width, 1rpx)
-            var(--card-border-style, solid)
-            var(--card-border-color, var(--border-color, #e2e8f0));
+        border-right-width: var(--card-border-width, 0.5rpx);
+        border-right-style: var(--card-border-style, solid);
+        border-right-color: var(--card-border-color, #e2e8f0);
     }
     &--border-bottom {
-        border-bottom:
-            var(--card-border-width, 1rpx)
-            var(--card-border-style, solid)
-            var(--card-border-color, var(--border-color, #e2e8f0));
+        border-bottom-width: var(--card-border-width, 0.5rpx);
+        border-bottom-style: var(--card-border-style, solid);
+        border-bottom-color: var(--card-border-color, #e2e8f0);
     }
     &--border-left {
-        border-left:
-            var(--card-border-width, 1rpx)
-            var(--card-border-style, solid)
-            var(--card-border-color, var(--border-color, #e2e8f0));
+        border-left-width: var(--card-border-width, 0.5rpx);
+        border-left-style: var(--card-border-style, solid);
+        border-left-color: var(--card-border-color, #e2e8f0);
     }
 }
 

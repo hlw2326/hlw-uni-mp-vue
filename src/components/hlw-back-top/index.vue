@@ -113,7 +113,6 @@ defineOptions({
     align-items: center;
     justify-content: center;
     color: var(--text-secondary, #475569);
-    box-shadow: 0 4rpx 16rpx rgba(15, 23, 42, 0.12);
 }
 
 .hlw-back-top--hover {
