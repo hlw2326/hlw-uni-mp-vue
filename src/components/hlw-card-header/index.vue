@@ -88,7 +88,7 @@ const props = withDefaults(defineProps<Props>(), {
     titleSize: "var(--font-30)",
     titleColor: "",
     titleWeight: "",
-    descSize: "var(--font-xs)",
+    descSize: "var(--font-sm)",
     descColor: "",
     descWeight: "",
     divider: false,
@@ -221,7 +221,7 @@ defineOptions({
     border-radius: var(--radius-sm, 8rpx);
     background: rgba(241, 245, 249, 0.8);
     color: var(--text-muted, #64748b);
-    font-size: var(--font-xs);
+    font-size: var(--font-sm);
     letter-spacing: 3rpx;
 }
 </style>
