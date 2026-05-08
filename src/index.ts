@@ -10,6 +10,7 @@
 
 // Composables / 工具 / Theme
 export * from "./composables";
+export { getErrorMessage } from "./error";
 
 // 类型
 export type { HlwMenuItem } from "./components/hlw-menu/types";
