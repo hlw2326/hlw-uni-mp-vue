@@ -1,8 +1,9 @@
 /**
  * 外观模式 — 浅色 / 深色 / 跟随系统
  *
- * 提供一套语义化 CSS 变量（--bg-page, --surface-card, --text-primary ...），
- * 页面通过 hlw-page 的 `:page-style` 注入到 `page` 元素，让内部组件和样式统一消费。
+ * 提供一套语义化 CSS 变量（--bg-page, --surface-card, --text-primary ...）。
+ * 默认不通过 useThemePageStyle 注入，业务项目应在全局 CSS 中声明这些变量，
+ * 避免运行时 page-meta 覆盖业务侧样式。
  *
  * 使用指南：
  * - 业务样式里用 `var(--text-primary)` 代替硬编码 `#0f172a`

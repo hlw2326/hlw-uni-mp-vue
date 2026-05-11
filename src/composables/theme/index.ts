@@ -5,9 +5,6 @@ import { useThemeStore } from "../../stores/theme";
 const { varsToStyle } = useColor();
 import { getCurrentFontVars } from "./font";
 import { getCurrentThemeVars } from "./palette";
-import { getCurrentAppearanceVars } from "./appearance";
-
-const CSS_CONTROLLED_THEME_VARS = new Set(["--border-color", "--border-color-light", "--border-color-focus"]);
 
 /**
  * @deprecated 历史事件名；现已改用 pinia store 响应式驱动，emit 不再有效。
@@ -15,52 +12,36 @@ const CSS_CONTROLLED_THEME_VARS = new Set(["--border-color", "--border-color-lig
  */
 export const THEME_CHANGE_EVENT = "hlw:theme-change";
 
-function omitCssControlledThemeVars(vars: Record<string, string>) {
-    const next: Record<string, string> = {};
-
-    Object.entries(vars).forEach(([name, value]) => {
-        if (!CSS_CONTROLLED_THEME_VARS.has(name)) {
-            next[name] = value;
-        }
-    });
-
-    return next;
-}
-
 /**
- * 只注入会随主题变化的变量（字号档位、主题色、外观模式）。
+ * 只注入运行时配置变量（字号档位、主题色）。
  *
- * 语义排版 token（--text-title-size 等）和业务视觉变量（如边框色）
- * 是静态值、不随主题变化，
- * 放在项目的全局 CSS（static/css/style.scss）里作为 page{} 默认值即可，
- * 让业务侧可以自由 override，不被运行时注入覆盖。
+ * 页面背景、卡片色、文字色、边框色等业务视觉变量统一由项目全局 CSS
+ * （static/css/style.scss）控制，避免 page-meta 运行时样式覆盖业务侧配置。
  */
 export function buildThemeStyle(): string {
     return varsToStyle({
         ...getCurrentFontVars(),
         ...getCurrentThemeVars(),
-        ...omitCssControlledThemeVars(getCurrentAppearanceVars()),
     });
 }
 
 /**
  * 获取主题样式字符串，用于注入 <page-meta :page-style>。
  *
- * 实现走 pinia store 响应式：store.scale / primaryColor / appearance 任一变化
+ * 实现走 pinia store 响应式：store.scale / primaryColor 任一变化
  * → computed 重算 → page-meta 自动 setData。
  *
  * 注：早期版本用 uni.$emit + onMounted+uni.$on 事件总线驱动，在 vue3 + 小程序部分
- * 基础库下 emit 后 ref 不响应（导致字号 / 主题色 / 外观切换不生效）。已改成响应式驱动。
+ * 基础库下 emit 后 ref 不响应（导致字号 / 主题色切换不生效）。已改成响应式驱动。
  */
 export function useThemePageStyle() {
     const store = useThemeStore();
     const themePageStyle = computed(() => {
-        // 显式 track 三个响应字段，触发 computed 重算
-        // setScale / setTheme / setAppearance 内部已先 set storage 再改 ref，
+        // 显式 track 两个响应字段，触发 computed 重算
+        // setScale / setTheme 内部已先 set storage 再改 ref，
         // 所以 buildThemeStyle 从 storage 读到的一定是最新值
         void store.scale;
         void store.primaryColor;
-        void store.appearance;
         return buildThemeStyle();
     });
     return { themePageStyle };
