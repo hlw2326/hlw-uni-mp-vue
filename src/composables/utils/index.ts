@@ -24,7 +24,10 @@ export interface DownloadFileResult {
     errMsg?: string;
 }
 
-export type TapEvent = { currentTarget?: { dataset?: Record<string, any> } };
+export type TapEvent = {
+    currentTarget?: { dataset?: Record<string, any> };
+    target?: { dataset?: Record<string, any> };
+};
 
 /**
  * 剪贴板、下载与相册保存工具集合。
@@ -32,8 +35,16 @@ export type TapEvent = { currentTarget?: { dataset?: Record<string, any> } };
 export function useUtils() {
     /**
      * 复制文本到剪贴板，可选显示成功提示。
+     * 也可直接作为 tap 事件处理函数，从 data-copy 读取文本。
      */
-    function copy(data: string, showToast = true): Promise<boolean> {
+    function copy(data: string | TapEvent, showToast = true): Promise<boolean> {
+        if (typeof data !== "string") {
+            const dataset = data?.currentTarget?.dataset || data?.target?.dataset;
+            const text = dataset?.copy;
+            if (text == null || text === "") return Promise.resolve(false);
+            return copy(String(text), dataset?.copyToast !== "false");
+        }
+
         return new Promise((resolve) => {
             uni.setClipboardData({
                 data,
@@ -53,11 +64,7 @@ export function useUtils() {
      * 从事件 dataset 的 data-copy 字段读取文本并复制。
      */
     function copyFromEvent(event: TapEvent) {
-        const dataset = event?.currentTarget?.dataset;
-        const text = dataset?.copy;
-        if (text == null || text === "") return;
-        const showToast = dataset?.copyToast !== "false";
-        copy(String(text), showToast);
+        return copy(event);
     }
 
     /**

@@ -99,7 +99,7 @@ const props = withDefaults(defineProps<Props>(), {
     borderColor: "",
     borderStyle: "solid",
     borderWidth: "",
-    radius: "xl",
+    radius: "lg",
     divider: undefined,
     padding: false,
 });

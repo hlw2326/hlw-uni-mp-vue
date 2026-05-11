@@ -85,10 +85,10 @@ const props = withDefaults(defineProps<Props>(), {
     icon: "",
     desc: "",
     extra: "",
-    titleSize: "var(--font-30)",
+    titleSize: "calc(var(--font-base) * 0.9)",
     titleColor: "",
     titleWeight: "",
-    descSize: "var(--font-sm)",
+    descSize: "var(--font-xs)",
     descColor: "",
     descWeight: "",
     divider: false,
@@ -141,7 +141,7 @@ defineOptions({
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 26rpx 26rpx;
+    padding: 24rpx 24rpx;
     box-sizing: border-box;
 
 }
@@ -210,7 +210,7 @@ defineOptions({
 }
 
 .hlw-card-header__title {
-    font-size: var(--font-base);
+    font-size: calc(var(--font-base) * 0.9);
     font-weight: 500;
     color: var(--text-primary, #1e293b);
     letter-spacing: 1rpx;   
@@ -221,7 +221,7 @@ defineOptions({
     border-radius: var(--radius-sm, 8rpx);
     background: rgba(241, 245, 249, 0.8);
     color: var(--text-muted, #64748b);
-    font-size: var(--font-sm);
+    font-size: var(--font-xs);
     letter-spacing: 3rpx;
 }
 </style>
