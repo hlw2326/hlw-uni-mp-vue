@@ -1,5 +1,5 @@
 <template>
-    <view :class="`hlw-avatar hlw-avatar--${size ?? 'medium'}`">
+    <view :class="`hlw-avatar hlw-avatar--${size ?? 'medium'}`" :style="avatarStyle">
         <image
             v-if="src && !loadError"
             class="hlw-avatar__image"
@@ -23,6 +23,7 @@
  *   src   - 头像图片地址
  *   name  - 用户名称，用于提取首字母（图片缺失时显示）
  *   size  - 尺寸：small(56rpx) / medium(80rpx) / large(120rpx)，默认 medium
+ *   border - 边框宽度，单位 px；0 为无边框，默认 0
  *
  * @example
  * ```vue
@@ -35,9 +36,16 @@ const props = defineProps<{
     src?: string;
     name?: string;
     size?: 'small' | 'medium' | 'large';
+    border?: number;
 }>();
 
 const loadError = ref(false);
+const avatarStyle = computed(() => {
+    const border = Math.max(0, Number(props.border ?? 0));
+    return {
+        border: border > 0 ? `${border}px solid #fff` : '0',
+    };
+});
 const initial = computed(() => {
     if (!props.name) return '?';
     return props.name.charAt(0).toUpperCase();
@@ -46,6 +54,7 @@ const initial = computed(() => {
 
 <style scoped>
 .hlw-avatar {
+    box-sizing: border-box;
     border-radius: 50%;
     overflow: hidden;
     flex-shrink: 0;

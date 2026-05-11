@@ -7,16 +7,31 @@ import { getCurrentFontVars } from "./font";
 import { getCurrentThemeVars } from "./palette";
 import { getCurrentAppearanceVars } from "./appearance";
 
+const CSS_CONTROLLED_THEME_VARS = new Set(["--border-color", "--border-color-light", "--border-color-focus"]);
+
 /**
  * @deprecated 历史事件名；现已改用 pinia store 响应式驱动，emit 不再有效。
  * 保留 export 仅为不破坏外部 import（不影响功能）。
  */
 export const THEME_CHANGE_EVENT = "hlw:theme-change";
 
+function omitCssControlledThemeVars(vars: Record<string, string>) {
+    const next: Record<string, string> = {};
+
+    Object.entries(vars).forEach(([name, value]) => {
+        if (!CSS_CONTROLLED_THEME_VARS.has(name)) {
+            next[name] = value;
+        }
+    });
+
+    return next;
+}
+
 /**
  * 只注入会随主题变化的变量（字号档位、主题色、外观模式）。
  *
- * 语义排版 token（--text-title-size 等）是静态值、不随主题变化，
+ * 语义排版 token（--text-title-size 等）和业务视觉变量（如边框色）
+ * 是静态值、不随主题变化，
  * 放在项目的全局 CSS（static/css/style.scss）里作为 page{} 默认值即可，
  * 让业务侧可以自由 override，不被运行时注入覆盖。
  */
@@ -24,7 +39,7 @@ export function buildThemeStyle(): string {
     return varsToStyle({
         ...getCurrentFontVars(),
         ...getCurrentThemeVars(),
-        ...getCurrentAppearanceVars(),
+        ...omitCssControlledThemeVars(getCurrentAppearanceVars()),
     });
 }
 

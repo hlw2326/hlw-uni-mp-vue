@@ -1,5 +1,5 @@
 <template>
-    <view class="hlw-page">
+    <view :class="['hlw-page', attrs.class]" :style="attrs.style">
         <view class="hlw-page-header">
             <slot name="header">
                 <hlw-header
@@ -43,7 +43,7 @@
  *   - scrollToTop(): void        滚动到顶部（带动画）
  */
 
-import { nextTick, provide, ref } from "vue";
+import { nextTick, provide, ref, useAttrs } from "vue";
 
 defineOptions({
     name: "HlwPage",
@@ -73,6 +73,7 @@ const props = withDefaults(defineProps<Props>(), {
     bodyClass: "",
     bodyStyle: "",
 });
+const attrs = useAttrs();
 
 const scrollTop = ref(0);
 const scrollTo = ref(0);
@@ -102,7 +103,6 @@ provide("hlwPageScroll", {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background: var(--bg-page, #f6f6f6);
     color: var(--text-primary, #0f172a);
 }
 
