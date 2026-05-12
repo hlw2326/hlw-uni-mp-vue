@@ -22,18 +22,7 @@ export {
 } from "./ad";
 export {
     useShare,
-    useShareConfig,
-    setConfigShare,
     type ShareConfig,
-    type ShareConfigResolver,
-    type ShareFrom,
-    type ShareAppMessageContent,
-    type ShareTimelineContent,
-    type ShareConfigMap,
-    type ShareConfigAdapter,
-    type PageShareItem,
-    type PageShareFallback,
-    type SharePayload,
 } from "./share";
 export {
     useContact,
