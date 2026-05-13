@@ -14,6 +14,7 @@ export {
     useShare,
     type ShareConfig,
 } from "./share";
+export { useHlwAd, type AdRes } from "./ad";
 export { useUtils, type DownloadOpt, type DownloadRes } from "./utils";
 export { useNavigate, type NavigateType, type NavigateOptions } from "./navigator";
 
