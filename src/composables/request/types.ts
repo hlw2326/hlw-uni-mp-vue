@@ -1,7 +1,3 @@
-/**
- * HTTP 类型定义
- */
-
 /** API 统一响应格式 */
 export interface ApiResponse<T = unknown> {
     code: number;

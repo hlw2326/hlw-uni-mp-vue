@@ -1,7 +1,7 @@
 <!--
     HlwAd — 小程序展示型广告原子组件
     ------------------------------------------------------------------
-    用法（业务方从 mp-core useAd().config 取对应 unit_id 传入）：
+    用法（业务方从自己的接口配置取对应 unit_id 传入）：
         hlw-ad type="banner" :unit-id="config.banner_unit_id"
         hlw-ad type="grid"   :unit-id="config.grid_unit_id"
         hlw-ad type="custom" :unit-id="config.custom_unit_id"
@@ -11,7 +11,7 @@
       - grid / custom → ad-custom unit-id="..."（原生模板广告）
 
     video / reward / popup 不走这个组件：
-      - reward / popup → useAd().showReward() / showPopup()
+      - reward / popup → 业务方自行调用小程序广告 API
       - video（贴片）须嵌在 video 标签内，业务侧自己用 <ad type="video">
 -->
 <template>

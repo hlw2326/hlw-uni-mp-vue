@@ -35,7 +35,7 @@
 <script setup lang="ts">
 /**
  * hlw-page 不再负责主题 style 注入。
- * 业务页面请在 template 顶部放 `<page-meta :page-style="themePageStyle" />`（配合 useThemePageStyle）
+ * 业务项目可通过 @hlw-uni/mp-vite-plugin 的 themePageMeta 自动注入 page-meta。
  * —— 这样才能把 CSS 变量注入到 page 根，scroll-view 等小程序原生组件内部也能继承。
  *
  * provide("hlwPageScroll") —— 给 hlw-back-top 等子组件用：

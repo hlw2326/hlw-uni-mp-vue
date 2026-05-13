@@ -24,10 +24,34 @@ export interface DownloadFileResult {
     errMsg?: string;
 }
 
-export type TapEvent = {
-    currentTarget?: { dataset?: Record<string, any> };
-    target?: { dataset?: Record<string, any> };
-};
+function appendQuery(url: string, query: string) {
+    if (!query) return url;
+    return `${url}${url.includes("?") ? "&" : "?"}${query}`;
+}
+
+function toQuery(data: Record<string, unknown>) {
+    return Object.entries(data)
+        .filter(([, value]) => value !== undefined && value !== null)
+        .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
+        .join("&");
+}
+
+function signText(url: string) {
+    const [path, query] = url.split("?");
+    return query ? `${query.split("&").filter(Boolean).sort().join("&")}&` : `${path}&`;
+}
+
+function toNumber(value: unknown, fallback: number): number {
+    const next = Number(value);
+    return Number.isFinite(next) ? next : fallback;
+}
+
+function toBoolean(value: unknown, fallback: boolean): boolean {
+    if (typeof value === "boolean") return value;
+    if (value === 0 || value === "0") return false;
+    if (value === 1 || value === "1") return true;
+    return fallback;
+}
 
 /**
  * 剪贴板、下载与相册保存工具集合。
@@ -35,16 +59,8 @@ export type TapEvent = {
 export function useUtils() {
     /**
      * 复制文本到剪贴板，可选显示成功提示。
-     * 也可直接作为 tap 事件处理函数，从 data-copy 读取文本。
      */
-    function copy(data: string | TapEvent, showToast = true): Promise<boolean> {
-        if (typeof data !== "string") {
-            const dataset = data?.currentTarget?.dataset || data?.target?.dataset;
-            const text = dataset?.copy;
-            if (text == null || text === "") return Promise.resolve(false);
-            return copy(String(text), dataset?.copyToast !== "false");
-        }
-
+    function copy(data: string, showToast = true): Promise<boolean> {
         return new Promise((resolve) => {
             uni.setClipboardData({
                 data,
@@ -58,13 +74,6 @@ export function useUtils() {
                 fail: () => resolve(false),
             });
         });
-    }
-
-    /**
-     * 从事件 dataset 的 data-copy 字段读取文本并复制。
-     */
-    function copyFromEvent(event: TapEvent) {
-        return copy(event);
     }
 
     /**
@@ -85,6 +94,36 @@ export function useUtils() {
     function saveImage(filePath: string): Promise<boolean> {
         return new Promise((resolve) => {
             uni.saveImageToPhotosAlbum({
+                filePath,
+                success: () => {
+                    uni.showToast({ title: "保存成功", icon: "success" });
+                    resolve(true);
+                },
+                fail: (err) => {
+                    if (err.errMsg.includes("auth deny") || err.errMsg.includes("authorize")) {
+                        uni.showModal({
+                            title: "提示",
+                            content: "需要授权相册权限",
+                            confirmText: "去设置",
+                            success: (res) => {
+                                if (res.confirm) uni.openSetting();
+                            },
+                        });
+                    } else {
+                        uni.showToast({ title: "保存失败", icon: "none" });
+                    }
+                    resolve(false);
+                },
+            });
+        });
+    }
+
+    /**
+     * 将本地视频保存到系统相册。
+     */
+    function saveVideo(filePath: string): Promise<boolean> {
+        return new Promise((resolve) => {
+            uni.saveVideoToPhotosAlbum({
                 filePath,
                 success: () => {
                     uni.showToast({ title: "保存成功", icon: "success" });
@@ -163,5 +202,45 @@ export function useUtils() {
         }
     }
 
-    return { copy, copyFromEvent, paste, saveImage, downloadFile, downloadAndSaveImage };
+    /**
+     * 下载远程视频并直接保存到相册。
+     */
+    async function downloadAndSaveVideo(url: string, onProgress?: (progress: number) => void): Promise<boolean> {
+        try {
+            uni.showLoading({ title: "下载中...", mask: true });
+
+            const result = await downloadFile({
+                url,
+                onProgress: onProgress ? (progress) => onProgress(progress) : undefined,
+            });
+
+            uni.hideLoading();
+
+            if (!result.success || !result.tempFilePath) {
+                uni.showToast({ title: result.errMsg || "下载失败", icon: "none" });
+                return false;
+            }
+
+            return await saveVideo(result.tempFilePath);
+        } catch {
+            uni.hideLoading();
+            uni.showToast({ title: "操作失败", icon: "none" });
+            return false;
+        }
+    }
+
+    return {
+        copy,
+        paste,
+        saveImage,
+        saveVideo,
+        downloadFile,
+        downloadAndSaveImage,
+        downloadAndSaveVideo,
+        appendQuery,
+        toQuery,
+        signText,
+        toNumber,
+        toBoolean,
+    };
 }

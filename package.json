@@ -32,6 +32,7 @@
     },
     "devDependencies": {
         "@dcloudio/types": "^3.4.30",
+        "@dcloudio/uni-app": "3.0.0-5000720260410001",
         "@types/md5": "^2.3.6",
         "@types/node": "^20.19.39",
         "@vitejs/plugin-vue": "^5.2.4",

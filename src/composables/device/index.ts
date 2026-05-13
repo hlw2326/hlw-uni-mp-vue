@@ -1,8 +1,7 @@
 /**
- * useDevice — 设备信息 composable（单例缓存）
- * 使用微信 3.7.0+ 推荐的新 API 替代废弃的 getSystemInfoSync
+ * useDevice - 设备信息与接口 query
  */
-import { ref } from "vue";
+import { useUtils } from "../utils";
 
 export interface DeviceInfo {
     /** 小程序 appId */
@@ -63,106 +62,134 @@ export interface DeviceInfo {
     version: string;
 }
 
-const _info = ref<DeviceInfo | null>(null);
+export type DeviceQueryInfo = Pick<DeviceInfo,
+    | "appid"
+    | "device_brand"
+    | "device_model"
+    | "device_id"
+    | "device_type"
+    | "device_orientation"
+    | "platform"
+    | "system"
+    | "os"
+    | "version"
+    | "sdk_version"
+    | "host_name"
+    | "host_version"
+    | "host_language"
+    | "language"
+    | "app_version"
+    | "app_version_code"
+    | "screen_width"
+    | "screen_height"
+>;
 
-/**
- * 安全调用 uni API，失败时返回空对象，避免平台差异导致中断。
- */
-function tryCall(fn: (() => unknown) | undefined): Record<string, unknown> {
-    try { return (fn?.() ?? {}) as Record<string, unknown>; } catch { return {}; }
+let deviceCache: DeviceInfo | null = null;
+
+function readSafe(fn: (() => unknown) | undefined): Record<string, unknown> {
+    try {
+        return (fn?.() ?? {}) as Record<string, unknown>;
+    } catch {
+        return {};
+    }
 }
 
-/**
- * 收集当前设备、窗口与宿主应用信息并归一化字段。
- */
-function collect(): DeviceInfo {
-    // @ts-ignore — 新 API 在旧版 @dcloudio/types 中可能未声明
-    let deviceInfo = tryCall(uni.getDeviceInfo);
+function collectDevice(): DeviceInfo {
+    // @ts-ignore - 新 API 在旧版 @dcloudio/types 中可能未声明。
+    let device = readSafe(uni.getDeviceInfo);
     // @ts-ignore
-    let windowInfo = tryCall(uni.getWindowInfo);
-    let appBaseInfo = tryCall(uni.getAppBaseInfo);
+    let window = readSafe(uni.getWindowInfo);
+    let app = readSafe(uni.getAppBaseInfo);
 
-    if (!deviceInfo.brand && !deviceInfo.model) {
-        const sys = tryCall(() => uni.getSystemInfoSync());
-        deviceInfo = { ...sys };
-        windowInfo = { ...sys };
-        appBaseInfo = { ...sys };
+    if (!device.brand && !device.model) {
+        const system = readSafe(() => uni.getSystemInfoSync());
+        device = { ...system };
+        window = { ...system };
+        app = { ...system };
     }
 
-    let appid = "";
-    try {
-        const accountInfo = uni.getAccountInfoSync() as { miniProgram?: { appId?: string } };
-        appid = accountInfo?.miniProgram?.appId || "";
-    } catch {
-        appid = (deviceInfo.appId as string) || "";
-    }
-
-    const system = (deviceInfo.system as string) || "";
+    const system = (device.system as string) || "";
 
     return {
-        appid,
-        app_name: (appBaseInfo.appName as string) || "",
-        app_version: (appBaseInfo.appVersion as string) || "",
-        app_version_code: (appBaseInfo.appVersionCode as string) || "",
-        app_channel: (appBaseInfo.appChannel as string) || "",
-        device_brand: (deviceInfo.brand as string) || "",
-        device_model: (deviceInfo.model as string) || "",
-        device_id: (deviceInfo.deviceId as string) || "",
-        device_type: (deviceInfo.deviceType as string) || "",
-        device_orientation: (windowInfo.deviceOrientation as "portrait" | "landscape") || "portrait",
-        brand: (deviceInfo.brand as string) || "",
-        model: (deviceInfo.model as string) || "",
+        appid: getAppid(device),
+        app_name: (app.appName as string) || "",
+        app_version: (app.appVersion as string) || "",
+        app_version_code: (app.appVersionCode as string) || "",
+        app_channel: (app.appChannel as string) || "",
+        device_brand: (device.brand as string) || "",
+        device_model: (device.model as string) || "",
+        device_id: (device.deviceId as string) || "",
+        device_type: (device.deviceType as string) || "",
+        device_orientation: (window.deviceOrientation as "portrait" | "landscape") || "portrait",
+        brand: (device.brand as string) || "",
+        model: (device.model as string) || "",
         system,
         os: system.split(" ")[0] || "",
-        pixel_ratio: (windowInfo.pixelRatio as number) || 0,
-        screen_width: (windowInfo.screenWidth as number) || 0,
-        screen_height: (windowInfo.screenHeight as number) || 0,
-        window_width: (windowInfo.windowWidth as number) || 0,
-        window_height: (windowInfo.windowHeight as number) || 0,
-        status_bar_height: (windowInfo.statusBarHeight as number) || 0,
-        sdk_version: (appBaseInfo.SDKVersion as string) || "",
-        host_name: (appBaseInfo.hostName as string) || "",
-        host_version: (appBaseInfo.hostVersion as string) || "",
-        host_language: (appBaseInfo.hostLanguage as string) || "",
-        host_theme: (appBaseInfo.hostTheme as string) || "",
-        platform: (deviceInfo.platform as string) || "",
-        language: (appBaseInfo.language as string) || "",
-        version: (appBaseInfo.version as string) || "",
+        pixel_ratio: (window.pixelRatio as number) || 0,
+        screen_width: (window.screenWidth as number) || 0,
+        screen_height: (window.screenHeight as number) || 0,
+        window_width: (window.windowWidth as number) || 0,
+        window_height: (window.windowHeight as number) || 0,
+        status_bar_height: (window.statusBarHeight as number) || 0,
+        sdk_version: (app.SDKVersion as string) || "",
+        host_name: (app.hostName as string) || "",
+        host_version: (app.hostVersion as string) || "",
+        host_language: (app.hostLanguage as string) || "",
+        host_theme: (app.hostTheme as string) || "",
+        platform: (device.platform as string) || "",
+        language: (app.language as string) || "",
+        version: (app.version as string) || "",
     };
 }
 
-/**
- * 确保设备信息只在首次访问时采集一次。
- */
-function ensure() {
-    if (!_info.value) {
-        _info.value = collect();
+function getAppid(device: Record<string, unknown>) {
+    try {
+        const account = uni.getAccountInfoSync() as { miniProgram?: { appId?: string } };
+        return account?.miniProgram?.appId || "";
+    } catch {
+        return (device.appId as string) || "";
     }
 }
 
-/**
- * 获取单例缓存的设备信息。
- */
+function getDevice() {
+    deviceCache ??= collectDevice();
+    return deviceCache;
+}
+
+function getQueryInfo(info: DeviceInfo): DeviceQueryInfo {
+    return {
+        appid: info.appid,
+        device_brand: info.device_brand,
+        device_model: info.device_model,
+        device_id: info.device_id,
+        device_type: info.device_type,
+        device_orientation: info.device_orientation,
+        platform: info.platform,
+        system: info.system,
+        os: info.os,
+        version: info.version,
+        sdk_version: info.sdk_version,
+        host_name: info.host_name,
+        host_version: info.host_version,
+        host_language: info.host_language,
+        language: info.language,
+        app_version: info.app_version,
+        app_version_code: info.app_version_code,
+        screen_width: info.screen_width,
+        screen_height: info.screen_height,
+    };
+}
+
 export function useDevice() {
-    ensure();
-    return _info;
+    const info = getDevice();
+    const { toQuery } = useUtils();
+
+    return {
+        info,
+        query: toQuery(getQueryInfo(info)),
+    };
 }
 
-/**
- * 把 deviceInfo 对象转成 URL query string（不含前导 ?）
- */
-export function deviceToQuery(): string {
-    ensure();
-    if (!_info.value) return "";
-    return Object.entries(_info.value)
-        .filter(([, v]) => v !== "" && v !== 0)
-        .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)
-        .join("&");
-}
-
-/**
- * 手动清除缓存（切换账号等场景可能需要）
- */
 export function clearDeviceCache(): void {
-    _info.value = null;
+    deviceCache = null;
 }

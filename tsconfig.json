@@ -9,6 +9,8 @@
         "allowImportingTsExtensions": true,
         "resolveJsonModule": true,
         "isolatedModules": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
         "noEmit": true,
         "jsx": "preserve",
         "strict": true,

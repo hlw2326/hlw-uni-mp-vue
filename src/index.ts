@@ -3,14 +3,13 @@
  *
  * 2.0 起合并了原 @hlw-uni/mp-core 全部内容。
  * 业务方一处 import，无需再分包：
- *   import { useAd, useMsg, useColor, useThemePageStyle, ... } from "@hlw-uni/mp-vue";
+ *   import { useMsg, useThemePageStyle, ... } from "@hlw-uni/mp-vue";
  *
  * UI 组件（hlw-page / hlw-button / hlw-ad 等）走 easycom 自动注册，不在这里 export。
  */
 
 // Composables / 工具 / Theme
 export * from "./composables";
-export { getErrorMessage } from "./error";
 
 // 类型
 export type { HlwMenuItem } from "./components/hlw-menu/types";
@@ -20,7 +19,7 @@ export type { HlwPagingRef, HlwPagingInstance } from "./components/hlw-paging/ty
 export { useThemeStore } from "./stores/theme";
 
 // App 根上下文
-export { useApp, setupInterceptors } from "./app";
+export { useApp } from "./app";
 
 // hlw 全局命名空间
 export { hlw, type HlwInstance } from "./hlw";

@@ -1,8 +1,6 @@
 import { computed } from "vue";
-import { useColor } from "@/composables/color";
 import { useThemeStore } from "../../stores/theme";
 
-const { varsToStyle } = useColor();
 import { getCurrentFontVars } from "./font";
 import { getCurrentThemeVars } from "./palette";
 
@@ -23,6 +21,10 @@ export function buildThemeStyle(): string {
         ...getCurrentFontVars(),
         ...getCurrentThemeVars(),
     });
+}
+
+function varsToStyle(vars: Record<string, string>): string {
+    return Object.entries(vars).map(([key, value]) => `${key}:${value}`).join(";") + ";";
 }
 
 /**
