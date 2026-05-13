@@ -14,7 +14,7 @@ export {
     useShare,
     type ShareConfig,
 } from "./share";
-export { useUtils, type DownloadFileOptions, type DownloadFileResult } from "./utils";
+export { useUtils, type DownloadOpt, type DownloadRes } from "./utils";
 export { useNavigate, type NavigateType, type NavigateOptions } from "./navigator";
 
 // Theme（mp-vue 自带）
