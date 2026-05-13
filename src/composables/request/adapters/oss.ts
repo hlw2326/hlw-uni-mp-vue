@@ -11,6 +11,7 @@ export const ossAdapter: UploadAdapter = {
     buildFormData(ctx) {
         const c = ctx.credentials ?? {};
         return {
+            key: c["key"] ?? ctx.fileName,
             policy: c["policy"] ?? "",
             signature: c["signature"] ?? "",
             OSSAccessKeyId: c["accessKeyId"] ?? "",

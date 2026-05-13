@@ -81,12 +81,13 @@ function onError(event: any) {
     background: var(--surface-card, #ffffff);
 }
 
-/* 格子广告：默认右下悬浮；微信硬性规则要求 wrapper 透明无圆角，customStyle 可覆盖 */
+/* 格子广告：默认右侧居中悬浮；微信硬性规则要求 wrapper 透明无圆角，customStyle 可覆盖 */
 .hlw-ad--grid {
     position: fixed;
-    right: 20rpx;
-    bottom: 200rpx;
+    top: 50%;
+    right: 0;
     z-index: 99;
+    transform: translateY(-50%);
     border-radius: 0;
     overflow: visible;
     background: transparent;
