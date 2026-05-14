@@ -1,17 +1,16 @@
-#添加小程序指引，可适配自定义导航栏
+# 添加到我的小程序提示
 
-| 参数 | 说明 | 类型 | 默认值 | 其他 |
-| :---- | :---- | :---- | :---- | :---- |
-| navigationStyle | 顶部导航栏样式 | String | default | 可选值 custom |
+轻量提示用户从右上角菜单添加小程序。
 
-#case
-# 作者：douyin0516
+| 参数 | 说明 | 类型 | 默认值 |
+| :-- | :-- | :-- | :-- |
+| show | 是否显示 | Boolean | false |
+| navigationStyle | 顶部导航栏样式，可选 `default`、`custom` | String | default |
+| title | 标题 | String | 添加到我的小程序 |
+| desc | 描述 | String | 点击右上角 ··· 添加 |
+
 ```vue
 <template>
-	<view>
-		<hlw-add-mini :show="show" @close="close" />
-	</view>
+	<hlw-add-mini :show="show" @close="close" />
 </template>
-
-
 ```
