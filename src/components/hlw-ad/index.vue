@@ -57,7 +57,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    placement: "right-middle",
+    placement: "center",
     customStyle: "",
     customClass: "",
 });
@@ -69,17 +69,7 @@ const emit = defineEmits<{
 
 /** 有 unit_id 才渲染 */
 const visible = computed(() => !!props.unitId);
-const style = computed(() => [props.type === "grid" ? styleMap[props.placement] : "", props.customStyle].filter(Boolean).join(";"));
-const safe = "24rpx";
-const styleMap: Record<GridPlacement, string> = {
-    "left-top": `top:${safe};left:${safe};right:auto;bottom:auto;transform:none;`,
-    "right-top": `top:${safe};right:${safe};left:auto;bottom:auto;transform:none;`,
-    "left-middle": `top:50%;left:${safe};right:auto;bottom:auto;transform:translateY(-50%);`,
-    "right-middle": `top:50%;right:${safe};left:auto;bottom:auto;transform:translateY(-50%);`,
-    "left-bottom": `left:${safe};bottom:200rpx;right:auto;top:auto;transform:none;`,
-    "right-bottom": `right:${safe};bottom:200rpx;left:auto;top:auto;transform:none;`,
-    center: "top:50%;left:50%;right:auto;bottom:auto;transform:translate(-50%, -50%);",
-};
+const style = computed(() => props.customStyle);
 
 function onLoad(event: any) {
     emit("load", event);
@@ -104,5 +94,61 @@ function onError(event: any) {
     border-radius: 0;
     overflow: visible;
     background: transparent;
+}
+
+.hlw-ad--left-top {
+    top: 24rpx;
+    right: auto;
+    bottom: auto;
+    left: 24rpx;
+    transform: none;
+}
+
+.hlw-ad--right-top {
+    top: 24rpx;
+    right: 24rpx;
+    bottom: auto;
+    left: auto;
+    transform: none;
+}
+
+.hlw-ad--left-middle {
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 24rpx;
+    transform: translateY(-50%);
+}
+
+.hlw-ad--right-middle {
+    top: 50%;
+    right: 24rpx;
+    bottom: auto;
+    left: auto;
+    transform: translateY(-50%);
+}
+
+.hlw-ad--left-bottom {
+    top: auto;
+    right: auto;
+    bottom: 200rpx;
+    left: 24rpx;
+    transform: none;
+}
+
+.hlw-ad--right-bottom {
+    top: auto;
+    right: 24rpx;
+    bottom: 200rpx;
+    left: auto;
+    transform: none;
+}
+
+.hlw-ad--center {
+    top: 50%;
+    right: auto;
+    bottom: auto;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 </style>
