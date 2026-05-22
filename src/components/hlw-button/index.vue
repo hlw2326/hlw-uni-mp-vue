@@ -35,8 +35,16 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwButton - 语义化/响应式通用按钮组件
+ * 
+ * 扩展了原生小程序 button 属性。支持丰富的语义色彩预设、尺寸自适应、圆角与 Block 状态，
+ * 并且内置了快捷的 uni-app 路由跳转逻辑与 Native `open-type` 会话消息配置。
+ */
 import { computed, useSlots } from "vue";
+import { useNavigate } from "@/composables/navigator";
 
+/** 按钮类型：语义化颜色预设、边框模式、文本模式及幽灵模式 */
 type ButtonType =
     | "primary"
     | "success"
@@ -48,22 +56,37 @@ type ButtonType =
     | "text"
     | "ghost";
 
+/** 路由动作类型 */
 type NavigateType = "navigateTo" | "redirectTo" | "switchTab" | "reLaunch" | "navigateBack";
 
 interface Props {
+    /** 按钮类型 */
     type?: ButtonType;
+    /** 按钮尺寸大小 */
     size?: "small" | "medium" | "large";
+    /** 是否开启 Loading 载入状态，开启后按钮处于禁用状态且显示菊花加载器 */
     loading?: boolean;
+    /** 是否禁用按钮 */
     disabled?: boolean;
+    /** 是否独占整行（宽 100%） */
     block?: boolean;
+    /** 是否为椭圆胶囊形状（圆角为 999rpx） */
     round?: boolean;
+    /** 图标的 class 名称，若传入则在按钮内容前展示 */
     icon?: string;
+    /** 小程序原生的开放能力类型（如：share, contact, getUserInfo...） */
     openType?: string;
+    /** 自定义背景颜色（覆盖 type 预设） */
     bgColor?: string;
+    /** 自定义文字颜色（覆盖 type 预设） */
     textColor?: string;
+    /** 自定义边框颜色（覆盖 type 预设） */
     borderColor?: string;
+    /** 快捷跳转的目标路径 */
     url?: string;
+    /** 路由动作方式，默认 navigateTo */
     navigateType?: NavigateType;
+    /** 返回上级页面的层数，仅在 navigateType="navigateBack" 时有效 */
     delta?: number;
     /** open-type="contact" 时：用户进入会话时展示的自定义消息卡片标题 */
     sendMessageTitle?: string;
@@ -96,7 +119,10 @@ const props = withDefaults(defineProps<Props>(), {
     showMessageCard: false,
 });
 
-const emit = defineEmits<{ click: [] }>();
+const emit = defineEmits<{
+    /** 按钮点击事件（在未禁用且非 loading 时触发） */
+    click: []
+}>();
 
 const slots = useSlots();
 const hasIcon = computed(() => Boolean(props.icon || slots.icon));
@@ -118,6 +144,11 @@ const buttonStyle = computed(() => {
     return style;
 });
 
+const navigator = useNavigate();
+
+/**
+ * 处理点击事件与快捷页面跳转。
+ */
 const handleTap = () => {
     if (props.disabled || props.loading) return;
 
@@ -125,23 +156,7 @@ const handleTap = () => {
 
     if (!props.url && props.navigateType !== "navigateBack") return;
 
-    switch (props.navigateType) {
-        case "redirectTo":
-            if (props.url) uni.redirectTo({ url: props.url });
-            break;
-        case "switchTab":
-            if (props.url) uni.switchTab({ url: props.url });
-            break;
-        case "reLaunch":
-            if (props.url) uni.reLaunch({ url: props.url });
-            break;
-        case "navigateBack":
-            uni.navigateBack({ delta: props.delta });
-            break;
-        default:
-            if (props.url) uni.navigateTo({ url: props.url });
-            break;
-    }
+    navigator.navigate(props.navigateType, props.url, { delta: props.delta });
 };
 </script>
 

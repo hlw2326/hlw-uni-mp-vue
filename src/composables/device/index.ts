@@ -1,8 +1,12 @@
 /**
  * useDevice - 设备信息与接口 query
+ * 提供一致的、缓存后的多端设备系统信息接口。
  */
-import { useUtils } from "../utils";
+import { toQuery } from "../utils";
 
+/**
+ * 完整设备系统信息接口，包含小程序环境与宿主系统的关键元数据。
+ */
 export interface DeviceInfo {
     /** 小程序 appId */
     appid: string;
@@ -62,6 +66,9 @@ export interface DeviceInfo {
     version: string;
 }
 
+/**
+ * 过滤后常用于接口公共请求 Query 的设备字段子集。
+ */
 export type DeviceQueryInfo = Pick<DeviceInfo,
     | "appid"
     | "device_brand"
@@ -86,6 +93,9 @@ export type DeviceQueryInfo = Pick<DeviceInfo,
 
 let deviceCache: DeviceInfo | null = null;
 
+/**
+ * 安全地执行获取系统信息的函数，防止环境不支持导致异常崩溃。
+ */
 function readSafe(fn: (() => unknown) | undefined): Record<string, unknown> {
     try {
         return (fn?.() ?? {}) as Record<string, unknown>;
@@ -94,6 +104,9 @@ function readSafe(fn: (() => unknown) | undefined): Record<string, unknown> {
     }
 }
 
+/**
+ * 从运行期 API 采集设备与系统属性，建立标准化数据。
+ */
 function collectDevice(): DeviceInfo {
     // @ts-ignore - 新 API 在旧版 @dcloudio/types 中可能未声明。
     let device = readSafe(uni.getDeviceInfo);
@@ -142,6 +155,9 @@ function collectDevice(): DeviceInfo {
     };
 }
 
+/**
+ * 尝试从小程序运行期 context 中读取 AppId。
+ */
 function getAppid(device: Record<string, unknown>) {
     try {
         const account = uni.getAccountInfoSync() as { miniProgram?: { appId?: string } };
@@ -151,11 +167,17 @@ function getAppid(device: Record<string, unknown>) {
     }
 }
 
+/**
+ * 读取或延迟初始化缓存的设备信息。
+ */
 function getDevice() {
     deviceCache ??= collectDevice();
     return deviceCache;
 }
 
+/**
+ * 抽取供接口调用的缩略版设备 query 字段。
+ */
 function getQueryInfo(info: DeviceInfo): DeviceQueryInfo {
     return {
         appid: info.appid,
@@ -180,9 +202,13 @@ function getQueryInfo(info: DeviceInfo): DeviceQueryInfo {
     };
 }
 
+/**
+ * 访问当前设备配置信息的 hooks。
+ * 
+ * @returns 包含 `info` (原始数据) 和 `query` (用于 HTTP 报头/URL query 的 urlencoded 字符串)
+ */
 export function useDevice() {
     const info = getDevice();
-    const { toQuery } = useUtils();
 
     return {
         info,
@@ -190,6 +216,10 @@ export function useDevice() {
     };
 }
 
+/**
+ * 清除本地设备信息缓存，使下一次读取重新走系统调用收集。
+ */
 export function clearDeviceCache(): void {
     deviceCache = null;
 }
+

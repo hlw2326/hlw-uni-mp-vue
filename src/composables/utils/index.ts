@@ -1,191 +1,291 @@
 /**
  * 小程序通用工具。
+ * 包含查询字符串参数拼接、数据转换、剪贴板交互、授权及图片/视频等多媒体资源下载保存。
  */
 
+/**
+ * 文件下载选项配置接口。
+ */
 export interface DownloadOpt {
+    /** 文件的网络下载链接 */
     url: string;
+    /** 指定文件保存的本地目标路径，可选 */
     path?: string;
+    /** 请求的自定义 HTTP 请求头 */
     header?: Record<string, string>;
+    /** 下载进度更新的回调函数 */
     progress?: (value: number, done: number, total: number) => void;
 }
 
+/**
+ * 文件下载结果接口。
+ */
 export interface DownloadRes {
+    /** 是否成功下载 */
     ok: boolean;
+    /** 临时或保存后的本地文件路径 */
     path?: string;
+    /** 服务器返回的 HTTP 状态码 */
     code?: number;
+    /** 错误或提示信息 */
     msg?: string;
 }
 
-function withQuery(url: string, qs: string) {
+/**
+ * 拼接 URL 与 Query String。
+ * 会根据原 URL 中是否包含问号，自动拼接 `?` 或 `&`。
+ * @param url 原 URL
+ * @param qs 格式化后的 query 字符串（如 'a=1&b=2'）
+ * @returns 拼接后的完整 URL
+ */
+export function withQuery(url: string, qs: string): string {
     if (!qs) return url;
     return `${url}${url.includes("?") ? "&" : "?"}${qs}`;
 }
 
-function toQuery(data: Record<string, unknown>) {
+/**
+ * 将键值对对象转换为 URL 编码的 Query String。
+ * 会自动过滤值为 `undefined` 或 `null` 的键。
+ * @param data 需要转换的键值对数据对象
+ * @returns 格式化后的 Query String 字符串
+ */
+export function toQuery(data: Record<string, unknown>): string {
     return Object.entries(data)
         .filter(([, val]) => val !== undefined && val !== null)
         .map(([key, val]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(val))}`)
         .join("&");
 }
 
-function signText(url: string) {
+/**
+ * 按照特定规则对 URL 或者是 Query 参数进行排序并构造签名文本。
+ * 常用于 API 请求签名的加密前置数据处理。
+ * @param url 需要签名的完整 URL 或路径
+ * @returns 排序拼接后的签名基准字符串
+ */
+export function signText(url: string): string {
     const [path, qs] = url.split("?");
     return qs ? `${qs.split("&").filter(Boolean).sort().join("&")}&` : `${path}&`;
 }
 
-function toNumber(val: unknown, def: number): number {
+/**
+ * 安全转换未知值到数字类型，若转换失败则返回默认值。
+ * @param val 待转换的值
+ * @param def 默认数字
+ * @returns 转换后的数字或默认值
+ */
+export function toNumber(val: unknown, def: number): number {
     const next = Number(val);
     return Number.isFinite(next) ? next : def;
 }
 
-function toBoolean(val: unknown, def: boolean): boolean {
+/**
+ * 安全转换未知值到布尔值类型，若转换失败则返回默认值。
+ * 兼容特殊数值（如 0, "0", "false" 视为 false；1, "1", "true" 视为 true）。
+ * @param val 待转换的值
+ * @param def 默认布尔值
+ * @returns 转换后的布尔值或默认值
+ */
+export function toBoolean(val: unknown, def: boolean): boolean {
     if (typeof val === "boolean") return val;
-    if (val === 0 || val === "0") return false;
-    if (val === 1 || val === "1") return true;
+    if (val === 0 || val === "0" || val === "false") return false;
+    if (val === 1 || val === "1" || val === "true") return true;
     return def;
 }
 
-export function useUtils() {
-    function copy(text: string, tip = true): Promise<boolean> {
-        return new Promise((ok) => {
-            uni.setClipboardData({
-                data: text,
-                showToast: false,
-                success: () => {
-                    if (tip) {
-                        uni.showToast({ title: "复制成功", icon: "none", duration: 1500 });
-                    }
-                    ok(true);
-                },
-                fail: () => ok(false),
-            });
+/**
+ * 复制文本内容至剪贴板。
+ * @param text 需要复制的文本
+ * @param tip 是否在成功时显示 "复制成功" 的 Toast 提示，默认 true
+ * @returns 是否复制成功
+ */
+export function copy(text: string, tip = true): Promise<boolean> {
+    return new Promise((resolve) => {
+        uni.setClipboardData({
+            data: text,
+            showToast: false,
+            success: () => {
+                if (tip) {
+                    uni.showToast({ title: "复制成功", icon: "none", duration: 1500 });
+                }
+                resolve(true);
+            },
+            fail: () => resolve(false),
         });
-    }
+    });
+}
 
-    function paste(): Promise<string> {
-        return new Promise((ok) => {
-            uni.getClipboardData({
-                success: (res) => ok(res.data),
-                fail: () => ok(""),
-            });
+/**
+ * 从系统剪贴板中读取文本内容。
+ * @returns 剪贴板文本，若读取失败或无内容返回空字符串
+ */
+export function paste(): Promise<string> {
+    return new Promise((resolve) => {
+        uni.getClipboardData({
+            success: (res) => resolve(res.data),
+            fail: () => resolve(""),
         });
-    }
+    });
+}
 
-    function auth() {
-        uni.showModal({
-            title: "提示",
-            content: "需要授权相册权限",
-            confirmText: "去设置",
-            success: (res) => {
-                if (res.confirm) uni.openSetting();
+/**
+ * 引导用户进行系统相册权限授权提示弹窗。
+ */
+export function auth(): void {
+    uni.showModal({
+        title: "提示",
+        content: "需要授权相册权限",
+        confirmText: "去设置",
+        success: (res) => {
+            if (res.confirm) uni.openSetting();
+        },
+    });
+}
+
+/**
+ * 保存本地临时图片文件到系统相册中。
+ * 若无权限会自动调起 `auth()` 引导用户去设置页开启权限。
+ * @param path 本地临时图片路径 (如 wxfile://xxx, http://tmp/xxx)
+ * @returns 保存是否成功
+ */
+export function saveImage(path: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        uni.saveImageToPhotosAlbum({
+            filePath: path,
+            success: () => {
+                uni.showToast({ title: "保存成功", icon: "success" });
+                resolve(true);
+            },
+            fail: (err) => {
+                const msg = String(err.errMsg || "");
+                if (msg.includes("auth deny") || msg.includes("authorize")) {
+                    auth();
+                } else {
+                    uni.showToast({ title: "保存失败", icon: "none" });
+                }
+                resolve(false);
             },
         });
-    }
+    });
+}
 
-    function saveImage(path: string): Promise<boolean> {
-        return new Promise((ok) => {
-            uni.saveImageToPhotosAlbum({
-                filePath: path,
-                success: () => {
-                    uni.showToast({ title: "保存成功", icon: "success" });
-                    ok(true);
-                },
-                fail: (err) => {
-                    const msg = String(err.errMsg || "");
-                    if (msg.includes("auth deny") || msg.includes("authorize")) {
-                        auth();
-                    } else {
-                        uni.showToast({ title: "保存失败", icon: "none" });
-                    }
-                    ok(false);
-                },
-            });
+/**
+ * 保存本地临时视频文件到系统相册中。
+ * 若无权限会自动引导授权。
+ * @param path 本地临时视频路径
+ * @returns 保存是否成功
+ */
+export function saveVideoFile(path: string): Promise<boolean> {
+    return new Promise((resolve) => {
+        uni.saveVideoToPhotosAlbum({
+            filePath: path,
+            success: () => {
+                uni.showToast({ title: "保存成功", icon: "success" });
+                resolve(true);
+            },
+            fail: (err) => {
+                const msg = String(err.errMsg || "");
+                if (msg.includes("auth deny") || msg.includes("authorize")) {
+                    auth();
+                } else {
+                    uni.showToast({ title: "保存失败", icon: "none" });
+                }
+                resolve(false);
+            },
         });
-    }
+    });
+}
 
-    function saveVideo(path: string): Promise<boolean> {
-        return new Promise((ok) => {
-            uni.saveVideoToPhotosAlbum({
-                filePath: path,
-                success: () => {
-                    uni.showToast({ title: "保存成功", icon: "success" });
-                    ok(true);
-                },
-                fail: (err) => {
-                    const msg = String(err.errMsg || "");
-                    if (msg.includes("auth deny") || msg.includes("authorize")) {
-                        auth();
-                    } else {
-                        uni.showToast({ title: "保存失败", icon: "none" });
-                    }
-                    ok(false);
-                },
-            });
+/**
+ * 基于 UniApp 下载网络资源至本地临时目录中。
+ * @param opt 下载参数配置项
+ * @returns 下载结果 Promise
+ */
+export function download(opt: DownloadOpt): Promise<DownloadRes> {
+    return new Promise((resolve) => {
+        const task = uni.downloadFile({
+            url: opt.url,
+            filePath: opt.path,
+            header: opt.header,
+            success: (res) => {
+                if (res.statusCode === 200) {
+                    resolve({ ok: true, path: res.tempFilePath, code: res.statusCode });
+                } else {
+                    resolve({ ok: false, code: res.statusCode, msg: `下载失败，状态码：${res.statusCode}` });
+                }
+            },
+            fail: (err) => resolve({ ok: false, msg: err.errMsg }),
         });
-    }
 
-    function download(opt: DownloadOpt): Promise<DownloadRes> {
-        return new Promise((ok) => {
-            const task = uni.downloadFile({
-                url: opt.url,
-                filePath: opt.path,
-                header: opt.header,
-                success: (res) => {
-                    if (res.statusCode === 200) {
-                        ok({ ok: true, path: res.tempFilePath, code: res.statusCode });
-                    } else {
-                        ok({ ok: false, code: res.statusCode, msg: `下载失败，状态码：${res.statusCode}` });
-                    }
-                },
-                fail: (err) => ok({ ok: false, msg: err.errMsg }),
+        if (opt.progress) {
+            task.onProgressUpdate((res) => {
+                opt.progress!(res.progress, res.totalBytesWritten, res.totalBytesExpectedToWrite);
             });
+        }
+    });
+}
 
-            if (opt.progress) {
-                task.onProgressUpdate((res) => {
-                    opt.progress!(res.progress, res.totalBytesWritten, res.totalBytesExpectedToWrite);
-                });
-            }
-        });
-    }
+/**
+ * 下载并保存网络图片至系统相册。
+ * 过程中包含 Loading 提示以及权限处理。
+ * @param url 网络图片地址
+ * @param progress 可选的下载进度更新回调
+ * @returns 操作是否成功
+ */
+export async function saveImageUrl(url: string, progress?: (value: number) => void): Promise<boolean> {
+    try {
+        uni.showLoading({ title: "下载中...", mask: true });
+        const res = await download({ url, progress: progress ? (value) => progress(value) : undefined });
+        uni.hideLoading();
 
-    async function saveImageUrl(url: string, progress?: (value: number) => void): Promise<boolean> {
-        try {
-            uni.showLoading({ title: "下载中...", mask: true });
-            const res = await download({ url, progress: progress ? (value) => progress(value) : undefined });
-            uni.hideLoading();
-
-            if (!res.ok || !res.path) {
-                uni.showToast({ title: res.msg || "下载失败", icon: "none" });
-                return false;
-            }
-
-            return await saveImage(res.path);
-        } catch {
-            uni.hideLoading();
-            uni.showToast({ title: "操作失败", icon: "none" });
+        if (!res.ok || !res.path) {
+            uni.showToast({ title: res.msg || "下载失败", icon: "none" });
             return false;
         }
+
+        return await saveImage(res.path);
+    } catch {
+        uni.hideLoading();
+        uni.showToast({ title: "操作失败", icon: "none" });
+        return false;
     }
+}
 
-    async function saveVideoUrl(url: string, progress?: (value: number) => void): Promise<boolean> {
-        try {
-            uni.showLoading({ title: "下载中...", mask: true });
-            const res = await download({ url, progress: progress ? (value) => progress(value) : undefined });
-            uni.hideLoading();
+/**
+ * 下载并保存网络视频至系统相册。
+ * 过程中包含 Loading 提示以及权限处理。
+ * @param url 网络视频地址
+ * @param progress 可选的下载进度更新回调
+ * @returns 操作是否成功
+ */
+export async function saveVideoUrl(url: string, progress?: (value: number) => void): Promise<boolean> {
+    try {
+        uni.showLoading({ title: "下载中...", mask: true });
+        const res = await download({ url, progress: progress ? (value) => progress(value) : undefined });
+        uni.hideLoading();
 
-            if (!res.ok || !res.path) {
-                uni.showToast({ title: res.msg || "下载失败", icon: "none" });
-                return false;
-            }
-
-            return await saveVideo(res.path);
-        } catch {
-            uni.hideLoading();
-            uni.showToast({ title: "操作失败", icon: "none" });
+        if (!res.ok || !res.path) {
+            uni.showToast({ title: res.msg || "下载失败", icon: "none" });
             return false;
         }
-    }
 
+        return await saveVideoFile(res.path);
+    } catch {
+        uni.hideLoading();
+        uni.showToast({ title: "操作失败", icon: "none" });
+        return false;
+    }
+}
+
+/**
+ * 获取系统通用工具方法的 hook。
+ * 
+ * @example
+ * ```ts
+ * const { copy, saveImageUrl } = useUtils();
+ * copy('hello');
+ * ```
+ */
+export function useUtils() {
     return {
         withQuery,
         toQuery,
@@ -195,7 +295,7 @@ export function useUtils() {
         copy,
         paste,
         saveImage,
-        saveVideo,
+        saveVideoFile,
         download,
         saveImageUrl,
         saveVideoUrl,

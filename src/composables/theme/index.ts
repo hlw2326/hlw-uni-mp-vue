@@ -11,10 +11,12 @@ import { getCurrentThemeVars } from "./palette";
 export const THEME_CHANGE_EVENT = "hlw:theme-change";
 
 /**
- * 只注入运行时配置变量（字号档位、主题色）。
- *
+ * 构建仅注入运行时配置变量（字号档位、主题色）的行内样式字符串。
+ * 
  * 页面背景、卡片色、文字色、边框色等业务视觉变量统一由项目全局 CSS
  * （static/css/style.scss）控制，避免 page-meta 运行时样式覆盖业务侧配置。
+ * 
+ * @returns 扁平化后的 CSS 变量样式属性字符串
  */
 export function buildThemeStyle(): string {
     return varsToStyle({
@@ -23,18 +25,32 @@ export function buildThemeStyle(): string {
     });
 }
 
+/**
+ * 将 CSS 键值对对象平铺拼接为 CSS inline style 格式字符串。
+ */
 function varsToStyle(vars: Record<string, string>): string {
     return Object.entries(vars).map(([key, value]) => `${key}:${value}`).join(";") + ";";
 }
 
 /**
- * 获取主题样式字符串，用于注入 <page-meta :page-style>。
+ * 获取及监听主题与字号变化，返回可注入到 `<page-meta :page-style="themePageStyle">` 的计算属性。
  *
- * 实现走 pinia store 响应式：store.scale / primaryColor 任一变化
- * → computed 重算 → page-meta 自动 setData。
+ * 实现基于 pinia store 响应式：当 store 中的字号档位或主题色发生改变时，
+ * 触发计算属性重算并由 Vue 自动更新至 `<page-meta>` 的 setData 接口。
  *
- * 注：早期版本用 uni.$emit + onMounted+uni.$on 事件总线驱动，在 vue3 + 小程序部分
- * 基础库下 emit 后 ref 不响应（导致字号 / 主题色切换不生效）。已改成响应式驱动。
+ * @returns 包含 `themePageStyle` 计算属性的对象
+ * 
+ * @example
+ * ```vue
+ * <template>
+ *   <page-meta :page-style="themePageStyle" />
+ *   <view class="container">...</view>
+ * </template>
+ * 
+ * <script setup>
+ * const { themePageStyle } = useThemePageStyle();
+ * </script>
+ * ```
  */
 export function useThemePageStyle() {
     const store = useThemeStore();

@@ -11,16 +11,26 @@
  * - 用 `var(--border-color-light)` 代替硬编码 `#f1f5f9`
  */
 
+/** 外观模式选项类型：浅色模式、深色模式、跟随系统 */
 export type Appearance = "light" | "dark" | "auto";
+
+/** 实际生效的外观模式：仅浅色或深色 */
 export type AppearanceMode = "light" | "dark";
 
+/**
+ * 外观预设配置接口。
+ */
 export interface AppearancePreset {
+    /** 选项值 */
     value: Appearance;
+    /** 选项展示名称 */
     label: string;
 }
 
+/** 存储外观设置的 LocalStorage 键名 */
 export const APPEARANCE_KEY = "hlw_appearance";
 
+/** 预设外观模式列表，常供设置页渲染选择器使用 */
 export const APPEARANCE_PRESETS: AppearancePreset[] = [
     { value: "light", label: "浅色模式" },
     { value: "dark", label: "深色模式" },
@@ -67,12 +77,17 @@ const DARK_VARS: Record<string, string> = {
     "--shadow-card": "0 4rpx 16rpx rgba(0, 0, 0, 0.35)",
 };
 
+/** 不同外观模式的 CSS 变量映射 */
 export const APPEARANCE_VAR_MAP: Record<AppearanceMode, Record<string, string>> = {
     light: LIGHT_VARS,
     dark: DARK_VARS,
 };
 
-/** 读取用户设置的外观（light/dark/auto），默认 auto */
+/**
+ * 读取用户设置的外观配置（light / dark / auto）。
+ * 默认返回 'auto'。
+ * @returns 设定的外观模式类型
+ */
 export function getCurrentAppearance(): Appearance {
     try {
         const v = uni.getStorageSync(APPEARANCE_KEY);
@@ -81,7 +96,12 @@ export function getCurrentAppearance(): Appearance {
     return "auto";
 }
 
-/** 将 auto 解析为具体的 light/dark，依据系统主题 */
+/**
+ * 将 auto 设置或用户选择解析为具体的 light/dark 实际模式。
+ * 当为 auto 时，将读取系统当前的配色偏好。
+ * @param appearance 输入的外观配置
+ * @returns 解析后最终生效的外观模式 (light 或 dark)
+ */
 export function resolveAppearance(appearance: Appearance): AppearanceMode {
     if (appearance === "light" || appearance === "dark") return appearance;
     try {
@@ -91,12 +111,19 @@ export function resolveAppearance(appearance: Appearance): AppearanceMode {
     return "light";
 }
 
-/** 当前实际生效的模式（light 或 dark） */
+/**
+ * 获取当前实际生效的外观模式 (light 或 dark)。
+ * 自动根据用户偏好及系统主题进行判定。
+ * @returns 实际生效的外观模式
+ */
 export function getCurrentAppearanceMode(): AppearanceMode {
     return resolveAppearance(getCurrentAppearance());
 }
 
-/** 当前外观对应的 CSS 变量 */
+/**
+ * 获取当前外观对应的 CSS 变量映射表。
+ * @returns 包含各 CSS 变量名与对应颜色值键值对
+ */
 export function getCurrentAppearanceVars(): Record<string, string> {
     return APPEARANCE_VAR_MAP[getCurrentAppearanceMode()];
 }

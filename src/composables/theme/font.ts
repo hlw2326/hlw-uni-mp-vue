@@ -1,12 +1,26 @@
+/**
+ * 字体大小缩放档位类型。
+ * 从较小到特大，共 7 个档位。
+ */
 export type FontScale = "small" | "compact" | "normal" | "medium" | "large" | "xlarge" | "xxlarge";
 
+/**
+ * 字体大小配置预设接口。
+ */
 export interface FontPreset {
+    /** 档位名称 */
     label: string;
+    /** 该档位对应的全部 CSS 字号变量及对应尺寸 */
     vars: Record<string, string>;
 }
 
+/** 存储字体字号档位设置的 LocalStorage 键名 */
 export const FONT_SCALE_KEY = "hlw_font_scale";
 
+/**
+ * 字体档位对应的尺寸变量预设表。
+ * 每个档位定义了从超小 (--font-xs) 到超大 (--font-xl) 的响应式字号。
+ */
 export const FONT_PRESETS: Record<FontScale, FontPreset> = {
     small: {
         label: "较小",
@@ -59,6 +73,11 @@ export const FONT_PRESETS: Record<FontScale, FontPreset> = {
     },
 };
 
+/**
+ * 获取当前用户配置的字体字号缩放档位。
+ * 默认返回 'normal'。
+ * @returns 字体档位
+ */
 export function getCurrentFontScale(): FontScale {
     try {
         const v = uni.getStorageSync(FONT_SCALE_KEY);
@@ -67,6 +86,10 @@ export function getCurrentFontScale(): FontScale {
     return "normal";
 }
 
+/**
+ * 获取当前字体字号档位所映射的 CSS 变量表。
+ * @returns CSS 变量名与具体字号的键值对
+ */
 export function getCurrentFontVars(): Record<string, string> {
     return FONT_PRESETS[getCurrentFontScale()].vars;
 }

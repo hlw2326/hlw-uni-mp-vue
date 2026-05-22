@@ -9,14 +9,27 @@ import { useRequest } from '@/composables/request';
 let _installed = false;
 
 /**
- * 创建 uni-app 应用入口工具。
+ * 创建 uni-app 应用入口与全局插件配置工具。
+ * 
+ * @example
+ * ```ts
+ * import { useApp } from '@hlw-uni/mp-vue';
+ * import App from './App.vue';
+ * import { createPinia } from 'pinia';
+ * 
+ * const app = useApp();
+ * app.use(createPinia());
+ * export const createApp = app.install(App);
+ * ```
  */
 export function useApp() {
-    /** 用于在导出前挂载插件。 */
+    /** 用于在导出前挂载的插件列表 */
     const _plugins: Array<(app: App) => void> = [];
 
     /**
-     * 注册一个待安装的应用插件。
+     * 注册一个待安装的 Vue 插件（例如 Pinia、Router 或组件库）。
+     * 
+     * @param pluginOrInstaller Vue 插件或插件安装函数
      */
     function use(pluginOrInstaller: any) {
         _plugins.push((app) => app.use(pluginOrInstaller));
@@ -24,6 +37,9 @@ export function useApp() {
 
     /**
      * 生成符合 uni-app 约定的 createApp 入口函数。
+     * 
+     * @param AppComponent 根组件 (通常是 App.vue)
+     * @returns 返回符合 uni-app 要求的 createApp 函数
      */
     function install(AppComponent: Component) {
         if (_installed) {
@@ -46,3 +62,4 @@ export function useApp() {
 
     return { install, use, hlw, request: useRequest() };
 }
+

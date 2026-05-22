@@ -1,10 +1,20 @@
+/**
+ * 主题颜色配置项接口。
+ */
 export interface ThemeColor {
+    /** 颜色名称描述 */
     label: string;
+    /** 主题色十六进制值 (Hex Color) */
     value: string;
 }
 
+/** 存储当前主题色设置的 LocalStorage 键名 */
 export const THEME_COLOR_KEY = "hlw_theme_color";
 
+/**
+ * 预设的语义化颜色。
+ * 包含成功、警告、错误和提示的默认色彩配置。
+ */
 export const THEME_SEMANTIC_COLORS = {
     success: "#10b981",
     warning: "#f59e0b",
@@ -12,6 +22,9 @@ export const THEME_SEMANTIC_COLORS = {
     info: "#64748b",
 } as const;
 
+/**
+ * 系统预设的默认主题色列表。
+ */
 export const DEFAULT_THEMES: ThemeColor[] = [
     { label: "翡翠绿", value: "#10b981" },
     { label: "活力橙", value: "#f97316" },
@@ -21,6 +34,11 @@ export const DEFAULT_THEMES: ThemeColor[] = [
     { label: "青石灰", value: "#64748b" },
 ];
 
+/**
+ * 读取当前配置的主题色 Hex 字符串。
+ * 默认使用 `DEFAULT_THEMES` 数组中首位颜色的值。
+ * @returns 十六进制颜色字符串
+ */
 export function getCurrentThemeColor(): string {
     try {
         const v = uni.getStorageSync(THEME_COLOR_KEY);
@@ -29,6 +47,11 @@ export function getCurrentThemeColor(): string {
     return DEFAULT_THEMES[0].value;
 }
 
+/**
+ * 获取当前主题色所对应的完整 CSS 颜色语义变量映射表。
+ * 会基于当前主题色，自动计算衍生出对应的亮色调、暗色调以及各状态色语义变量。
+ * @returns 包含各 CSS 变量名与对应颜色值键值对
+ */
 export function getCurrentThemeVars(): Record<string, string> {
     const color = getCurrentThemeColor();
     return {
@@ -64,6 +87,9 @@ export function getCurrentThemeVars(): Record<string, string> {
 
 const HEX_RE = /^#[0-9a-fA-F]{6}$/;
 
+/**
+ * 将 6 位 hex 颜色字符串转换为 RGB 三原色元组。
+ */
 function parseHex(hex: string): [number, number, number] {
     if (!HEX_RE.test(hex)) throw new Error(`Invalid hex color: ${hex}`);
     return [
@@ -73,11 +99,17 @@ function parseHex(hex: string): [number, number, number] {
     ];
 }
 
+/**
+ * 转换 Hex 颜色为 rgba 格式字符串。
+ */
 function hexToRgba(hex: string, alpha: number): string {
     const [r, g, b] = parseHex(hex);
     return `rgba(${r},${g},${b},${alpha})`;
 }
 
+/**
+ * 将 Hex 颜色调暗。
+ */
 function darkenHex(hex: string, amount = 0.15): string {
     const [r, g, b] = parseHex(hex);
     const darken = (value: number) => Math.max(0, Math.round(value * (1 - amount)));

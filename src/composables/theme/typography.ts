@@ -14,6 +14,9 @@
  * - caption:  角标 / 底部小字 / 时间戳
  */
 
+/**
+ * 语义排版角色配置项接口。
+ */
 export interface TypographyRole {
     /** 对应 `--text-{role}-size` 的值（通常引用字号档位 token） */
     size: string;
@@ -25,6 +28,9 @@ export interface TypographyRole {
     color: string;
 }
 
+/**
+ * 全局预设排版角色的参数配置表。
+ */
 export const TYPOGRAPHY_ROLES: Record<string, TypographyRole> = {
     "title-lg": {
         size: "var(--font-xl)",
@@ -68,7 +74,9 @@ export const TYPOGRAPHY_ROLES: Record<string, TypographyRole> = {
  * 展开成 CSS 变量平铺 map，用于 buildThemeStyle 注入 page 元素。
  *
  * 每个角色产出 4 个变量：
- *   --text-{role}-size / -weight / -line-height / -color
+ *   --text-${role}-size / -weight / -line-height / -color
+ * 
+ * @returns 包含全部排版 CSS 变量键值对的对象
  */
 export function getCurrentTypographyVars(): Record<string, string> {
     const vars: Record<string, string> = {};

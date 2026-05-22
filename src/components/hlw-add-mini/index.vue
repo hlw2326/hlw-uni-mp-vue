@@ -12,14 +12,25 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwAddMini - 添加小程序提示气泡组件
+ * 
+ * 用于提示用户点击右上角将当前小程序“添加到我的小程序”中，以提升用户留存。
+ * 会根据是否为自定义导航栏（custom），自动调整气泡浮动位置（避开胶囊按钮与状态栏）。
+ */
 import { computed } from "vue";
+import { useDevice } from "../../composables/device";
 
 defineOptions({ name: "HlwAddMini" });
 
 interface Props {
+	/** 是否显示提示气泡 */
 	show?: boolean;
+	/** 页面导航栏样式：default (系统默认) | custom (自定义导航) */
 	navigationStyle?: "default" | "custom";
+	/** 气泡主标题文字 */
 	title?: string;
+	/** 气泡副标题/描述文字 */
 	desc?: string;
 }
 
@@ -30,12 +41,21 @@ const props = withDefaults(defineProps<Props>(), {
 	desc: "点击右上角 ··· 添加",
 });
 
-const emit = defineEmits<{ close: [] }>();
+const emit = defineEmits<{
+	/** 点击关闭按钮时触发 */
+	close: []
+}>();
+
+// 从 useDevice 获取缓存的设备系统信息，规避在 computed 中频繁调用同步系统 API 的性能问题
+const { info } = useDevice();
 
 const top = computed(() =>
-	props.navigationStyle === "custom" ? `${uni.getSystemInfoSync().statusBarHeight + 48}px` : "12px"
+	props.navigationStyle === "custom" ? `${info.status_bar_height + 48}px` : "12px"
 );
 
+/**
+ * 触发关闭气泡事件。
+ */
 function close() {
 	emit("close");
 }
