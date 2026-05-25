@@ -1,5 +1,5 @@
 export { useRequest, useUpload } from "./client";
-export { BaseService, ServiceNamespace, ServicePrefix } from "./service";
+export { BaseService, ServiceNamespace, ServicePrefix, PluginService } from "./service";
 export type { RequestClient } from "./client";
 export type {
     ApiResponse,

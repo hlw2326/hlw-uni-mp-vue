@@ -116,3 +116,11 @@ export function ServicePrefix(value: string | ServicePrefixOptions) {
         target.prototype.servicePrefix = typeof value === "string" ? value : value.prefix;
     };
 }
+
+/**
+ * 插件服务类装饰器。
+ * 自动使用 `import.meta.env.VITE_PLUGIN_NAME` 作为服务前缀。
+ */
+export function PluginService(target: { prototype: { servicePrefix?: string } }) {
+    target.prototype.servicePrefix = import.meta.env.VITE_PLUGIN_NAME || "";
+}
