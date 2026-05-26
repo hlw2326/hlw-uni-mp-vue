@@ -74,40 +74,40 @@ function tapBack() {
     border-bottom: 1rpx solid rgba(226, 232, 240, 0);
     transition:
         background-color 0.2s ease,
-        border-bottom-color 0.2s ease;
+        border-bottom 0.2s ease;
 
     /* 白色主题：白色导航栏，下方加一条灰色的细边框 */
     &.white-theme {
-        background-color: #ffffff;
-        border-bottom-color: rgba(226, 232, 240, 1);
+        background-color: var(--navbar-bg-color, #ffffff);
+        border-bottom: var(--navbar-border-bottom, 1rpx solid #e7e7e7);
 
         .title {
-            color: #0f172a;
+            color: var(--font-color, #303048);
         }
 
         .icon-left {
-            color: #475569;
+            color: var(--font-color, #303048);
         }
     }
 
     /* 简洁主题（原无色）：没有任何颜色（透明背景，无边框） */
     &.light-theme {
         background-color: rgba(255, 255, 255, 0);
-        border-bottom-color: rgba(226, 232, 240, 0);
+        border-bottom: 1rpx solid rgba(226, 232, 240, 0);
 
         .title {
-            color: #0f172a;
+            color: var(--font-color, #303048);
         }
 
         .icon-left {
-            color: #475569;
+            color: var(--font-color, #303048);
         }
     }
 
     /* 单色主题：纯主题色导航栏，无边框，无圆角 */
     &.mono-theme {
         background-color: var(--primary-color, #3b82f6);
-        border-bottom-color: rgba(226, 232, 240, 0);
+        border-bottom: 1rpx solid rgba(226, 232, 240, 0);
 
         .title {
             color: #ffffff;
@@ -121,7 +121,7 @@ function tapBack() {
     /* 颜色主题：导航栏使用主题色，下方带有白色圆角过渡 */
     &.color-theme {
         background-color: var(--primary-color, #3b82f6);
-        border-bottom-color: rgba(226, 232, 240, 0);
+        border-bottom: 1rpx solid rgba(226, 232, 240, 0);
 
         .title {
             color: #ffffff;
@@ -149,12 +149,12 @@ function tapBack() {
             height: 100%;
 
             .icon-left {
-                font-size: var(--navbar-font-size, 30rpx);
+                font-size: 30rpx;
             }
         }
 
         .title {
-            font-size: var(--navbar-font-size, 30rpx);
+            font-size: var(--navbar-font-size, 26rpx);
             letter-spacing: 1rpx;
             font-weight: normal;
         }
