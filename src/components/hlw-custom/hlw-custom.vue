@@ -64,7 +64,7 @@ const resolvedContact = computed(() => {
     padding: var(--card-padding);
     border: 1rpx solid var(--border-color-light);
     border-radius: var(--card-radius);
-    background: linear-gradient(135deg, #ffffff 0%, rgba(49, 118, 255, 0.05) 100%);
+    background: linear-gradient(135deg, #ffffff 0%, var(--primary-light, rgba(76, 68, 239, 0.05)) 100%);
 }
 
 .contact-copy {
@@ -100,7 +100,7 @@ const resolvedContact = computed(() => {
     flex-shrink: 0;
     margin: 0;
     border-radius: var(--radius-full);
-    background: #3176ff;
+    background: var(--primary-color, #3b82f6);
     color: #ffffff;
     font: inherit;
     line-height: 68rpx;

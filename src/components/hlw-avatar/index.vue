@@ -72,14 +72,14 @@ const initial = computed(() => {
 .hlw-avatar__placeholder {
     width: 100%;
     height: 100%;
-    background: #07c160;
+    background: #f1f5f9;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .hlw-avatar__initial {
-    color: #fff;
+    color: #94a3b8;
     font-weight: bold;
 }
 

@@ -376,8 +376,8 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
         color: #f43f5e;
     }
     &--blue {
-        background: #eff6ff;
-        color: #3b82f6;
+        background: var(--primary-light, rgba(76, 68, 239, 0.12));
+        color: var(--primary-color, #3b82f6);
     }
     &--red {
         background: #fef2f2;
@@ -418,7 +418,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     background: #f43f5e;
 }
 .hlw-menu-tag--blue {
-    background: #3b82f6;
+    background: var(--primary-color, #3b82f6);
 }
 
 .hlw-menu-tag-pulse {
