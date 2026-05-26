@@ -15,8 +15,7 @@ export * from "./composables";
 export type { HlwMenuItem } from "./components/hlw-menu/types";
 export type { HlwPagingRef, HlwPagingInstance } from "./components/hlw-paging/types";
 
-// Pinia store
-export { useThemeStore } from "./stores/theme";
+
 
 // App 根上下文
 export { useApp } from "./app";
