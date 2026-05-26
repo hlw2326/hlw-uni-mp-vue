@@ -119,8 +119,15 @@ export function ServicePrefix(value: string | ServicePrefixOptions) {
 
 /**
  * 插件服务类装饰器。
- * 自动使用 `import.meta.env.VITE_PLUGIN_NAME` 作为服务前缀。
+ * 自动使用 `import.meta.env.VITE_PLUGIN_NAME` 作为服务前缀（通过 globalThis 动态读取）。
  */
-export function PluginService(target: { prototype: { servicePrefix?: string } }) {
-    target.prototype.servicePrefix = import.meta.env.VITE_PLUGIN_NAME || "";
+export function PluginService(target: any) {
+    Object.defineProperty(target.prototype, "servicePrefix", {
+        get() {
+            return globalThis.VITE_PLUGIN_NAME || "";
+        },
+        enumerable: true,
+        configurable: true
+    });
 }
+
