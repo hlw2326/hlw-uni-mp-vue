@@ -118,9 +118,9 @@ function tapBack() {
         }
     }
 
-    /* 颜色主题：导航栏使用主题色，下方带有白色圆角过渡 */
+    /* 颜色主题：导航栏使用立体光影感的主题色渐变背景，下方带有白色圆角过渡 */
     &.color-theme {
-        background-color: var(--primary-color, #3b82f6);
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(0, 0, 0, 0.15) 100%), var(--primary-color, #3b82f6);
         border-bottom: 1rpx solid rgba(226, 232, 240, 0);
 
         .title {
