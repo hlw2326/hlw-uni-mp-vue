@@ -19,12 +19,12 @@ export const themePresets: ThemePreset[] = [
     {
         id: "light-theme",
         name: "简洁主题",
-        color: "#f1f5f9",
+        color: "var(--bg-page, #f8f8f8)",
     },
     {
         id: "mono-theme",
         name: "单色主题",
-        color: "var(--bg-page, #f8f8f8)",
+        color: "var(--primary-color, #3b82f6)",
     },
     {
         id: "color-theme",
