@@ -10,7 +10,15 @@
 
 // Composables / 工具 / Theme
 export * from "./composables";
-export { useTheme, themePresets, type ThemePreset } from "./core/theme";
+export { 
+    useTheme, 
+    themePresets, 
+    type ThemePreset,
+    fontFamilyPresets,
+    type FontFamilyPreset,
+    fontSizePresets,
+    type FontSizePreset
+} from "./core/theme";
 
 // 类型
 export type { HlwMenuItem } from "./components/hlw-menu/types";

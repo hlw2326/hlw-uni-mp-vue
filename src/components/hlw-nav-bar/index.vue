@@ -49,7 +49,7 @@ if (props.isBar) {
     status_bar_height = 15;
 }
 
-const header_height = ref<number>(menuButtonInfo.bottom - statusBarHeight + 3);
+const header_height = ref<number>(menuButtonInfo.bottom - statusBarHeight + 6);
 const navbar_height = ref(header_height.value + statusBarHeight);
 const status_bar_height_style = `${status_bar_height}px`;
 

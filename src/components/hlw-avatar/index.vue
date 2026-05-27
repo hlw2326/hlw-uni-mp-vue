@@ -1,12 +1,6 @@
 <template>
     <view :class="`hlw-avatar hlw-avatar--${size ?? 'medium'}`" :style="avatarStyle">
-        <image
-            v-if="src && !loadError"
-            class="hlw-avatar__image"
-            :src="src"
-            mode="aspectFill"
-            @error="loadError = true"
-        />
+        <image v-if="src && !loadError" class="hlw-avatar__image" :src="src" mode="aspectFill" @error="loadError = true" />
         <view v-else class="hlw-avatar__placeholder">
             <text class="hlw-avatar__initial">{{ initial }}</text>
         </view>
@@ -30,12 +24,12 @@
  * <HlwAvatar src="/avatar.png" name="张三" size="large" />
  * ```
  */
-import { ref, computed } from 'vue';
+import { ref, computed } from "vue";
 
 const props = defineProps<{
     src?: string;
     name?: string;
-    size?: 'small' | 'medium' | 'large';
+    size?: "small" | "medium" | "large";
     border?: number;
 }>();
 
@@ -43,11 +37,11 @@ const loadError = ref(false);
 const avatarStyle = computed(() => {
     const border = Math.max(0, Number(props.border ?? 0));
     return {
-        border: border > 0 ? `${border}px solid #fff` : '0',
+        border: border > 0 ? `${border}px solid #fff` : "0",
     };
 });
 const initial = computed(() => {
-    if (!props.name) return '?';
+    if (!props.name) return "?";
     return props.name.charAt(0).toUpperCase();
 });
 </script>
@@ -60,9 +54,18 @@ const initial = computed(() => {
     flex-shrink: 0;
 }
 
-.hlw-avatar--small  { width: 56rpx;  height: 56rpx; }
-.hlw-avatar--medium { width: 80rpx;  height: 80rpx; }
-.hlw-avatar--large  { width: 120rpx; height: 120rpx; }
+.hlw-avatar--small {
+    width: 56rpx;
+    height: 56rpx;
+}
+.hlw-avatar--medium {
+    width: 80rpx;
+    height: 80rpx;
+}
+.hlw-avatar--large {
+    width: 120rpx;
+    height: 120rpx;
+}
 
 .hlw-avatar__image {
     width: 100%;
@@ -80,10 +83,15 @@ const initial = computed(() => {
 
 .hlw-avatar__initial {
     color: #94a3b8;
-    font-weight: bold;
 }
 
-.hlw-avatar--small  .hlw-avatar__initial { font-size: var(--font-xs, 20rpx); }
-.hlw-avatar--medium .hlw-avatar__initial { font-size: var(--font-base, 28rpx); }
-.hlw-avatar--large  .hlw-avatar__initial { font-size: var(--font-xl, 40rpx); }
+.hlw-avatar--small .hlw-avatar__initial {
+    font-size: var(--font-xs, 20rpx);
+}
+.hlw-avatar--medium .hlw-avatar__initial {
+    font-size: var(--font-base, 28rpx);
+}
+.hlw-avatar--large .hlw-avatar__initial {
+    font-size: var(--font-xl, 40rpx);
+}
 </style>
