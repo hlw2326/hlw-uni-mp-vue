@@ -60,3 +60,19 @@ export function useTheme() {
         store,
     };
 }
+
+/**
+ * 首次打开小程序时，初始化默认的主题配色
+ * @param defaultTheme 默认主题 ID，默认为 "mono-theme"
+ */
+export function initTheme(defaultTheme = "mono-theme"): void {
+    const hasCachedTheme = uni.getStorageSync("theme");
+    if (!hasCachedTheme) {
+        const store = useThemeStore();
+        const validThemes = themePresets.map((t) => t.id);
+        if (validThemes.includes(defaultTheme)) {
+            store.theme = defaultTheme;
+        }
+    }
+}
+

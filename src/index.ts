@@ -12,6 +12,7 @@
 export * from "./composables";
 export { 
     useTheme, 
+    initTheme,
     themePresets, 
     type ThemePreset,
     fontFamilyPresets,

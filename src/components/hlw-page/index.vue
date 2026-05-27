@@ -1,6 +1,6 @@
 <template>
-    <view :class="[theme, fontSizeClass, fontFamilyClass]" style="padding-bottom: 100rpx">
-        <hlw-nav-bar :is-back="props.isBack" :title="title" :is-bar="props.isBar"></hlw-nav-bar>
+    <view :class="[theme, fontSizeClass, fontFamilyClass]">
+        <hlw-nav-bar v-if="props.isBar" :is-back="props.isBack" :title="title" :is-bar="props.isBar"></hlw-nav-bar>
         <slot></slot>
     </view>
 </template>
@@ -69,29 +69,53 @@ const title = ref(props.title);
 
 /* 全局字体样式配置 */
 .font-family-system {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-    view, text, button, input, textarea {
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif !important;
+    view,
+    text,
+    button,
+    input,
+    textarea {
         font-family: inherit !important;
     }
 }
 
 .font-family-sans {
     font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif !important;
-    view, text, button, input, textarea {
+    view,
+    text,
+    button,
+    input,
+    textarea {
         font-family: inherit !important;
     }
 }
 
 .font-family-serif {
     font-family: "Songti SC", "STSong", "SimSun", "Georgia", serif !important;
-    view, text, button, input, textarea {
+    view,
+    text,
+    button,
+    input,
+    textarea {
         font-family: inherit !important;
     }
 }
 
 .font-family-kaiti {
     font-family: "Kaiti SC", "STKaiti", "KaiTi", "SimKai", serif !important;
-    view, text, button, input, textarea {
+    view,
+    text,
+    button,
+    input,
+    textarea {
         font-family: inherit !important;
     }
 }
