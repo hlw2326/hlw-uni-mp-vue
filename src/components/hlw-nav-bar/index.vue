@@ -104,17 +104,17 @@ function tapBack() {
         }
     }
 
-    /* 单色主题：纯主题色导航栏，无边框，无圆角 */
+    /* 单色主题：背景色与页面全局背景色一致，无明显界限，无边框 */
     &.mono-theme {
-        background-color: var(--primary-color, #3b82f6);
+        background-color: var(--bg-color, var(--bg-page, #f8f8f8));
         border-bottom: 1rpx solid rgba(226, 232, 240, 0);
 
         .title {
-            color: #ffffff;
+            color: var(--font-color, #303048);
         }
 
         .icon-left {
-            color: #ffffff;
+            color: var(--font-color, #303048);
         }
     }
 
