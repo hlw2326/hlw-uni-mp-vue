@@ -105,6 +105,12 @@ defineEmits<{ click: [] }>();
     font-size: var(--font-lg, 36rpx);
     color: var(--primary-color, #3b82f6);
     flex-shrink: 0;
+
+    view {
+        width: var(--font-lg, 36rpx);
+        height: var(--font-lg, 36rpx);
+        display: inline-block;
+    }
 }
 
 .hlw-cell-body {

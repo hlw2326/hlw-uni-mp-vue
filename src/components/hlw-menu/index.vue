@@ -335,7 +335,10 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     flex-shrink: 0;
 
     text {
+        width: var(--hlw-menu-icon-size);
+        height: var(--hlw-menu-icon-size);
         font-size: var(--hlw-menu-icon-size);
+        display: inline-block;
     }
 
     &--grid {
@@ -343,7 +346,10 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
         height: var(--hlw-menu-grid-icon-box-size);
         border-radius: var(--radius-lg, 24rpx);
         text {
+            width: var(--hlw-menu-grid-icon-size);
+            height: var(--hlw-menu-grid-icon-size);
             font-size: var(--hlw-menu-grid-icon-size);
+            display: inline-block;
         }
     }
 

@@ -207,6 +207,9 @@ defineOptions({
 
 .hlw-card-header__icon {
     font-size: var(--font-xs);
+    width: var(--font-xs);
+    height: var(--font-xs);
+    display: inline-block;
 }
 
 .hlw-card-header__title {
