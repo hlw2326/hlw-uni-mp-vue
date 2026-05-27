@@ -133,7 +133,7 @@ function close() {
 .hlw-add-mini {
     position: fixed;
     right: 22rpx;
-    z-index: 32;
+    z-index: 99999;
     width: 340rpx;
     animation: hlw-add-mini-in 0.22s ease-out both;
 }
@@ -144,6 +144,7 @@ function close() {
     top: -13rpx;
     width: 0;
     height: 0;
+    z-index: 99999;
     border-left: 12rpx solid transparent;
     border-right: 12rpx solid transparent;
     border-bottom: 14rpx solid rgba(17, 24, 39, 0.82);
