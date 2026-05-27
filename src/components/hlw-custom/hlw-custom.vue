@@ -12,7 +12,7 @@
             :send-message-img="resolvedContact.img"
             :show-message-card="resolvedContact.show"
         >
-            <text class="iconfont icon-service" />
+            <text class="i-ri-customer-service-line contact-button-icon" />
             <text class="contact-button-text">{{ resolvedBtnTitle }}</text>
         </button>
     </view>
@@ -106,8 +106,9 @@ const resolvedContact = computed(() => {
     line-height: 68rpx;
 }
 
-.contact-button .iconfont {
-    font-size: var(--font-sm);
+.contact-button-icon {
+    width: var(--font-sm);
+    height: var(--font-sm);
 }
 
 .contact-button-text {
