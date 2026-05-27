@@ -106,7 +106,7 @@ function tapBack() {
 
     /* 单色主题：背景色与页面全局背景色一致，无明显界限，无边框 */
     &.mono-theme {
-        background-color: var(--bg-color, var(--bg-page, #f8f8f8));
+        background-color: var(--bg-page, #f8f8f8);
         border-bottom: 1rpx solid rgba(226, 232, 240, 0);
 
         .title {

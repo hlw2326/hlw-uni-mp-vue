@@ -24,7 +24,7 @@ export const themePresets: ThemePreset[] = [
     {
         id: "mono-theme",
         name: "单色主题",
-        color: "var(--bg-color, var(--bg-page, #f8f8f8))",
+        color: "var(--bg-page, #f8f8f8)",
     },
     {
         id: "color-theme",
