@@ -4,9 +4,6 @@
  */
 
 declare const uni: any;
-declare const wx: any;
-
-const api = typeof uni !== "undefined" ? uni : (typeof wx !== "undefined" ? wx : null);
 
 /**
  * 广告播放/加载结果数据结构。
@@ -56,12 +53,12 @@ export function useHlwAd() {
      */
     function setAdPopup(adId: string, done?: (ok: boolean) => void): boolean {
         popupCallback = done;
-        if (!adId || !api?.createInterstitialAd) return false;
+        if (!adId || !uni.createInterstitialAd) return false;
 
         activePopupId = adId;
         if (!adInstances.has(adId)) {
             try {
-                const ad = api.createInterstitialAd({ adUnitId: adId });
+                const ad = uni.createInterstitialAd({ adUnitId: adId });
                 ad.onLoad?.(() => console.log(`[Ad] Interstitial loaded: ${adId}`));
                 ad.onError?.((err: any) => {
                     console.error("[Ad] Interstitial load error:", err);
@@ -121,7 +118,7 @@ export function useHlwAd() {
             rewardResolve = resolve;
         });
 
-        if (!adId || !api?.createRewardedVideoAd) {
+        if (!adId || !uni.createRewardedVideoAd) {
             resolveReward({ ok: false, isEnded: false });
             return rewardPromise;
         }
@@ -129,7 +126,7 @@ export function useHlwAd() {
         activeRewardId = adId;
         if (!adInstances.has(adId)) {
             try {
-                const ad = api.createRewardedVideoAd({ adUnitId: adId });
+                const ad = uni.createRewardedVideoAd({ adUnitId: adId });
                 ad.onLoad?.(() => console.log(`[Ad] Rewarded video loaded: ${adId}`));
                 ad.onError?.((err: any) => {
                     console.error("[Ad] Rewarded video load error:", err);
