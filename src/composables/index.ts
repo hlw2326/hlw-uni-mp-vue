@@ -14,7 +14,7 @@ export {
     useShare,
     type ShareConfig,
 } from "./share";
-export { useHlwAd, type AdRes } from "./ad";
+export { useHlwAd, setAdPopup, showAdPopup, setAdReward, showAdReward, type AdRes } from "./ad";
 export {
     useUtils,
     withQuery,

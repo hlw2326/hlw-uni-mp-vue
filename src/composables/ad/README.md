@@ -1,37 +1,33 @@
 # ad 调用文档
 
-`useHlwAd` 封装微信小程序插屏广告和激励视频广告。仅在存在 `wx` 且对应广告 API 可用时生效。
+提供微信小程序插屏广告和激励视频广告的配置与播放能力。
 
 ## 引入
 
 ```ts
-import { useHlwAd } from "@hlw-uni/mp-vue";
+import { setAdPopup, showAdPopup, setAdReward, showAdReward } from "@hlw-uni/mp-vue";
 ```
 
 ## 插屏广告
 
 ```ts
-const ad = useHlwAd();
-
-ad.setAdPopup("adunit-popup-id", (ok) => {
+setAdPopup("adunit-popup-id", (ok) => {
     console.log("插屏广告关闭", ok);
 });
 
-await ad.showAdPopup(1000);
+await showAdPopup(1000);
 ```
 
 ## 激励视频
 
 ```ts
-const ad = useHlwAd();
-
-ad.setAdReward("adunit-reward-id", (res) => {
+setAdReward("adunit-reward-id", (res) => {
     if (res.ok) {
         // 用户完整看完激励视频
     }
 });
 
-const result = await ad.showAdReward();
+const result = await showAdReward();
 
 if (result.ok) {
     // 发放奖励

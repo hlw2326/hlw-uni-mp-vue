@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { useHlwAd } from "../../composables/ad";
+import { setAdReward, showAdReward } from "../../composables/ad";
 
 defineOptions({ name: "HlwRewardAd" });
 
@@ -20,8 +20,6 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
     (e: "onHandle", res: { ok: boolean; isEnded: boolean; err?: any }): void;
 }>();
-
-const { setAdReward, showAdReward } = useHlwAd();
 
 // 点击锁定状态，防止连续多次点击重复触发广告
 const isClicked = ref(false);
