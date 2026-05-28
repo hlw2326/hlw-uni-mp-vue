@@ -1,6 +1,5 @@
 import { useMsg } from '@/core/msg';
 import { getDevice, type DeviceInfo } from '@/utils/device';
-import { request, type RequestClient } from '@/utils/request';
 import * as utils from '@/utils/common';
 
 /**
@@ -11,8 +10,6 @@ export interface HlwInstance {
   $msg: ReturnType<typeof useMsg>;
   /** 当前运行设备的详细系统信息 */
   $device: DeviceInfo;
-  /** 全局配置的统一 HTTP 请求实例 */
-  $request: RequestClient;
   /** 聚合的常用小程序公共工具函数 */
   $utils: typeof utils;
 }
@@ -27,8 +24,6 @@ export const hlw: HlwInstance = {
   get $msg() { return (_msg ??= useMsg()); },
   /** 延迟读取并缓存设备信息。 */
   get $device() { return getDevice(); },
-  /** 复用全局请求实例。 */
-  $request: request,
   /** 延迟创建通用工具实例。 */
   $utils: utils,
 };

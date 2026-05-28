@@ -91,10 +91,7 @@ hlw.$msg.toast("操作成功");
 // 2. $device 系统设备信息
 console.log(hlw.$device.brand, hlw.$device.platform);
 
-// 3. $request HTTP 客户端
-const res = await hlw.$request.get("/config");
-
-// 4. $utils 公共工具箱
+// 3. $utils 公共工具箱
 hlw.$utils.copy("复制的文本");
 ```
 
