@@ -60,6 +60,9 @@ export function useTheme() {
     } catch (e) {
         // 忽略非 Page 组件的绑定失败
     }
+
+    // 4. 在 setup 初始化同步阶段以最快速度设定一次，尽可能规避生命周期滞后导致的闪烁
+    updateNavbarColor(store.theme);
     
     // 字体大小
     const fontSize: ComputedRef<string> = computed(() => store.fontSize);

@@ -154,9 +154,9 @@ function tapBack() {
         }
 
         .title {
-            font-size: var(--navbar-font-size, 26rpx);
+            font-size: var(--font-md, var(--navbar-font-size, 32rpx));
             letter-spacing: 1rpx;
-            font-weight: normal;
+            font-weight: 600;
         }
     }
 
