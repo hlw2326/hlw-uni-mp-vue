@@ -80,20 +80,18 @@ export const createApp = app.install(App);
 
 ### 2. 全局命名空间单例 `hlw`
 
-`hlw` 命名空间聚合了框架最核心的工具服务，您可以通过全局或导入的形式方便地访问它们：
+`hlw` 命名空间聚合了框架最核心的全局消息提示工具，您可以通过全局或导入的形式方便地访问它们：
 
 ```ts
 import { hlw } from '@hlw-uni/mp-vue';
 
-// 1. $msg 消息通知
+// 1. $msg 全局消息通知
 hlw.$msg.toast("操作成功");
-
-// 2. $device 系统设备信息
-console.log(hlw.$device.brand, hlw.$device.platform);
-
-// 3. $utils 公共工具箱
-hlw.$utils.copy("复制的文本");
+hlw.$msg.showLoading("加载中...");
 ```
+
+> [!TIP]
+> 其它工具（如 `getDevice` 设备信息获取、`copy` 剪贴板复制等）推荐直接通过 `@hlw-uni/mp-vue` 独立函数导入使用，以获得更好的 Tree-Shaking 支持与更干净的依赖链路。
 
 ---
 
