@@ -58,12 +58,32 @@ async function handleClick() {
     }
 
     isClicked.value = true;
+
+    // 1. 弹出全局模态 Loading 状态
+    let hidden = false;
+    hlw.$msg.showLoading("正在拉起广告");
+
+    // 设置 8 秒防超时定时器，如果 8 秒后还没有关闭加载提示，则强制关闭
+    const timer = setTimeout(() => {
+        hide();
+    }, 8000);
+
+    function hide() {
+        if (hidden) return;
+        hidden = true;
+        clearTimeout(timer);
+        hlw.$msg.hideLoading();
+    }
+
     try {
         // 确保实例当前处于激活绑定状态
         setAdReward(props.unitId);
 
         // 立即展示并播放广告
         const res = await showAdReward();
+
+        // 播放流结束后（不管成功或退出），立刻关闭 Loading 状态
+        hide();
 
         // 触发外部事件并回传播放结果
         emit("onHandle", {
@@ -72,6 +92,7 @@ async function handleClick() {
             err: res.err,
         });
     } catch (e) {
+        hide();
         console.error("[HlwRewardAd] Failed to show reward ad:", e);
         emit("onHandle", {
             ok: false,
