@@ -1,4 +1,4 @@
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import type { ComputedRef } from "vue";
 import { 
     useThemeStore, 
@@ -6,6 +6,8 @@ import {
     fontSizePresets, 
     fontFamilyPresets 
 } from "../stores/theme";
+
+declare const uni: any;
 
 export { 
     themePresets, 
@@ -25,6 +27,20 @@ export function useTheme() {
     
     // 主题
     const theme: ComputedRef<string> = computed(() => store.theme);
+
+    // 监控主题变化并动态切换系统状态栏/导航栏前景色（mono-theme 和 color-theme 设为白色前景色，其余设为黑色）
+    watch(
+        theme,
+        (newTheme) => {
+            const isDarkTheme = ["mono-theme", "color-theme"].includes(newTheme);
+            uni.setNavigationBarColor({
+                frontColor: isDarkTheme ? "#ffffff" : "#000000",
+                backgroundColor: isDarkTheme ? "#3b82f6" : "#ffffff",
+                fail: () => {}
+            });
+        },
+        { immediate: true }
+    );
     
     // 字体大小
     const fontSize: ComputedRef<string> = computed(() => store.fontSize);
