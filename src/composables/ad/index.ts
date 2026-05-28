@@ -13,9 +13,9 @@ export interface AdRes {
     /** 广告是否正常加载或成功展示完成 */
     ok: boolean;
     /** 激励视频是否完全播放完毕 (仅激励视频有此属性) */
-    isEnded?: boolean;
+    isEnded: boolean;
     /** 加载或展示失败时的错误对象 */
-    err?: unknown;
+    err?: any;
 }
 
 type AdDone = (res: AdRes) => void;
@@ -153,13 +153,13 @@ export function useHlwAd() {
         });
 
         if (!adId) {
-            finish({ ok: false });
+            finish({ ok: false, isEnded: false });
             return rewardPromise;
         }
 
         const api = getAdApi();
         if (!api?.createRewardedVideoAd) {
-            finish({ ok: false });
+            finish({ ok: false, isEnded: false });
             return rewardPromise;
         }
 
@@ -171,7 +171,7 @@ export function useHlwAd() {
                 ad.onError?.((err: unknown) => {
                     console.error("[HlwAd] Rewarded video load error:", err);
                     if (activeRewardAdId === adId) {
-                        finish({ ok: false, err });
+                        finish({ ok: false, isEnded: false, err });
                     }
                 });
                 ad.onClose?.((res: { isEnded?: boolean }) => {
@@ -183,7 +183,7 @@ export function useHlwAd() {
                 rewardCache.set(adId, ad);
             } catch (e) {
                 console.error("[HlwAd] Rewarded video creation failed:", e);
-                finish({ ok: false, err: e });
+                finish({ ok: false, isEnded: false, err: e });
             }
         }
         return rewardPromise;
@@ -198,7 +198,7 @@ export function useHlwAd() {
     function showAdReward(onShowSuccess?: () => void): Promise<AdRes> {
         const ad = rewardCache.get(activeRewardAdId);
         if (!ad) {
-            return Promise.resolve({ ok: false });
+            return Promise.resolve({ ok: false, isEnded: false });
         }
 
         const current = rewardPromise || new Promise<AdRes>((resolve) => {
@@ -219,12 +219,12 @@ export function useHlwAd() {
                             })
                             .catch((err: unknown) => {
                                 console.error("[HlwAd] Rewarded video show error:", err);
-                                finish({ ok: false, err });
+                                finish({ ok: false, isEnded: false, err });
                             });
                     })
                     .catch((err: unknown) => {
                         console.error("[HlwAd] Rewarded video load error:", err);
-                        finish({ ok: false, err });
+                        finish({ ok: false, isEnded: false, err });
                     });
             });
 
