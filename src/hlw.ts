@@ -1,4 +1,4 @@
-import { useMsg } from '@/composables/msg';
+import { useMsg } from '@/core/msg';
 import { getDevice, type DeviceInfo } from '@/utils/device';
 import { request, type RequestClient } from '@/utils/request';
 import * as utils from '@/utils/utils';

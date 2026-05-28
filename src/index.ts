@@ -8,23 +8,13 @@
  * UI 组件（hlw-page / hlw-button / hlw-ad 等）走 easycom 自动注册，不在这里 export。
  */
 
-// Composables / 工具 / Theme
-export * from "./composables";
+// Core / 工具
+export * from "./core";
 export * from "./utils/ad";
 export * from "./utils/utils";
 export * from "./utils/navigator";
 export * from "./utils/device";
 export * from "./utils/request";
-export { 
-    useTheme, 
-    initTheme,
-    themePresets, 
-    type ThemePreset,
-    fontFamilyPresets,
-    type FontFamilyPreset,
-    fontSizePresets,
-    type FontSizePreset
-} from "./core/theme";
 
 // 类型
 export type { HlwMenuItem } from "./components/hlw-menu/types";
