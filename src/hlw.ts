@@ -1,6 +1,6 @@
 import { useMsg } from '@/core/msg';
 import { getDevice, type DeviceInfo } from '@/utils/device';
-import * as utils from '@/utils/common';
+import * as utils from '@/utils';
 
 /**
  * 全局 hlw 实例接口定义，聚合了框架的核心能力。
