@@ -2,7 +2,7 @@
  * 设备信息与接口 query
  * 提供一致的、缓存后的多端设备系统信息接口。
  */
-import { toQuery } from "../utils";
+import { toQuery } from "../common";
 
 /**
  * 完整设备系统信息接口，包含小程序环境与宿主系统的关键元数据。
