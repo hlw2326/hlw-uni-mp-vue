@@ -37,24 +37,15 @@
 <script setup lang="ts">
 /**
  * HlwButton - 语义化/响应式通用按钮组件
- * 
+ *
  * 扩展了原生小程序 button 属性。支持丰富的语义色彩预设、尺寸自适应、圆角与 Block 状态，
  * 并且内置了快捷的 uni-app 路由跳转逻辑与 Native `open-type` 会话消息配置。
  */
 import { computed, useSlots } from "vue";
-import { useNavigate } from "@/composables/navigator";
+import { useNavigate } from "../../composables/navigator";
 
 /** 按钮类型：语义化颜色预设、边框模式、文本模式及幽灵模式 */
-type ButtonType =
-    | "primary"
-    | "success"
-    | "warning"
-    | "danger"
-    | "error"
-    | "info"
-    | "outline"
-    | "text"
-    | "ghost";
+type ButtonType = "primary" | "success" | "warning" | "danger" | "error" | "info" | "outline" | "text" | "ghost";
 
 /** 路由动作类型 */
 type NavigateType = "navigateTo" | "redirectTo" | "switchTab" | "reLaunch" | "navigateBack";
@@ -121,7 +112,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
     /** 按钮点击事件（在未禁用且非 loading 时触发） */
-    click: []
+    click: [];
 }>();
 
 const slots = useSlots();
