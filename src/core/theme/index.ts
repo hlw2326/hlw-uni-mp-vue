@@ -6,7 +6,7 @@ import {
     themePresets, 
     fontSizePresets, 
     fontFamilyPresets 
-} from "../stores/theme";
+} from "../../stores/theme";
 
 declare const uni: any;
 
@@ -17,7 +17,7 @@ export {
     type FontSizePreset, 
     fontFamilyPresets, 
     type FontFamilyPreset 
-} from "../stores/theme";
+} from "../../stores/theme";
 
 // ==========================================
 // 统一个性化外观配置 Hook (useTheme)
@@ -113,4 +113,3 @@ export function initTheme(defaultTheme = "mono-theme"): void {
         }
     }
 }
-
