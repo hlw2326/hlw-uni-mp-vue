@@ -6,6 +6,8 @@
 declare const uni: any;
 declare const wx: any;
 
+const api = typeof uni !== "undefined" ? uni : (typeof wx !== "undefined" ? wx : null);
+
 /**
  * 广告播放/加载结果数据结构。
  */
@@ -18,92 +20,59 @@ export interface AdRes {
     err?: any;
 }
 
-type AdDone = (res: AdRes) => void;
+// 缓存不同 Unit ID 的广告实例，防止重复创建导致内存泄露或回调叠加
+const adInstances = new Map<string, any>();
 
-// 缓存不同 Unit ID 的广告实例
-const popupCache = new Map<string, any>();
-const rewardCache = new Map<string, any>();
+// 当前激活的广告单元 ID 与回调函数句柄
+let activePopupId = "";
+let activeRewardId = "";
 
-let activePopupAdId = "";
-let popupDone: ((ok: boolean) => void) | undefined;
+let popupCallback: ((ok: boolean) => void) | undefined;
+let rewardCallback: ((res: AdRes) => void) | undefined;
 
-let activeRewardAdId = "";
-let rewardDone: AdDone | undefined;
 let rewardPromise: Promise<AdRes> | null = null;
 let rewardResolve: ((res: AdRes) => void) | null = null;
 
 /**
- * 获取当前环境的小程序全局 API 实例。
+ * 统一触发激励视频广告结束回调并销毁当前的 Promise 句柄
  */
-function getAdApi() {
-    if (typeof uni !== "undefined") return uni;
-    if (typeof wx !== "undefined") return wx;
-    return null;
-}
-
-/**
- * 触发激励视频广告结束的回调并 resolve Promise。
- */
-function finish(res: AdRes) {
-    rewardDone?.(res);
+function resolveReward(res: AdRes) {
+    rewardCallback?.(res);
     rewardResolve?.(res);
     rewardResolve = null;
     rewardPromise = null;
 }
 
 /**
- * 小程序广告 Composables。
- * 
- * @example
- * ```ts
- * const { setAdPopup, showAdPopup, setAdReward, showAdReward } = useHlwAd();
- * 
- * // 1. 插屏广告
- * setAdPopup('ad-unit-id');
- * await showAdPopup();
- * 
- * // 2. 激励视频
- * await setAdReward('ad-unit-id');
- * const res = await showAdReward();
- * if (res.ok && res.isEnded) {
- *    // 发放奖励
- * }
- * ```
+ * 小程序展示类广告 Composable 工具
  */
 export function useHlwAd() {
     /**
-     * 配置/预加载插屏广告。
+     * 配置/预加载插屏广告
      * 
      * @param adId 广告单元 ID
      * @param done 广告关闭后的回调（可选）
      * @returns 是否配置成功
      */
     function setAdPopup(adId: string, done?: (ok: boolean) => void): boolean {
-        popupDone = done;
-        if (!adId) return false;
+        popupCallback = done;
+        if (!adId || !api?.createInterstitialAd) return false;
 
-        const api = getAdApi();
-        if (!api?.createInterstitialAd) return false;
-
-        activePopupAdId = adId;
-        if (!popupCache.has(adId)) {
+        activePopupId = adId;
+        if (!adInstances.has(adId)) {
             try {
                 const ad = api.createInterstitialAd({ adUnitId: adId });
-                ad.onLoad?.(() => console.log(`[HlwAd] Interstitial loaded: ${adId}`));
-                ad.onError?.((err: unknown) => {
-                    console.error("[HlwAd] Interstitial load error:", err);
-                    if (activePopupAdId === adId) {
-                        popupDone?.(false);
-                    }
+                ad.onLoad?.(() => console.log(`[Ad] Interstitial loaded: ${adId}`));
+                ad.onError?.((err: any) => {
+                    console.error("[Ad] Interstitial load error:", err);
+                    if (activePopupId === adId) popupCallback?.(false);
                 });
                 ad.onClose?.(() => {
-                    if (activePopupAdId === adId) {
-                        popupDone?.(true);
-                    }
+                    if (activePopupId === adId) popupCallback?.(true);
                 });
-                popupCache.set(adId, ad);
+                adInstances.set(adId, ad);
             } catch (e) {
-                console.error("[HlwAd] Interstitial creation failed:", e);
+                console.error("[Ad] Interstitial creation failed:", e);
                 return false;
             }
         }
@@ -111,92 +80,86 @@ export function useHlwAd() {
     }
 
     /**
-     * 延迟展示已配置的插屏广告。
+     * 延迟展示已配置的插屏广告
      * 
      * @param delay 延迟毫秒数，默认 3000ms
-     * @returns 返回 Promise，resolve 是否成功显示且用户关闭了它
+     * @returns 返回 Promise，指示是否成功显示且被关闭
      */
     function showAdPopup(delay = 3000): Promise<boolean> {
         return new Promise((resolve) => {
-            const ad = popupCache.get(activePopupAdId);
+            const ad = adInstances.get(activePopupId);
             if (!ad) {
                 resolve(false);
                 return;
             }
 
-            const done = popupDone;
-            popupDone = (ok: boolean) => {
-                done?.(ok);
+            const originalDone = popupCallback;
+            popupCallback = (ok: boolean) => {
+                originalDone?.(ok);
                 resolve(ok);
             };
 
             setTimeout(() => {
-                ad.show().catch((err: unknown) => {
-                    console.error("[HlwAd] Interstitial show error:", err);
-                    popupDone?.(false);
+                ad.show().catch((err: any) => {
+                    console.error("[Ad] Interstitial show error:", err);
+                    popupCallback?.(false);
                 });
             }, Math.max(0, delay));
         });
     }
 
     /**
-     * 配置/预加载激励视频广告。
+     * 配置/预加载激励视频广告
      * 
      * @param adId 广告单元 ID
      * @param done 播放结束的回调（可选）
-     * @returns 返回 Promise<AdRes>，在加载或创建失败时直接 resolve
+     * @returns 返回 Promise<AdRes>
      */
-    function setAdReward(adId: string, done?: AdDone): Promise<AdRes> {
-        rewardDone = done;
+    function setAdReward(adId: string, done?: (res: AdRes) => void): Promise<AdRes> {
+        rewardCallback = done;
         rewardPromise = new Promise((resolve) => {
             rewardResolve = resolve;
         });
 
-        if (!adId) {
-            finish({ ok: false, isEnded: false });
+        if (!adId || !api?.createRewardedVideoAd) {
+            resolveReward({ ok: false, isEnded: false });
             return rewardPromise;
         }
 
-        const api = getAdApi();
-        if (!api?.createRewardedVideoAd) {
-            finish({ ok: false, isEnded: false });
-            return rewardPromise;
-        }
-
-        activeRewardAdId = adId;
-        if (!rewardCache.has(adId)) {
+        activeRewardId = adId;
+        if (!adInstances.has(adId)) {
             try {
                 const ad = api.createRewardedVideoAd({ adUnitId: adId });
-                ad.onLoad?.(() => console.log(`[HlwAd] Rewarded video loaded: ${adId}`));
-                ad.onError?.((err: unknown) => {
-                    console.error("[HlwAd] Rewarded video load error:", err);
-                    if (activeRewardAdId === adId) {
-                        finish({ ok: false, isEnded: false, err });
+                ad.onLoad?.(() => console.log(`[Ad] Rewarded video loaded: ${adId}`));
+                ad.onError?.((err: any) => {
+                    console.error("[Ad] Rewarded video load error:", err);
+                    if (activeRewardId === adId) {
+                        resolveReward({ ok: false, isEnded: false, err });
                     }
                 });
                 ad.onClose?.((res: { isEnded?: boolean }) => {
-                    if (activeRewardAdId === adId) {
-                        const isEnded = !!res?.isEnded;
-                        finish({ ok: isEnded, isEnded });
+                    if (activeRewardId === adId) {
+                        const ended = !!res?.isEnded;
+                        resolveReward({ ok: ended, isEnded: ended });
                     }
                 });
-                rewardCache.set(adId, ad);
+                adInstances.set(adId, ad);
             } catch (e) {
-                console.error("[HlwAd] Rewarded video creation failed:", e);
-                finish({ ok: false, isEnded: false, err: e });
+                console.error("[Ad] Rewarded video creation failed:", e);
+                resolveReward({ ok: false, isEnded: false, err: e });
             }
         }
         return rewardPromise;
     }
 
     /**
-     * 立即播放已加载的激励视频广告。
+     * 立即播放已加载的激励视频广告
      * 
-     * @param onShowSuccess 广告成功展示播放时的回调（用于隐藏 Loading 状态等）
+     * @param onShowSuccess 广告成功拉起播放时的回调（常用于关闭 Loading 等待提示）
      * @returns 返回 Promise<AdRes>，指示广告是否正常播放完毕
      */
     function showAdReward(onShowSuccess?: () => void): Promise<AdRes> {
-        const ad = rewardCache.get(activeRewardAdId);
+        const ad = adInstances.get(activeRewardId);
         if (!ad) {
             return Promise.resolve({ ok: false, isEnded: false });
         }
@@ -217,14 +180,14 @@ export function useHlwAd() {
                             .then(() => {
                                 onShowSuccess?.();
                             })
-                            .catch((err: unknown) => {
-                                console.error("[HlwAd] Rewarded video show error:", err);
-                                finish({ ok: false, isEnded: false, err });
+                            .catch((err: any) => {
+                                console.error("[Ad] Rewarded video show error:", err);
+                                resolveReward({ ok: false, isEnded: false, err });
                             });
                     })
-                    .catch((err: unknown) => {
-                        console.error("[HlwAd] Rewarded video load error:", err);
-                        finish({ ok: false, isEnded: false, err });
+                    .catch((err: any) => {
+                        console.error("[Ad] Rewarded video load error:", err);
+                        resolveReward({ ok: false, isEnded: false, err });
                     });
             });
 
@@ -238,4 +201,3 @@ export function useHlwAd() {
         showAdReward,
     };
 }
-
