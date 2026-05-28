@@ -1,4 +1,4 @@
-export { useRequest, useUpload } from "./client";
+export { request, useUpload } from "./client";
 export { BaseService, ServiceNamespace, ServicePrefix, PluginService } from "./service";
 export type { RequestClient } from "./client";
 export type {

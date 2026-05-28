@@ -196,34 +196,32 @@ const confirmDelete = async () => {
 };
 ```
 
-### 🗺️ 路由跳转 — `useNavigate()`
+### 🗺️ 路由跳转 — `navigateTo` / `redirectTo` 等
 
 封装了小程序的各类页面跳转，自带安全的异常捕获和提示，支持打开外部小程序。
 
 ```ts
-import { useNavigate } from '@hlw-uni/mp-vue';
-
-const router = useNavigate();
+import { navigateTo, redirectTo, switchTab, reLaunch, navigateBack, navigateToMiniProgram } from '@hlw-uni/mp-vue';
 
 // 基础路由跳转 (保留当前页)
-router.to("/pages/detail/index?id=100");
+navigateTo("/pages/detail/index?id=100");
 
 // 页面重定向 (关闭当前页)
-router.redirect("/pages/login/index");
+redirectTo("/pages/login/index");
 
 // 切换 TabBar 页面
-router.tab("/pages/mine/index");
+switchTab("/pages/mine/index");
 
 // 干净重启 (关闭所有页面)
-router.reLaunch("/pages/index/index");
+reLaunch("/pages/index/index");
 
 // 返回上一页
-router.back(); 
+navigateBack(); 
 // 返回指定层级
-router.back(2);
+navigateBack(2);
 
 // 跳转到其他小程序
-router.miniProgram("wx_appid_xxxxx", {
+navigateToMiniProgram("wx_appid_xxxxx", {
   path: "pages/home/index",
   envVersion: "release"
 });
@@ -246,14 +244,12 @@ useShare({
 </script>
 ```
 
-### 🌐 网络请求 — `useRequest()` & `BaseService`
+### 🌐 网络请求 — `request` & `BaseService`
 
 强大的请求库，完美适配拦截器模式与面向服务的 `BaseService` 设计模式。
 
 ```ts
-import { useRequest, BaseService, ServicePrefix, ServiceNamespace } from "@hlw-uni/mp-vue";
-
-const request = useRequest();
+import { request, BaseService, ServicePrefix, ServiceNamespace } from "@hlw-uni/mp-vue";
 
 // 1. 配置全局参数
 request.setBaseURL("https://api.example.com");

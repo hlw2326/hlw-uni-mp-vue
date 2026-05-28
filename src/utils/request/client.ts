@@ -214,7 +214,7 @@ class UniRequestClient implements RequestClient {
                 filePath: config.filePath,
                 fileName,
                 credentials: config.credentials,
-            });
+              });
 
         return new Promise((resolve, reject) => {
             uni.uploadFile({
@@ -311,17 +311,9 @@ function isAbsolute(url: string): boolean {
 const requestClient = new UniRequestClient();
 
 /**
- * 获取全局请求客户端单例。
- * 
- * @example
- * ```ts
- * const http = useRequest();
- * http.setBaseURL('https://api.example.com');
- * ```
+ * 全局请求客户端单例。
  */
-export function useRequest(): RequestClient {
-    return requestClient;
-}
+export const request: RequestClient = requestClient;
 
 /**
  * 文件上传 composable。

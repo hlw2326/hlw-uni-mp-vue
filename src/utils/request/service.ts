@@ -1,4 +1,4 @@
-import { useRequest } from "./client";
+import { request } from "./client";
 import type { ApiResponse, RequestConfig } from "./types";
 
 /**
@@ -52,9 +52,9 @@ export class BaseService {
      * @returns 响应结果 Promise
      */
     request<T = unknown>(options: ServiceRequestConfig): Promise<ApiResponse<T>> {
-        return useRequest().request<T>({
+        return request.request<T>({
             ...options,
-            url: useRequest().resolveServiceUrl(this.namespace ?? "", options.url, this.servicePrefix ?? ""),
+            url: request.resolveServiceUrl(this.namespace ?? "", options.url, this.servicePrefix ?? ""),
         });
     }
 
@@ -70,7 +70,7 @@ export class BaseService {
     /**
      * 快捷发送 POST 请求。
      * @param url 请求相对路径
-     * @param data 请求携带的 body
+     * @param data 请求携带 the body
      */
     post<T = unknown>(url: string, data?: unknown): Promise<ApiResponse<T>> {
         return this.request<T>({ url, method: "POST", data });
@@ -79,7 +79,7 @@ export class BaseService {
     /**
      * 快捷发送 PUT 请求。
      * @param url 请求相对路径
-     * @param data 请求携带的 body
+     * @param data 请求携带 the body
      */
     put<T = unknown>(url: string, data?: unknown): Promise<ApiResponse<T>> {
         return this.request<T>({ url, method: "PUT", data });
@@ -130,4 +130,3 @@ export function PluginService(target: any) {
         configurable: true
     });
 }
-

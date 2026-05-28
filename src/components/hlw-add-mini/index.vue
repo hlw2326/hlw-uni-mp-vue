@@ -19,7 +19,7 @@
  * 会根据是否为自定义导航栏（custom），自动调整气泡浮动位置（避开胶囊按钮与状态栏）。
  */
 import { computed, ref, onMounted } from "vue";
-import { useDevice } from "../../composables/device";
+import { getDevice } from "../../utils/device";
 
 defineOptions({ name: "HlwAddMini" });
 
@@ -43,8 +43,8 @@ const emit = defineEmits<{
     close: [];
 }>();
 
-// 从 useDevice 获取缓存的设备系统信息，规避在 computed 中频繁调用同步系统 API 的性能问题
-const { info } = useDevice();
+// 从 getDevice 获取缓存的设备系统信息，规避在 computed 中频繁调用同步系统 API 的性能问题
+const info = getDevice();
 
 const isCustomNav = ref(false);
 

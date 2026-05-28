@@ -4,7 +4,7 @@
  */
 import { createSSRApp, type App, type Component } from 'vue';
 import { hlw } from '@/hlw';
-import { useRequest } from '@/composables/request';
+import { request } from '@/utils/request';
 
 let _installed = false;
 
@@ -60,6 +60,6 @@ export function useApp() {
         return createApp;
     }
 
-    return { install, use, hlw, request: useRequest() };
+    return { install, use, hlw, request };
 }
 

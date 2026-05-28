@@ -1,5 +1,5 @@
 /**
- * useDevice - 设备信息与接口 query
+ * 设备信息与接口 query
  * 提供一致的、缓存后的多端设备系统信息接口。
  */
 import { toQuery } from "../utils";
@@ -18,7 +18,7 @@ export interface DeviceInfo {
     app_version_code: string;
     /** 小程序来源渠道 */
     app_channel: string;
-    /** 设备品牌。如：apple、huawei */
+    /** 设备 brand。如：apple、huawei */
     device_brand: string;
     /** 设备型号 */
     device_model: string;
@@ -168,14 +168,6 @@ function getAppid(device: Record<string, unknown>) {
 }
 
 /**
- * 读取或延迟初始化缓存的设备信息。
- */
-function getDevice() {
-    deviceCache ??= collectDevice();
-    return deviceCache;
-}
-
-/**
  * 抽取供接口调用的缩略版设备 query 字段。
  */
 function getQueryInfo(info: DeviceInfo): DeviceQueryInfo {
@@ -203,17 +195,18 @@ function getQueryInfo(info: DeviceInfo): DeviceQueryInfo {
 }
 
 /**
- * 访问当前设备配置信息的 hooks。
- * 
- * @returns 包含 `info` (原始数据) 和 `query` (用于 HTTP 报头/URL query 的 urlencoded 字符串)
+ * 获取缓存后的设备信息数据。
  */
-export function useDevice() {
-    const info = getDevice();
+export function getDevice(): DeviceInfo {
+    deviceCache ??= collectDevice();
+    return deviceCache;
+}
 
-    return {
-        info,
-        query: toQuery(getQueryInfo(info)),
-    };
+/**
+ * 获取接口请求专用的设备信息 query 字符串。
+ */
+export function getDeviceQuery(): string {
+    return toQuery(getQueryInfo(getDevice()));
 }
 
 /**
@@ -222,4 +215,3 @@ export function useDevice() {
 export function clearDeviceCache(): void {
     deviceCache = null;
 }
-

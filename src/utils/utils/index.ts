@@ -44,7 +44,7 @@ export function withQuery(url: string, qs: string): string {
 }
 
 /**
- * 将键值对对象转换为 URL 编码的 Query String。
+ * 将键值对对象转换为 URL 编码 of Query String。
  * 会自动过滤值为 `undefined` 或 `null` 的键。
  * @param data 需要转换的键值对数据对象
  * @returns 格式化后的 Query String 字符串
@@ -274,30 +274,4 @@ export async function saveVideoUrl(url: string, progress?: (value: number) => vo
         uni.showToast({ title: "操作失败", icon: "none" });
         return false;
     }
-}
-
-/**
- * 获取系统通用工具方法的 hook。
- * 
- * @example
- * ```ts
- * const { copy, saveImageUrl } = useUtils();
- * copy('hello');
- * ```
- */
-export function useUtils() {
-    return {
-        withQuery,
-        toQuery,
-        signText,
-        toNumber,
-        toBoolean,
-        copy,
-        paste,
-        saveImage,
-        saveVideoFile,
-        download,
-        saveImageUrl,
-        saveVideoUrl,
-    };
 }

@@ -90,4 +90,3 @@ export interface UploadResult {
     /** 上传成功后云端资源的可访问 URL 或文件路径 */
     data: string;
 }
-

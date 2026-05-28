@@ -42,7 +42,7 @@
  * 并且内置了快捷的 uni-app 路由跳转逻辑与 Native `open-type` 会话消息配置。
  */
 import { computed, useSlots } from "vue";
-import { useNavigate } from "../../composables/navigator";
+import { navigate } from "../../utils/navigator";
 
 /** 按钮类型：语义化颜色预设、边框模式、文本模式及幽灵模式 */
 type ButtonType = "primary" | "success" | "warning" | "danger" | "error" | "info" | "outline" | "text" | "ghost";
@@ -135,8 +135,6 @@ const buttonStyle = computed(() => {
     return style;
 });
 
-const navigator = useNavigate();
-
 /**
  * 处理点击事件与快捷页面跳转。
  */
@@ -147,7 +145,7 @@ const handleTap = () => {
 
     if (!props.url && props.navigateType !== "navigateBack") return;
 
-    navigator.navigate(props.navigateType, props.url, { delta: props.delta });
+    navigate(props.navigateType, props.url, { delta: props.delta });
 };
 </script>
 
