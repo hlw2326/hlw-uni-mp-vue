@@ -1,25 +1,24 @@
 # @hlw-uni/mp-vue
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-2.1.59-blue.svg" alt="Version">
   <img src="https://img.shields.io/badge/vue-3.x-emerald.svg" alt="Vue 3">
   <img src="https://img.shields.io/badge/typescript-supported-blue.svg" alt="TypeScript">
   <img src="https://img.shields.io/badge/platform-uni--app-red.svg" alt="uni-app">
 </p>
 
 > **hlw-uni 小程序运行时核心组件与工具包**  
-> 聚合了 Vue 3 UI 组件库、高精简主题控制、网络请求封装、常用 Composables 工具集。从 `2.0` 起，已全面合并原 `@hlw-uni/mp-core` 的全部能力，实现业务方一处 import，全场景覆盖。
+> 整合了核心 UI 组件库、全局个性化主题控制、高可用网络请求封装、Vue 核心 Hooks 以及常用无状态工具函数。
 
 ---
 
-## 🚀 特性
+## ✨ 特性
 
-- 💪 **现代化架构** — 基于 Vue 3 Composition API + `<script setup>` 构建。
-- 📐 **完整类型系统** — 100% 采用 TypeScript 编写，提供极佳的类型推导与开发体验。
-- 📱 **多端小程序适配** — 面向 uni-app 多端场景（微信、抖音、支付宝等），完美兼容宿主原生组件。
-- 🎨 **弹性主题能力** — 极简而强大的 CSS 变量主题方案，支持页面级和应用级自由注入与重叠扩展。
-- 🧩 **按需引入 & 零体积负担** — 支持 uni-app `easycom` 自动按需引入，配合 Tree-shaking，业务产物小而美。
-- 🛠️ **一键式开发基建** — 封装了消息、路由、分享、系统设备、请求、高级上传及 BaseService 服务基类，开箱即用。
+- 🚀 **响应式 & 声明式** — 全面拥抱 Vue 3 Composition API 与 `<script setup>`。
+- 📐 **完全类型安全** — 100% 采用 TypeScript 编写，提供精确的类型推导与卓越的 IDE 自动补全。
+- 🎨 **动态主题机制** — 基于 CSS 变量的极简主题管理，支持应用级与页面级动态刷新，自动更新系统导航栏配色。
+- 🔗 **统一导出机制** — 统一通过 `@hlw-uni/mp-vue` 单一出口导出，无需零散引入，支持高效的 Tree-shaking。
+- 🧩 **easycom 自动按需引入** — 完美融入 uni-app `easycom` 生态，UI 组件即写即用，零体积负担。
+- 🛠️ **清晰的架构分离** — 严格划分 `core/`（有状态生命周期 Hooks）与 `utils/`（纯无状态静态工具函数），杜绝代码逻辑耦合。
 
 ---
 
@@ -29,18 +28,16 @@
 
 ```bash
 pnpm add @hlw-uni/mp-vue
-# 或者使用 npm / yarn
-npm install @hlw-uni/mp-vue
 ```
 
 > [!NOTE]
-> **Peer Dependencies**
+> **依赖项要求**
 > - `vue >= 3.4.0`
-> - `pinia >= 2.0.0` (如需使用全局 App 上下文及状态)
+> - `pinia >= 2.0.0` (主题管理状态存储)
 
-### 2. easycom 组件自动注册
+### 2. pages.json 自动注册配置
 
-在业务项目的 `pages.json` 中配置 `easycom`，即可在页面中直接使用 `hlw-` 开头的全部 UI 组件，**无需手动 `import` 和注册**：
+在业务项目的 `pages.json` 中配置 `easycom`，即可在页面中直接使用 `hlw-` 开头的 UI 组件，**无需手动 import 注册**：
 
 ```json
 {
@@ -58,491 +55,347 @@ npm install @hlw-uni/mp-vue
 
 ---
 
-## 🛠️ 全局应用入口 & `hlw` 命名空间
+## 🧱 核心设计架构
 
-### 1. 引导初始化 `useApp()`
+类库严格区分为 **`core/`**（有状态，依赖 Vue 响应式与生命周期 API）与 **`utils/`**（纯无状态，提供命令式调用及内联支持）两大模块，并在包根目录统一导出：
 
-在小程序的 `main.ts` 或 `main.js` 中收敛并初始化 Vue 实例：
-
-```ts
-import { useApp } from '@hlw-uni/mp-vue';
-import { createPinia } from 'pinia';
-import App from './App.vue';
-
-const app = useApp();
-
-// 注册插件
-app.use(createPinia());
-
-// 生成符合 uni-app 约定的 createApp 入口
-export const createApp = app.install(App);
 ```
-
-### 2. 全局命名空间单例 `hlw`
-
-`hlw` 命名空间提供便捷的全局调用入口，您可以通过全局或导入的形式方便地访问它们：
-
-```ts
-import { hlw } from '@hlw-uni/mp-vue';
-
-// 1. $msg 全局消息通知
-hlw.$msg.toast("操作成功");
-hlw.$msg.showLoading("加载中...");
+mp-vue/src/
+├── core/             # Vue 核心（有状态，依赖 Vue 响应式与生命周期 API）
+│   ├── theme/        # 个性化主题与外观控制 (useTheme, initTheme)
+│   ├── msg/          # 交互反馈 (useMsg, hlw.$msg)
+│   ├── refs/         # 动态模板 Ref 集合收集 (useRefs)
+│   └── share/        # 小程序页面分享控制 (useShare)
+├── utils/            # 纯无状态工具集（无生命周期依赖，支持直接/内联调用）
+│   ├── ad/           # 广告控制器 (setAdPopup, showAdPopup, setAdReward, showAdReward)
+│   ├── common/       # 公共工具函数 (copy, paste, saveImageUrl, saveVideoUrl, download 等)
+│   ├── navigator/    # 路由跳转 (navigate, navigateTo, redirectTo, switchTab, reLaunch, navigateBack, navigateToMiniProgram)
+│   ├── device/       # 设备信息获取 (getDevice, getDeviceQuery, clearDeviceCache)
+│   └── request/      # 全局网络请求 (request 单例, useUpload, BaseService 服务基类)
+├── directives/       # 自定义指令 (vCopy 自动复制指令)
+└── app.ts            # 应用根上下文入口 (useApp)
 ```
-
-> [!TIP]
-> 其它工具（如 `getDevice` 设备信息获取、`copy` 剪贴板复制等）推荐直接通过 `@hlw-uni/mp-vue` 独立函数导入使用，以获得更好的 Tree-Shaking 支持与更干净的依赖链路规律。
 
 ---
 
-## 🎨 样式与主题能力
+## 🎨 核心模块 (`core/`)
 
-`mp-vue` 内置了基础主题驱动。推荐使用 `useThemePageStyle()` 组合式 API，它会返回一组挂载在页面根节点上的标准化 CSS 变量样式。
+### 1. 主题与外观管理 — `useTheme()` / `initTheme()`
 
-### 1. 基础用法
+提供小程序应用及页面层级的主题、字号、字体风格动态刷新能力，并可自动根据主题深浅调整系统导航栏/状态栏前景色（如 `mono-theme` 与 `color-theme` 自动设为白色前景色）：
 
 ```vue
 <script setup lang="ts">
-import { useThemePageStyle } from "@hlw-uni/mp-vue";
+import { useTheme } from "@hlw-uni/mp-vue";
 
-const { themePageStyle } = useThemePageStyle();
+// 获取当前主题、字号类名、字体类名，以及设置函数
+const { 
+  theme, 
+  fontSizeClass, 
+  fontFamilyClass, 
+  setFontSize, 
+  setFontFamily 
+} = useTheme();
 </script>
 
 <template>
-  <!-- 将主题变量样式挂载在最外层容器 -->
-  <hlw-page :style="themePageStyle" title="主题演示">
-    <view class="demo-card">体验主题色</view>
+  <!-- 将主题相关 CSS Class 应用于页面最外层容器 -->
+  <hlw-page :class="[theme, fontSizeClass, fontFamilyClass]" title="主题设置">
+    <view class="content">
+      <text class="text-demo">当前正使用个性化外观配置</text>
+      <button @tap="setFontSize('large')">放大字体</button>
+    </view>
   </hlw-page>
 </template>
-
-<style scoped lang="scss">
-.demo-card {
-  color: var(--primary-color);
-  background: var(--primary-light);
-  font-size: var(--font-base);
-  border-radius: var(--radius-md);
-}
-</style>
 ```
 
-### 2. 自由追加 / 覆盖自定义主题变量
+在 `App.vue` 初始化阶段，可以使用 `initTheme()` 设定初始主题：
 
-不推荐直接修改组件库源码，您可以在返回的变量基础上动态拼接项目或页面级别的专属主题参数：
+```ts
+import { initTheme } from "@hlw-uni/mp-vue";
 
-```vue
-<script setup lang="ts">
-import { computed } from "vue";
-import { useThemePageStyle } from "@hlw-uni/mp-vue";
-import { useThemeStore } from "@/store";
-
-const { themePageStyle } = useThemePageStyle();
-const themeStore = useThemeStore();
-
-const pageStyle = computed(() => {
-  return [
-    themePageStyle.value,
-    `--page-bg: ${themeStore.primaryColor}10`,
-    `--card-shadow: 0 12rpx 40rpx ${themeStore.primaryColor}22`,
-    `--brand-text-color: #0f172a`,
-  ].join(";");
+onLaunch(() => {
+  initTheme("mono-theme");
 });
-</script>
-
-<template>
-  <hlw-page :style="pageStyle" title="自定义主题">
-    <view class="custom-card">高度扩展</view>
-  </hlw-page>
-</template>
 ```
 
----
+### 2. 交互式反馈 — `useMsg()` / 全局 `hlw.$msg`
 
-## ⚡ 核心 Composables (工具与服务封装)
-
-### 💬 消息提示 — `useMsg()`
-
-统一且高度简化的 Toast、Loading 与原生模态弹窗。
+封装并规整了小程序原生的 Toast、Loading 与 Promise 化的 Modal 确认弹窗。支持在 setup 内部使用 `useMsg()`，亦支持在非 setup 环境中通过全局 `hlw.$msg` 直接调用：
 
 ```ts
-import { useMsg } from '@hlw-uni/mp-vue';
+import { useMsg, hlw } from "@hlw-uni/mp-vue";
 
 const msg = useMsg();
 
 // 1. Toast 轻提示
-msg.toast("普通消息提示");
+msg.toast("操作成功");
+hlw.$msg.toast("非 setup 阶段直接调用");
+
 msg.success("保存成功");
 msg.error("提交失败");
 
-// 2. Loading 等待框 (带透明防穿透遮罩)
-msg.showLoading("数据加载中...");
-// 异步操作结束后关闭
+// 2. Loading 等待框（带遮罩防穿透点击）
+msg.showLoading("数据同步中...");
 msg.hideLoading();
 
-// 3. Promise 风格确认对话框
-const confirmDelete = async () => {
-  const isOk = await msg.confirm({
-    title: "高危操作",
-    content: "确定要彻底删除该项目吗？",
+// 3. Promise 风格确认弹窗
+const handleDelete = async () => {
+  const confirm = await msg.confirm({
+    title: "安全警告",
+    content: "此操作将永久删除该资源，是否继续？",
     confirmColor: "#ef4444"
   });
-  if (isOk) {
-    // 执行删除...
+  if (confirm) {
+    // 执行删除操作
   }
 };
 ```
 
-### 🗺️ 路由跳转 — `navigateTo` / `redirectTo` 等
+### 3. 小程序页面分享 — `useShare()`
 
-封装了小程序的各类页面跳转，自带安全的异常捕获和提示，支持打开外部小程序。
-
-```ts
-import { navigateTo, redirectTo, switchTab, reLaunch, navigateBack, navigateToMiniProgram } from '@hlw-uni/mp-vue';
-
-// 基础路由跳转 (保留当前页)
-navigateTo("/pages/detail/index?id=100");
-
-// 页面重定向 (关闭当前页)
-redirectTo("/pages/login/index");
-
-// 切换 TabBar 页面
-switchTab("/pages/mine/index");
-
-// 干净重启 (关闭所有页面)
-reLaunch("/pages/index/index");
-
-// 返回上一页
-navigateBack(); 
-// 返回指定层级
-navigateBack(2);
-
-// 跳转到其他小程序
-navigateToMiniProgram("wx_appid_xxxxx", {
-  path: "pages/home/index",
-  envVersion: "release"
-});
-```
-
-### 📤 微信分享 — `useShare()`
-
-优雅地在 `<script setup>` 中配置小程序卡片和朋友圈分享：
+在 setup 中以声明式极简控制当前页面的微信转发卡片及朋友圈分享配置：
 
 ```vue
 <script setup lang="ts">
 import { useShare } from "@hlw-uni/mp-vue";
 
-// 直接在 setup 阶段声明，将自动接管页面分享按钮及右上角菜单
+// 声明分享配置，自动劫持当前页面的分享与朋友圈按钮事件
 useShare({
   title: "推荐你体验这个超棒的小程序！",
-  path: "/pages/index/index?from=share",
+  path: "/pages/index/index?from=share_button",
   imageUrl: "https://example.com/share-cover.png"
 });
 </script>
 ```
 
-### 🌐 网络请求 — `request` & `BaseService`
+### 4. 动态模板 Ref 集合 — `useRefs()`
 
-强大的请求库，完美适配拦截器模式与面向服务的 `BaseService` 设计模式。
-
-```ts
-import { request, BaseService, ServicePrefix, ServiceNamespace } from "@hlw-uni/mp-vue";
-
-// 1. 配置全局参数
-request.setBaseURL("https://api.example.com");
-
-// 2. 注册拦截器
-const cancelReq = request.onRequest((config) => {
-  config.headers = {
-    ...config.headers,
-    "Authorization": `Bearer ${uni.getStorageSync("token")}`,
-  };
-  return config;
-});
-
-// 3. 请求接口示例
-interface UserProfile {
-  nickname: string;
-  avatar: string;
-}
-const profile = await request.get<UserProfile>("/user/profile");
-
-// 4. 面向服务封装 (BaseService)
-@ServicePrefix("api")
-@ServiceNamespace("member")
-class MemberService extends BaseService {
-  getProfile() {
-    return this.get<UserProfile>("/profile"); // 自动拼接成 /api/member/profile
-  }
-}
-
-export const memberService = new MemberService();
-```
-
----
-
-## 🧩 核心 UI 组件库说明
-
-`@hlw-uni/mp-vue` 内置了多达 27 个高频易用组件。以下重点介绍核心高频组件的 API 与用法。
-
-### 🏢 1. 页面容器组件 — `hlw-page`
-
-所有页面的根容器，支持自定义页头、自定义页脚、完美控制滚动区域，并通过 `provide` 驱动子组件（如 `hlw-back-top`）。
-
-#### Props
-
-| 属性名 | 类型 | 默认值 | 说明 |
-| :--- | :--- | :--- | :--- |
-| `title` | `string` | `""` | 页面标题，设置后渲染默认页头 `hlw-header` |
-| `isBack` | `boolean` | `false` | 是否显示返回按钮 |
-| `bgClass` | `string` | `""` | 传递给 `hlw-header` 的背景 class |
-| `bodyClass` | `string \| object \| array` | `""` | 内层 body 的 class，常用于设置 flex 或 gap 间距 |
-| `bodyStyle` | `string \| object` | `""` | 内层 body 的自定义样式 |
-
-#### 示例
-
-```vue
-<template>
-  <hlw-page title="用户设置" :is-back="true" body-class="p-4 gap-4">
-    <!-- 自定义页头 (可选) -->
-    <template #header>
-      <view class="custom-header">自定义头部</view>
-    </template>
-
-    <!-- 页面内容 -->
-    <view class="setting-list">
-      <view>选项一</view>
-    </view>
-
-    <!-- 底部悬浮/固定栏 (不随页面滚动) -->
-    <template #footer>
-      <view class="footer-bar">
-        <hlw-button block>保存修改</hlw-button>
-      </view>
-    </template>
-  </hlw-page>
-</template>
-```
-
----
-
-### 🔘 2. 语义化按钮 — `hlw-button`
-
-在原生按钮的基础上进行了大幅功能扩展，支持语义化配色、一键路由跳转、以及极简适配小程序的原生开放能力。
-
-#### Props
-
-| 属性名 | 类型 | 默认值 | 说明 |
-| :--- | :--- | :--- | :--- |
-| `type` | `ButtonType` | `"primary"` | 按钮类型，可选 `primary \| success \| warning \| danger \| error \| info \| outline \| text \| ghost` |
-| `size` | `"small" \| "medium" \| "large"` | `"medium"` | 按钮尺寸 |
-| `loading` | `boolean` | `false` | 是否开启加载状态，开启后按钮禁用并展示 Spinner |
-| `disabled` | `boolean` | `false` | 是否禁用按钮 |
-| `block` | `boolean` | `false` | 是否独占整行（宽度 100%） |
-| `round` | `boolean` | `false` | 是否为高圆角胶囊形态 |
-| `icon` | `string` | `""` | 按钮图标类名 |
-| `bgColor` | `string` | `""` | 自定义背景颜色（覆盖 type） |
-| `textColor` | `string` | `""` | 自定义文字颜色 |
-| `url` | `string` | `""` | 快捷页面跳转目标地址 |
-| `navigateType` | `NavigateType` | `"navigateTo"` | 路由方式，可选 `navigateTo \| redirectTo \| switchTab \| reLaunch \| navigateBack` |
-| `openType` | `string` | `""` | 小程序原生的开放动作类型，如 `share`, `contact`, `getPhoneNumber` 等 |
-
-#### 示例
-
-```vue
-<!-- 1. 基础语义按钮 -->
-<hlw-button type="success" round>成功按钮</hlw-button>
-
-<!-- 2. 加载态 -->
-<hlw-button type="danger" :loading="true">提交中</hlw-button>
-
-<!-- 3. 路由快捷跳转 -->
-<hlw-button type="outline" url="/pages/mine/index" navigate-type="switchTab">去我的主页</hlw-button>
-
-<!-- 4. 原生分享触发 -->
-<hlw-button type="primary" open-type="share" icon="i-fa6-solid-share">分享给好友</hlw-button>
-```
-
----
-
-### 📋 3. 高级菜单组件 — `hlw-menu`
-
-高度可定制的数据驱动菜单组件，支持列表模式和宫格网格模式。高度适配微信小程序的客服、获取手机号等 `openType` 功能。
-
-#### Props
-
-| 属性名 | 类型 | 默认值 | 说明 |
-| :--- | :--- | :--- | :--- |
-| `items` | `HlwMenuItem[]` | `[]` | 菜单数据列表 |
-| `title` | `string` | `""` | 卡片标题，有值时在菜单上方展示标题及分割线 |
-| `mode` | `"list" \| "grid"` | `"list"` | 布局模式，可选列表或宫格模式 |
-| `columns` | `number` | `4` | 宫格列数，仅在 `mode="grid"` 时有效 |
-| `border` | `boolean` | `true` | 是否展示卡片容器外边框 |
-
-#### `HlwMenuItem` 参数定义
-
-```ts
-interface HlwMenuItem {
-  icon: string;             // 图标 class
-  iconTheme?: string;       // 图标色彩主题：orange, purple, wechat, blue, slate 等
-  label: string;            // 菜单标签文案
-  url?: string;             // 跳转链接，配置后点击自动跳转，无需绑定 click 事件
-  value?: string;           // 右侧纯文本（仅列表模式）
-  tag?: string;             // 右侧彩色标签/右上角徽标
-  tagTheme?: string;        // 标签颜色：rose, orange, blue, wechat, red
-  tagPulse?: boolean;       // 标签是否具有呼吸呼吸灯闪烁动画
-  loading?: boolean;        // 是否展示加载状态
-  visible?: boolean;        // 是否渲染该子项，控制动态显隐
-  openType?: string;        // 小程序原生 open-type 动作
-}
-```
-
-#### 示例
+用于在 `v-for` 循环渲染中动态收集 DOM 节点或组件实例的 Ref 引用：
 
 ```vue
 <script setup lang="ts">
-import type { HlwMenuItem } from "@hlw-uni/mp-vue";
+import { useRefs } from "@hlw-uni/mp-vue";
 
-const serviceMenus: HlwMenuItem[] = [
-  { icon: "i-fa6-solid-user", label: "个人资料", url: "/pages/profile/index", iconTheme: "blue" },
-  { icon: "i-fa6-solid-bell", label: "系统通知", value: "未读 3 条", iconTheme: "orange", tag: "HOT", tagPulse: true },
-  { icon: "i-fa6-solid-headset", label: "在线客服", openType: "contact", iconTheme: "wechat" },
-  { icon: "i-fa6-solid-gear", label: "设置中心", url: "/pages/setting/index", iconTheme: "slate" },
-];
-</script>
+const { refs, setRef } = useRefs<any>();
 
-<template>
-  <!-- 列表模式 -->
-  <hlw-menu title="我的服务" :items="serviceMenus" />
-
-  <!-- 宫格模式 (4列) -->
-  <hlw-menu mode="grid" :columns="4" :items="serviceMenus" class="mt-4" />
-</template>
-```
-
----
-
-### 📄 4. 分页滚动包装容器 — `hlw-paging`
-
-基于优秀的 `z-paging` 深度封装，极简整合了主题加载态（`hlw-loading`）和空状态（`hlw-empty`），提供更加一体化和顺滑的无缝滚动加载体验。
-
-#### Props
-
-| 属性名 | 类型 | 默认值 | 说明 |
-| :--- | :--- | :--- | :--- |
-| `loadingText` | `string` | `"加载中..."` | 加载提示文案 |
-| `emptyText` | `string` | `"暂无数据"` | 空状态提示文案 |
-| `emptyImage` | `string` | `""` | 自定义空状态图片地址 |
-| `useDefaultLoading` | `boolean` | `true` | 是否使用内置的 `hlw-loading` 插槽 |
-| `useDefaultEmpty` | `boolean` | `true` | 是否使用内置的 `hlw-empty` 插槽 |
-
-#### 示例
-
-```vue
-<script setup lang="ts">
-import { ref } from "vue";
-import type { HlwPagingRef } from "@hlw-uni/mp-vue";
-
-interface Article {
-  id: number;
-  title: string;
-}
-
-const paging = ref<HlwPagingRef<Article> | null>(null);
-const dataList = ref<Article[]>([]);
-
-const onQuery = async (pageNo: number, pageSize: number) => {
-  try {
-    const res = await fetchArticleList({ page: pageNo, limit: pageSize });
-    // 渲染并控制页数判定
-    paging.value?.completeByNoMore(res.list, res.list.length < pageSize);
-  } catch (err) {
-    paging.value?.completeByError(err);
+const handleScroll = (index: number) => {
+  const targetComponent = refs.value[index];
+  if (targetComponent) {
+    // 调用组件实例上的方法
+    targetComponent.scrollIntoView();
   }
 };
 </script>
 
 <template>
-  <hlw-paging
-    ref="paging"
-    v-model="dataList"
-    loading-text="同步文章列表中"
-    empty-text="还没有发表任何文章"
-    @query="onQuery"
-  >
-    <view v-for="item in dataList" :key="item.id" class="article-item p-4 border-b">
-      {{ item.title }}
-    </view>
-  </hlw-paging>
+  <view v-for="(item, index) in list" :key="item.id">
+    <custom-item :ref="el => setRef(el, index)" />
+  </view>
 </template>
 ```
 
 ---
 
-## 📂 27个 UI 组件完整索引
+## 🛠️ 纯无状态工具集 (`utils/`)
 
-为了使开发者了解所有可用的 UI 资产，以下是 `@hlw-uni/mp-vue` 内置的 27 个组件的完整全景列表：
+### 1. 路由与导航跳转 — `navigator`
 
-| 组件目录 | 组件名称 | 适用场景及简要说明 |
-| :--- | :--- | :--- |
-| 🎬 `hlw-ad` | 广告展示 | 对小程序原生 `<ad>` 的封装，支持信息流/Banner广告等 |
-| 📲 `hlw-add-mini` | 添加提示 | 引导用户点击小程序右上角“添加到我的小程序”的气泡提示 |
-| 👤 `hlw-avatar` | 用户头像 | 支持图片头像，加载失败时自动降级渲染文字首字母占位 |
-| 🔝 `hlw-back-top` | 返回顶部 | 自动监听页面滚动并展示悬浮按钮，支持平滑的一键回顶 |
-| 🔘 `hlw-button` | 语义化按钮 | 支持多种语义色彩、尺寸档位、路由快捷跳转与原生开放动作 |
-| 🎨 `hlw-canvas` | 海报绘制 | 用于快捷生成小程序分享海报的 Canvas 画布包装工具 |
-| 📦 `hlw-card` | 卡片容器 | 带有微阴影与圆角的高质感布局容器，常用于聚合业务块 |
-| 🏷️ `hlw-card-header` | 卡片头部 | 专门为卡片组件设计的标题栏，支持小装饰线条和动作插槽 |
-| 🗂️ `hlw-cell` | 单元格 | 规范的列表项组件，支持图标、标题、副标题与右侧各种扩展插槽 |
-| 🧩 `hlw-custom` | 自定义容器 | 统一规范的多用途自定义包装外框 |
-| ➖ `hlw-divider` | 分割线 | 带文字或纯线条的排版分割线 |
-| 🏜️ `hlw-empty` | 空状态 | 精美质感的空态图标及提示文案，支持挂载自定义引导动作按钮 |
-| 🧭 `hlw-header` | 自定义导航栏 | 对小程序原生导航栏的完美替代，支持沉浸式状态栏与返回动作 |
-| 🖼️ `hlw-image` | 增强图片 | 支持平滑过渡加载效果、支持懒加载及骨架图占位的 Image 增强版 |
-| 🔄 `hlw-loading` | 加载指示器 | 统一风格的加载转圈动效及文案提示 |
-| 🍔 `hlw-menu` | 多功能菜单 | 数据驱动，列表模式/宫格模式自由切换，高度适配 `openType` |
-| 💬 `hlw-modal` | 模态弹窗 | 轻量的确认与提示弹窗组件 |
-| 📢 `hlw-notice-bar` | 滚动通告栏 | 经典的横向滚动滚动条，用于突发通告、重要广播等 |
-| 🎁 `hlw-notice-popup` | 通告弹窗 | 页面初始化时弹出的卡片式全局公告、优惠券或活动图 |
-| 🏢 `hlw-page` | 页面核心骨架 | 收敛顶部导航栏、底部固定栏与中间高度自适应页面的核心基础件 |
-| 📜 `hlw-paging` | 分页滚动组件 | 基于 `z-paging` 深度打通，无缝管理下拉刷新与上拉加载 |
-| 🎪 `hlw-popup` | 基础弹窗 | 支持上、下、中等各种方位的轻量级弹窗蒙层容器 |
-| 🔍 `hlw-search` | 搜索栏 | 高颜值的小程序搜索输入框，支持一键清空、聚焦回调等 |
-| 🗃️ `hlw-sheet` | 动作面板 | 从页面底部升起的动作面板或选项操作菜单 (Action Sheet) |
-| 💀 `hlw-skeleton` | 骨架屏 | 高质感微光渐变波纹效果的占位加载骨架屏 |
-| 📑 `hlw-tabs` | 横向选项卡 | 自动计算高亮的切换栏，支持文字或含数字徽标的选项 |
-| 🔖 `hlw-tag` | 标签 | 多种色彩、填充模式（实心、镂空）的小标签 |
+全面接管 uni-app 原生路由 API，内置路由降级、安全异常捕获与失败自动提示。
+
+```ts
+import { 
+  navigateTo, 
+  redirectTo, 
+  switchTab, 
+  reLaunch, 
+  navigateBack, 
+  navigateToMiniProgram 
+} from "@hlw-uni/mp-vue";
+
+// 保留当前页，跳转至指定路径
+navigateTo("/pages/detail/index?id=123");
+
+// 关闭当前页，重定向跳转
+redirectTo("/pages/auth/login");
+
+// 切换至 TabBAR 导航页
+switchTab("/pages/home/index");
+
+// 关闭所有页面，重启并打开指定页
+reLaunch("/pages/index/index");
+
+// 返回上级页面（默认 1 层）
+navigateBack();
+navigateBack(2); // 返回上两级页面
+
+// 打开外部小程序
+navigateToMiniProgram("wxxxxxxxxx", {
+  path: "pages/main/index",
+  envVersion: "release"
+});
+```
+
+### 2. 网络请求封装 — `request` & `BaseService`
+
+高性能的 HTTP 请求客户端，支持多拦截器链、自动携带设备头信息、对象服务化组织等。
+
+```ts
+import { request, BaseService, ServicePrefix, ServiceNamespace } from "@hlw-uni/mp-vue";
+
+// 1. 全局基础 URL 配置
+request.setBaseURL("https://api.hlw.com");
+
+// 2. 配置请求/响应拦截器
+request.onRequest((config) => {
+  config.headers = {
+    ...config.headers,
+    "Authorization": `Bearer ${uni.getStorageSync("token")}`
+  };
+  return config;
+});
+
+// 3. 直接调用 API
+const data = await request.get("/user/info");
+
+// 4. 面向服务组织封装（基类配合装饰器）
+@ServicePrefix("v1")
+@ServiceNamespace("order")
+class OrderService extends BaseService {
+  getList(page: number) {
+    // 自动拼接为: /v1/order/list
+    return this.get("/list", { page }); 
+  }
+}
+export const orderService = new OrderService();
+```
+
+### 3. 微信广告控制助手 — `ad`
+
+高度优化的插屏与激励视频广告助手，支持提前静默异步预加载、防止回调重叠、自动管理加载状态。
+
+```ts
+import { setAdPopup, showAdPopup, setAdReward, showAdReward } from "@hlw-uni/mp-vue";
+
+// 1. 插屏广告配置与延迟展示
+setAdPopup("adunit-popup-xxxx");
+await showAdPopup(2000); // 延迟 2000ms 自动展示已加载的插屏广告
+
+// 2. 激励视频广告配置（完美支持 Promise 化播放状态响应）
+setAdReward("adunit-reward-xxxx", (res) => {
+  if (res.ok && res.isEnded) {
+    // 成功播放完毕，在此分发业务奖励
+  }
+});
+
+// 立即唤起激励视频广告播放
+const res = await showAdReward(() => {
+  // 广告拉起成功回调，可用于关闭页面的 Loading 等待框
+});
+```
+
+### 4. 设备与系统元数据 — `device`
+
+标准化、可缓存的高效设备元数据获取。消除了不同端、不同版本小程序获取系统属性的 API 碎片化问题。
+
+```ts
+import { getDevice, getDeviceQuery } from "@hlw-uni/mp-vue";
+
+// 获取标准化设备数据结构
+const device = getDevice();
+console.log(device.platform, device.device_brand, device.system);
+
+// 获取已转化为 URL-encoded 参数的设备数据，常用于拼接到请求 Query 头中
+const queryStr = getDeviceQuery();
+```
+
+### 5. 公共工具库 — `common`
+
+包含系统剪贴板交互、支持权限预检测的多媒体资源（图片、视频）一键下载并保存到系统相册等实用工具。
+
+```ts
+import { 
+  copy, 
+  paste, 
+  saveImageUrl, 
+  saveVideoUrl, 
+  toQuery, 
+  withQuery 
+} from "@hlw-uni/mp-vue";
+
+// 1. 剪贴板读取与写入
+await copy("复制的内容", true); // 第二参数决定是否弹出“复制成功”提示
+const text = await paste();
+
+// 2. 保存网络多媒体资源至手机相册（自动拦截未授权状态，弹出引导设置提示）
+const successImg = await saveImageUrl("https://img.hlw.com/logo.jpg");
+const successVideo = await saveVideoUrl("https://img.hlw.com/video.mp4");
+
+// 3. 安全 URL 参数拼接
+const newUrl = withQuery("/pages/index", "id=1&name=hlw");
+const query = toQuery({ id: 1, name: "hlw", temp: null }); // "id=1&name=hlw"
+```
 
 ---
 
-## 💻 本地开发与贡献说明
+## ⚡ 自定义 Vue 指令 (`directives`)
 
-若您需要对 `@hlw-uni/mp-vue` 库进行二次开发、修补或提交贡献，可按如下流程进行：
+### `v-copy` 点击复制指令
 
-### 1. 启动监听式构建 (开发模式)
+在模板标签上声明此指令，点击元素即可自动将绑定值复制到手机系统剪贴板，并触发微提示，无需绑定多余事件：
+
+```vue
+<template>
+  <view class="user-info">
+    <!-- 点击直接复制 ID 文本 -->
+    <text v-copy="userId" class="uid-text">用户ID: {{ userId }}</text>
+  </view>
+</template>
+```
+
+---
+
+## 📦 easycom UI 组件全景索引 (27个内置组件)
+
+以下为 `@hlw-uni/mp-vue` 内置的部分核心 UI 组件简表：
+
+| 组件名称 | 目录定位 | 说明 |
+| :--- | :--- | :--- |
+| **`hlw-page`** | `components/hlw-page` | **核心页面骨架组件**。统一承载页面导航、滚动视图区与底部固定栏。 |
+| **`hlw-button`** | `components/hlw-button` | **语义化增强按钮**。支持路由快捷绑定、状态机 loading 及小程序开放能力。 |
+| **`hlw-paging`** | `components/hlw-paging` | **高性能分页滚动容器**。基于 z-paging 整合内置 loading 和空状态。 |
+| **`hlw-header`** | `components/hlw-header` | **自定义沉浸式导航栏**。支持各类自定义动作、按钮与插槽。 |
+| **`hlw-avatar`** | `components/hlw-avatar` | **增强用户头像**。图片加载失败时自动平滑降级显示文字首字母。 |
+| **`hlw-skeleton`** | `components/hlw-skeleton` | **渐变骨架占位屏**。带优雅扫光动画效果的 UI 占位图。 |
+| **`hlw-loading`** | `components/hlw-loading` | **组件级加载指示器**。统一的高品质微动效 loading。 |
+| **`hlw-empty`** | `components/hlw-empty` | **通用空状态面板**。内置优雅插图，支持各种状态文案定制。 |
+| **`hlw-popup`** | `components/hlw-popup` | **弹窗基类容器**。支持上、下、中等各种动画过渡的全局蒙层容器。 |
+| **`hlw-tabs`** | `components/hlw-tabs` | **滚动标签页选项卡**。自动平滑计算高亮下滑线位置。 |
+| **`hlw-tag`** | `components/hlw-tag` | **语义标签组件**。内置多种主题颜色、胶囊型及镂空风格。 |
+
+---
+
+## 💻 团队本地开发说明
+
+若您需要参与本组件库的修改、维护与新特性迭代，请遵循以下工程流程：
+
+### 1. 启动热编译 (Watch Mode)
 
 ```bash
 pnpm dev
-# 此时 vite 会监听 src 下所有文件的变动，并自动热重构同步到 dist 目录
 ```
+此时 Vite 将启动监听构建，自动将 `src/` 的变更即时打包同步至 `dist/` 临时构建目录，使本地消费链路保持实时更新。
 
-### 2. 生成生产包
+### 2. 生成生产级分发包
+
+在合并主分支或发版前，须执行生产级打包编译，产出经高度优化、体积极致压缩且带全量类型定义的包产物：
 
 ```bash
 pnpm build
-# 将生成高度优化、体积极致精简的 CommonJS、ESModule 以及 .d.ts 类型声明产物
-```
-
-### 3. 构建产物结构
-
-```
-mp-vue/
-├── dist/
-│   ├── index.js          # CommonJS 格式产物
-│   ├── index.mjs         # ESModule 格式产物 (供现代打包器 Tree-shaking 使用)
-│   └── index.d.ts        # 自动生成的 TS 全量类型声明文件
 ```
 
 ---
 
-## 📄 开源协议
+## 📄 许可声明
 
-**内部私有组件库**，仅供 `hlw-uni` 项目组内部及关联方协作使用，未经授权请勿分发或公开上传至公共 NPM 镜像。
+本仓库为**内部私有组件库**。仅授权应用于 `hlw-uni` 关联小程序的协作与业务研发。未经许可，严禁分发或公开上传至公共 NPM 仓库或共享平台。
