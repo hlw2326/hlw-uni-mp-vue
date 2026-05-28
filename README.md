@@ -88,13 +88,10 @@ import { hlw } from '@hlw-uni/mp-vue';
 // 1. $msg 全局消息通知
 hlw.$msg.toast("操作成功");
 hlw.$msg.showLoading("加载中...");
-
-// 2. $utils 全局工具箱（指令编译等内置模块依赖此导出）
-hlw.$utils.copy("复制的文本");
 ```
 
 > [!TIP]
-> 其它工具（如 `getDevice` 设备信息获取等）推荐直接通过 `@hlw-uni/mp-vue` 独立函数导入使用，以获得更好的 Tree-Shaking 支持与更干净的依赖链路。
+> 其它工具（如 `getDevice` 设备信息获取、`copy` 剪贴板复制等）推荐直接通过 `@hlw-uni/mp-vue` 独立函数导入使用，以获得更好的 Tree-Shaking 支持与更干净的依赖链路规律。
 
 ---
 
