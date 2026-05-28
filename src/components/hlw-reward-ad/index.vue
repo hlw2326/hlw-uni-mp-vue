@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { setAdReward, showAdReward } from "../../composables/ad";
+import { setAdReward, showAdReward } from "../../utils/ad";
 
 defineOptions({ name: "HlwRewardAd" });
 

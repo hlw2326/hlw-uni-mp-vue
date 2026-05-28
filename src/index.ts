@@ -10,6 +10,7 @@
 
 // Composables / 工具 / Theme
 export * from "./composables";
+export { useHlwAd, setAdPopup, showAdPopup, setAdReward, showAdReward, type AdRes } from "./utils/ad";
 export { 
     useTheme, 
     initTheme,
