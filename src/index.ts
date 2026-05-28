@@ -10,11 +10,7 @@
 
 // Core / 工具
 export * from "./core";
-export * from "./utils/ad";
-export * from "./utils/common";
-export * from "./utils/navigator";
-export * from "./utils/device";
-export * from "./utils/request";
+export * from "./utils";
 
 // 类型
 export type { HlwMenuItem } from "./components/hlw-menu/types";
