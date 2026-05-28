@@ -133,7 +133,7 @@ function close() {
 .hlw-add-mini {
     position: fixed;
     right: 22rpx;
-    z-index: 99999;
+    z-index: 999;
     width: 340rpx;
     animation: hlw-add-mini-in 0.22s ease-out both;
 }

@@ -6,6 +6,24 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * HlwPage — 页面核心容器组件
+ *
+ * 所有小程序页面的主框架容器。自动适配全局主题、字体大小和字体样式。
+ * 可以快捷集成自定义导航栏（HlwNavBar），保持整个页面结构的一致性。
+ *
+ * @props
+ *   isBar  - 是否显示并使用自定义导航栏，默认 false
+ *   title  - 自定义导航栏标题文字（在 isBar 为 true 时生效）
+ *   isBack - 是否显示自定义导航栏的返回键（在 isBar 为 true 时生效），默认 false
+ *
+ * @example
+ * ```vue
+ * <hlw-page is-bar is-back title="个人中心">
+ *     <view>页面内容...</view>
+ * </hlw-page>
+ * ```
+ */
 import { useTheme } from "@/core";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import { ref } from "vue";

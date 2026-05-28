@@ -15,6 +15,21 @@
 </template>
 
 <script lang="ts" setup>
+/**
+ * HlwNavBar — 自定义导航栏组件
+ *
+ * 自适应状态栏高度与胶囊按钮，完美替代微信小程序原生导航栏。支持不同主题配色、返回按钮及自适应高度。
+ *
+ * @props
+ *   title   - 导航栏标题文字
+ *   isBack  - 是否显示返回按钮，默认 false；点击自动回退或回到首页
+ *   isBar   - 是否占用状态栏高度，默认 false
+ *
+ * @example
+ * ```vue
+ * <hlw-nav-bar title="设置中心" is-back />
+ * ```
+ */
 import { computed, ref } from "vue";
 import { useTheme } from "@/core";
 

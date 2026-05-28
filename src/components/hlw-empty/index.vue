@@ -8,6 +8,20 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwEmpty — 空状态组件
+ *
+ * 用于页面或区域无数据时的占位展示，支持自定义提示文本和占位图片。
+ *
+ * @props
+ *   text  - 占位提示文案，默认 "暂无数据"
+ *   image - 占位图地址，未提供时默认渲染原生盒子 icon
+ *
+ * @example
+ * ```vue
+ * <HlwEmpty text="空空如也，快去添加内容吧" />
+ * ```
+ */
 defineProps<{
     text?: string;
     image?: string;

@@ -21,6 +21,28 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
+/**
+ * HlwCustom — 客服卡片自定义组件
+ *
+ * 用于引导用户点击联系微信客服，支持配置标题、描述、按钮文案及原生客服卡片参数。
+ *
+ * @props
+ *   title      - 客服卡片主标题
+ *   desc       - 客服卡片描述/说明文字
+ *   btn_title  - 客服按钮文案，默认 "联系客服"
+ *   contact    - 微信原生客服卡片配置项
+ *
+ * @example
+ * ```vue
+ * <HlwCustom 
+ *     title="专属客服" 
+ *     desc="遇到问题？点击咨询您的专属客服" 
+ *     btn_title="去咨询"
+ *     :contact="{ send_message_title: '咨询标题' }"
+ * />
+ * ```
+ */
+
 interface ContactConfig {
     send_message_title?: string;
     send_message_path?: string;

@@ -20,6 +20,31 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwSearch — 高感官度输入搜索栏组件
+ *
+ * 规范化的小程序搜索栏输入框，支持一键清空、禁用、聚焦/失焦回调及回车直接搜索。
+ *
+ * @props
+ *   modelValue  - 双向绑定的输入内容
+ *   placeholder - 占位符提示文本，默认 "搜索"
+ *   disabled    - 是否禁用输入，默认 false
+ *   clearable   - 是否允许一键清空输入，默认 true
+ *   shape       - 形状样式：square(方角) / round(圆角)，默认 round
+ *   background  - 自定义搜索栏组件的背景色
+ *
+ * @events
+ *   update:modelValue - 更新绑定内容时触发
+ *   search            - 点击键盘回车搜索时触发 (value)
+ *   clear             - 点击清除按钮时触发
+ *   focus             - 输入框聚焦时触发
+ *   blur              - 输入框失焦时触发
+ *
+ * @example
+ * ```vue
+ * <HlwSearch v-model="keywords" placeholder="搜索商品" @search="onSearch" />
+ * ```
+ */
 interface Props {
     modelValue?: string;
     placeholder?: string;

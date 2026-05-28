@@ -13,6 +13,29 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwNoticeBar — 滚动通告栏
+ *
+ * 用于显示重要广播、紧急通告或系统消息。支持横向无缝滚动播放、可关闭状态及自定义图标/色彩。
+ *
+ * @props
+ *   text       - 通告文本内容
+ *   scrollable - 是否开启滚动播放，默认 true
+ *   closable   - 是否显示关闭按钮，默认 false
+ *   color      - 文字颜色，默认 "#ed6a0c"
+ *   background - 背景颜色，默认 "#fffbe8"
+ *   speed      - 滚动速度（每秒像素数），默认 60
+ *   leftIcon   - 左侧自定义图标 class，默认喇叭图标
+ *
+ * @events
+ *   close - 点击关闭按钮时触发
+ *   click - 点击通告内容区时触发
+ *
+ * @example
+ * ```vue
+ * <HlwNoticeBar text="系统将于今晚24点停机维护，给您带来的不便敬请谅解！" closable />
+ * ```
+ */
 import { computed, ref } from "vue";
 
 interface Props {

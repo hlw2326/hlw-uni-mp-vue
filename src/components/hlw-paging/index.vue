@@ -46,6 +46,42 @@
 </template>
 
 <script setup lang="ts">
+/**
+ * HlwPaging — 高级分页滚动加载组件
+ *
+ * 基于 z-paging 封装，集成了系统级 HlwLoading 和 HlwEmpty 状态。
+ * 支持下拉刷新、上拉加载、自动空状态占位与错误提示展示。
+ *
+ * @props
+ *   modelValue         - 绑定的列表数组数据
+ *   fixed              - 是否固定在屏幕上，默认 false
+ *   usePageScroll      - 是否使用页面滚动，默认 false
+ *   height             - 高度样式，如 "100%"
+ *   refresherEnabled   - 是否开启下拉刷新，默认 true
+ *   loadingMoreEnabled - 是否开启上拉加载，默认 true
+ *   defaultPageSize    - 默认每页大小
+ *   loadingText        - 加载提示文案，默认 "加载中..."
+ *   emptyText          - 数据为空提示文案，默认 "暂无数据"
+ *   errorText          - 数据加载失败提示文案，默认 "加载失败，请稍后重试"
+ *   emptyImage         - 自定义空状态图片地址
+ *   useDefaultLoading  - 是否使用内置加载状态插槽，默认 true
+ *   useDefaultEmpty    - 是否使用内置空状态插槽，默认 true
+ *
+ * @events
+ *   update:modelValue - 更新列表数组数据时触发
+ *   query             - 请求新一页数据时触发 (pageNo, pageSize)
+ *
+ * @exposed
+ *   pagingRef          - 内部 z-paging 的 ref 实例
+ *   completeByNoMore   - 结束加载并判断是否还有更多数据 (list, isNoMore)
+ *   completeByError    - 请求出错时调用
+ *   reload             - 重载当前列表
+ *
+ * @example
+ * ```vue
+ * <HlwPaging v-model="list" @query="fetchData" />
+ * ```
+ */
 import { computed, ref, useSlots } from "vue";
 import ZPaging from "z-paging/components/z-paging/z-paging.vue";
 import type { HlwPagingRef } from "./types";
