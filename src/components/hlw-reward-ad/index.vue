@@ -80,7 +80,7 @@ async function handleClick() {
         setAdReward(props.unitId);
 
         // 立即展示并播放广告
-        const res = await showAdReward();
+        const res = await showAdReward(hide);
 
         // 播放流结束后（不管成功或退出），立刻关闭 Loading 状态
         hide();

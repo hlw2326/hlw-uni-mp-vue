@@ -192,9 +192,10 @@ export function useHlwAd() {
     /**
      * 立即播放已加载的激励视频广告。
      * 
+     * @param onShowSuccess 广告成功展示播放时的回调（用于隐藏 Loading 状态等）
      * @returns 返回 Promise<AdRes>，指示广告是否正常播放完毕
      */
-    function showAdReward(): Promise<AdRes> {
+    function showAdReward(onShowSuccess?: () => void): Promise<AdRes> {
         const ad = rewardCache.get(activeRewardAdId);
         if (!ad) {
             return Promise.resolve({ ok: false });
@@ -205,14 +206,27 @@ export function useHlwAd() {
         });
         rewardPromise = current;
 
-        ad.show().catch(() => {
-            ad.load()
-                .then(() => ad.show())
-                .catch((err: unknown) => {
-                    console.error("[HlwAd] Rewarded video show error:", err);
-                    finish({ ok: false, err });
-                });
-        });
+        ad.show()
+            .then(() => {
+                onShowSuccess?.();
+            })
+            .catch(() => {
+                ad.load()
+                    .then(() => {
+                        ad.show()
+                            .then(() => {
+                                onShowSuccess?.();
+                            })
+                            .catch((err: unknown) => {
+                                console.error("[HlwAd] Rewarded video show error:", err);
+                                finish({ ok: false, err });
+                            });
+                    })
+                    .catch((err: unknown) => {
+                        console.error("[HlwAd] Rewarded video load error:", err);
+                        finish({ ok: false, err });
+                    });
+            });
 
         return current;
     }
