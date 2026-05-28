@@ -156,7 +156,7 @@ function tapBack() {
         .title {
             font-size: var(--font-md, var(--navbar-font-size, 32rpx));
             letter-spacing: 1rpx;
-            font-weight: 600;
+            font-weight: 500;
         }
     }
 
