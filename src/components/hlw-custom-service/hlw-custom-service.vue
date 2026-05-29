@@ -4,15 +4,8 @@
             <text class="contact-title">{{ title }}</text>
             <text class="contact-desc">{{ desc }}</text>
         </view>
-        <button
-            class="contact-button"
-            open-type="contact"
-            :send-message-title="resolvedContact.title"
-            :send-message-path="resolvedContact.path"
-            :send-message-img="resolvedContact.img"
-            :show-message-card="resolvedContact.show"
-        >
-            <span class="i-ri-customer-service-line contact-button-icon" />
+        <button class="contact-button" open-type="contact" :send-message-title="resolvedContact.title" :send-message-path="resolvedContact.path" :send-message-img="resolvedContact.img" :show-message-card="resolvedContact.show">
+            <span class="iconfont icon-service" />
             <text class="contact-button-text">{{ resolvedBtnTitle }}</text>
         </button>
     </view>
@@ -34,9 +27,9 @@ import { computed } from "vue";
  *
  * @example
  * ```vue
- * <HlwCustomService 
- *     title="专属客服" 
- *     desc="遇到问题？点击咨询您的专属客服" 
+ * <HlwCustomService
+ *     title="专属客服"
+ *     desc="遇到问题？点击咨询您的专属客服"
  *     btn_title="去咨询"
  *     :contact="{ send_message_title: '咨询标题' }"
  * />
@@ -62,7 +55,7 @@ const props = withDefaults(
     {
         btn_title: "",
         contact: () => ({}),
-    }
+    },
 );
 
 const resolvedBtnTitle = computed(() => {
@@ -128,11 +121,6 @@ const resolvedContact = computed(() => {
     color: #ffffff;
     font: inherit;
     line-height: 68rpx;
-}
-
-.contact-button-icon {
-    width: var(--font-sm);
-    height: var(--font-sm);
 }
 
 .contact-button-text {
