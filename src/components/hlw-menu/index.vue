@@ -12,7 +12,8 @@
                 <navigator v-if="item.url" :url="item.url" animation-type="none" class="hlw-menu-item" hover-class="hlw-menu-item--active">
                     <view class="hlw-menu-left">
                         <view class="hlw-menu-icon" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
-                            <text :class="item.icon"></text>
+                            <image v-if="isImageIcon(item.icon)" :src="item.icon" class="hlw-menu-icon-img" mode="aspectFit" />
+                            <span v-else :class="item.icon"></span>
                         </view>
                         <text class="hlw-menu-label">{{ item.label }}</text>
                     </view>
@@ -39,7 +40,8 @@
                 >
                     <view class="hlw-menu-left">
                         <view class="hlw-menu-icon" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
-                            <text :class="item.icon"></text>
+                            <image v-if="isImageIcon(item.icon)" :src="item.icon" class="hlw-menu-icon-img" mode="aspectFit" />
+                            <span v-else :class="item.icon"></span>
                         </view>
                         <text class="hlw-menu-label">{{ item.label }}</text>
                     </view>
@@ -54,7 +56,8 @@
                 <view v-else class="hlw-menu-item" hover-class="hlw-menu-item--active" @click="handleClick(item)">
                     <view class="hlw-menu-left">
                         <view class="hlw-menu-icon" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
-                            <text :class="item.icon"></text>
+                            <image v-if="isImageIcon(item.icon)" :src="item.icon" class="hlw-menu-icon-img" mode="aspectFit" />
+                            <span v-else :class="item.icon"></span>
                         </view>
                         <text class="hlw-menu-label">{{ item.label }}</text>
                     </view>
@@ -76,7 +79,8 @@
                 <navigator v-if="item.url" :url="item.url" animation-type="none" class="hlw-menu-grid-item" hover-class="hlw-menu-grid-item--active">
                     <view class="hlw-menu-grid-icon-wrap">
                         <view class="hlw-menu-icon hlw-menu-icon--grid" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
-                            <text :class="item.icon"></text>
+                            <image v-if="isImageIcon(item.icon)" :src="item.icon" class="hlw-menu-icon-img" mode="aspectFit" />
+                            <span v-else :class="item.icon"></span>
                         </view>
                         <text v-if="item.tag" class="hlw-menu-badge" :class="[`hlw-menu-tag--${item.tagTheme || 'rose'}`, item.tagPulse ? 'hlw-menu-tag-pulse' : '']">{{ item.tag }}</text>
                     </view>
@@ -86,7 +90,8 @@
                 <view v-else class="hlw-menu-grid-item" hover-class="hlw-menu-grid-item--active" @click="handleClick(item)">
                     <view class="hlw-menu-grid-icon-wrap">
                         <view class="hlw-menu-icon hlw-menu-icon--grid" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
-                            <text :class="item.icon"></text>
+                            <image v-if="isImageIcon(item.icon)" :src="item.icon" class="hlw-menu-icon-img" mode="aspectFit" />
+                            <span v-else :class="item.icon"></span>
                         </view>
                         <text v-if="item.tag" class="hlw-menu-badge" :class="[`hlw-menu-tag--${item.tagTheme || 'rose'}`, item.tagPulse ? 'hlw-menu-tag-pulse' : '']">{{ item.tag }}</text>
                     </view>
@@ -178,6 +183,11 @@ const emit = defineEmits<{
      */
     getphonenumber: [item: HlwMenuItem, event: unknown];
 }>();
+
+const isImageIcon = (icon?: string) => {
+    if (!icon) return false;
+    return icon.startsWith("http") || icon.startsWith("/") || icon.startsWith(".") || icon.includes("/");
+};
 
 const visibleItems = computed(() => props.items.filter((item) => item.visible !== false));
 
@@ -333,7 +343,9 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     justify-content: center;
     flex-shrink: 0;
 
-    text {
+    text,
+    span,
+    .hlw-menu-icon-img {
         width: var(--hlw-menu-icon-size);
         height: var(--hlw-menu-icon-size);
         font-size: var(--hlw-menu-icon-size);
@@ -343,7 +355,9 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     &--grid {
         width: var(--hlw-menu-grid-icon-box-size);
         height: var(--hlw-menu-grid-icon-box-size);
-        text {
+        text,
+        span,
+        .hlw-menu-icon-img {
             width: var(--hlw-menu-grid-icon-size);
             height: var(--hlw-menu-grid-icon-size);
             font-size: var(--hlw-menu-grid-icon-size);
