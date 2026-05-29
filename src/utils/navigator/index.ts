@@ -113,7 +113,7 @@ export function navigate(type: NavigateType = "navigateTo", url = "", options: N
         return;
     }
 
-    uni.navigateTo({ url, fail: onFail });
+    uni.navigateTo({ url, animationType: "none", fail: onFail });
 }
 
 /** 保留当前页面，跳转到应用内的某个页面 */

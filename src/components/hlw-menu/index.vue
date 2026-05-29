@@ -9,7 +9,7 @@
         <!-- 列表模式 -->
         <template v-if="props.mode === 'list'">
             <template v-for="(item, index) in visibleItems" :key="index">
-                <navigator v-if="item.url" :url="item.url" class="hlw-menu-item" hover-class="hlw-menu-item--active">
+                <navigator v-if="item.url" :url="item.url" animation-type="none" class="hlw-menu-item" hover-class="hlw-menu-item--active">
                     <view class="hlw-menu-left">
                         <view class="hlw-menu-icon" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
                             <text :class="item.icon"></text>
@@ -73,7 +73,7 @@
         <!-- 宫格模式 -->
         <view v-else class="hlw-menu-grid" :style="{ gridTemplateColumns: `repeat(${props.columns}, 1fr)` }">
             <template v-for="(item, index) in visibleItems" :key="index">
-                <navigator v-if="item.url" :url="item.url" class="hlw-menu-grid-item" hover-class="hlw-menu-grid-item--active">
+                <navigator v-if="item.url" :url="item.url" animation-type="none" class="hlw-menu-grid-item" hover-class="hlw-menu-grid-item--active">
                     <view class="hlw-menu-grid-icon-wrap">
                         <view class="hlw-menu-icon hlw-menu-icon--grid" :class="`hlw-menu-icon--${item.iconTheme || 'slate'}`">
                             <text :class="item.icon"></text>

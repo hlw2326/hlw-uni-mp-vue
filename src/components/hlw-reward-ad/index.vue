@@ -6,7 +6,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
-import { setAdReward, showAdReward } from "../../utils/ad";
+import { setRewardAd, showRewardAd, confirmRewardAd } from "../../utils/ad";
 
 defineOptions({ name: "HlwRewardAd" });
 
@@ -18,7 +18,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-    (e: "onHandle", res: { ok: boolean; isEnded: boolean; err?: any }): void;
+    (e: "onHandle", res: { success: boolean; isEnded: boolean; err?: any }): void;
 }>();
 
 // 点击锁定状态，防止连续多次点击重复触发广告
@@ -30,7 +30,7 @@ const isClicked = ref(false);
 function preloadAd(id: string) {
     if (!id) return;
     // 异步静默加载，不使用 await 阻塞组件渲染或生命周期
-    setAdReward(id).catch((err) => {
+    setRewardAd(id).catch((err) => {
         console.warn("[HlwRewardAd] Preload error:", err);
     });
 }
@@ -48,16 +48,8 @@ watch(
     },
 );
 
-async function handleClick() {
-    if (isClicked.value) return;
-    if (!props.unitId) {
-        console.warn("[HlwRewardAd] unitId is required but empty.");
-        return;
-    }
-
-    isClicked.value = true;
-
-    // 1. 弹出全局模态 Loading 状态
+async function playRewardAdFlow(): Promise<void> {
+    // 弹出全局模态 Loading 状态
     let hidden = false;
     hlw.$msg.showLoading("正在拉起广告");
 
@@ -75,28 +67,59 @@ async function handleClick() {
 
     try {
         // 确保实例当前处于激活绑定状态
-        setAdReward(props.unitId);
+        setRewardAd(props.unitId);
 
         // 立即展示并播放广告
-        const res = await showAdReward(hide);
+        const res = await showRewardAd(hide);
 
         // 播放流结束后（不管成功或退出），立刻关闭 Loading 状态
         hide();
 
-        // 触发外部事件并回传播放结果
-        emit("onHandle", {
-            ok: res.ok,
-            isEnded: !!res.isEnded,
-            err: res.err,
-        });
+        if (res.success && res.isEnded) {
+            emit("onHandle", {
+                success: true,
+                isEnded: true,
+            });
+        } else if (res.err) {
+            emit("onHandle", {
+                success: false,
+                isEnded: false,
+                err: res.err,
+            });
+        } else {
+            // 未看完（中途退出），提示用户是否继续观看
+            const retry = await confirmRewardAd();
+            if (retry) {
+                // 如果用户点击继续观看，递归执行广告流程
+                await playRewardAdFlow();
+            } else {
+                emit("onHandle", {
+                    success: false,
+                    isEnded: false,
+                });
+            }
+        }
     } catch (e) {
         hide();
         console.error("[HlwRewardAd] Failed to show reward ad:", e);
         emit("onHandle", {
-            ok: false,
+            success: false,
             isEnded: false,
             err: e,
         });
+    }
+}
+
+async function handleClick() {
+    if (isClicked.value) return;
+    if (!props.unitId) {
+        console.warn("[HlwRewardAd] unitId is required but empty.");
+        return;
+    }
+
+    isClicked.value = true;
+    try {
+        await playRewardAdFlow();
     } finally {
         isClicked.value = false;
     }

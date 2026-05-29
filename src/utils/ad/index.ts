@@ -10,7 +10,7 @@ declare const uni: any;
  */
 export interface AdRes {
     /** 广告是否正常加载或成功展示完成 */
-    ok: boolean;
+    success: boolean;
     /** 激励视频是否完全播放完毕 (仅激励视频有此属性) */
     isEnded: boolean;
     /** 加载或展示失败时的错误对象 */
@@ -47,7 +47,7 @@ function resolveReward(res: AdRes) {
  * @param done 广告关闭后的回调（可选）
  * @returns 是否配置成功
  */
-export function setAdPopup(adId: string, done?: (ok: boolean) => void): boolean {
+export function setPopupAd(adId: string, done?: (ok: boolean) => void): boolean {
     popupCallback = done;
     if (!adId || !uni.createInterstitialAd) return false;
 
@@ -78,7 +78,7 @@ export function setAdPopup(adId: string, done?: (ok: boolean) => void): boolean 
  * @param delay 延迟毫秒数，默认 3000ms
  * @returns 返回 Promise，指示是否成功显示且被关闭
  */
-export function showAdPopup(delay = 3000): Promise<boolean> {
+export function showPopupAd(delay = 3000): Promise<boolean> {
     return new Promise((resolve) => {
         const ad = adInstances.get(activePopupId);
         if (!ad) {
@@ -92,12 +92,15 @@ export function showAdPopup(delay = 3000): Promise<boolean> {
             resolve(ok);
         };
 
-        setTimeout(() => {
-            ad.show().catch((err: any) => {
-                console.error("[Ad] Interstitial show error:", err);
-                popupCallback?.(false);
-            });
-        }, Math.max(0, delay));
+        setTimeout(
+            () => {
+                ad.show().catch((err: any) => {
+                    console.error("[Ad] Interstitial show error:", err);
+                    popupCallback?.(false);
+                });
+            },
+            Math.max(0, delay),
+        );
     });
 }
 
@@ -108,14 +111,14 @@ export function showAdPopup(delay = 3000): Promise<boolean> {
  * @param done 播放结束的回调（可选）
  * @returns 返回 Promise<AdRes>
  */
-export function setAdReward(adId: string, done?: (res: AdRes) => void): Promise<AdRes> {
+export function setRewardAd(adId: string, done?: (res: AdRes) => void): Promise<AdRes> {
     rewardCallback = done;
     rewardPromise = new Promise((resolve) => {
         rewardResolve = resolve;
     });
 
     if (!adId || !uni.createRewardedVideoAd) {
-        resolveReward({ ok: false, isEnded: false });
+        resolveReward({ success: false, isEnded: false });
         return rewardPromise;
     }
 
@@ -127,19 +130,23 @@ export function setAdReward(adId: string, done?: (res: AdRes) => void): Promise<
             ad.onError?.((err: any) => {
                 console.error("[Ad] Rewarded video load error:", err);
                 if (activeRewardId === adId) {
-                    resolveReward({ ok: false, isEnded: false, err });
+                    resolveReward({ success: false, isEnded: false, err });
                 }
             });
             ad.onClose?.((res: { isEnded?: boolean }) => {
                 if (activeRewardId === adId) {
                     const ended = !!res?.isEnded;
-                    resolveReward({ ok: ended, isEnded: ended });
+                    resolveReward({ success: ended, isEnded: ended });
+                    // 播放结束后立即在后台静默预加载下一个广告，以保证后续拉起流畅且支持重试逻辑
+                    ad.load().catch((err: any) => {
+                        console.warn("[Ad] Silent preload after close failed:", err);
+                    });
                 }
             });
             adInstances.set(adId, ad);
         } catch (e) {
             console.error("[Ad] Rewarded video creation failed:", e);
-            resolveReward({ ok: false, isEnded: false, err: e });
+            resolveReward({ success: false, isEnded: false, err: e });
         }
     }
     return rewardPromise;
@@ -151,15 +158,17 @@ export function setAdReward(adId: string, done?: (res: AdRes) => void): Promise<
  * @param onShowSuccess 广告成功拉起播放时的回调（常用于关闭 Loading 等待提示）
  * @returns 返回 Promise<AdRes>，指示广告是否正常播放完毕
  */
-export function showAdReward(onShowSuccess?: () => void): Promise<AdRes> {
+export function showRewardAd(onShowSuccess?: () => void): Promise<AdRes> {
     const ad = adInstances.get(activeRewardId);
     if (!ad) {
-        return Promise.resolve({ ok: false, isEnded: false });
+        return Promise.resolve({ success: false, isEnded: false });
     }
 
-    const current = rewardPromise || new Promise<AdRes>((resolve) => {
-        rewardResolve = resolve;
-    });
+    const current =
+        rewardPromise ||
+        new Promise<AdRes>((resolve) => {
+            rewardResolve = resolve;
+        });
     rewardPromise = current;
 
     ad.show()
@@ -175,12 +184,12 @@ export function showAdReward(onShowSuccess?: () => void): Promise<AdRes> {
                         })
                         .catch((err: any) => {
                             console.error("[Ad] Rewarded video show error:", err);
-                            resolveReward({ ok: false, isEnded: false, err });
+                            resolveReward({ success: false, isEnded: false, err });
                         });
                 })
                 .catch((err: any) => {
                     console.error("[Ad] Rewarded video load error:", err);
-                    resolveReward({ ok: false, isEnded: false, err });
+                    resolveReward({ success: false, isEnded: false, err });
                 });
         });
 
@@ -188,13 +197,38 @@ export function showAdReward(onShowSuccess?: () => void): Promise<AdRes> {
 }
 
 /**
- * @deprecated 推荐直接从库导入独立函数使用 (例如：import { showAdReward } from '@hlw-uni/mp-vue')
+ * 弹窗提示需要看完广告才有奖励。
+ * 提供“继续观看”和“取消”按钮。
+ * @returns 返回 Promise<boolean>，用户点击“继续”返回 true，点击“取消”返回 false
+ */
+export function confirmRewardAd(): Promise<boolean> {
+    return new Promise((resolve) => {
+        uni.showModal({
+            title: "提示",
+            content: "需要看完广告才有奖励哦",
+            cancelText: "取消",
+            confirmText: "继续观看",
+            cancelColor: "#999999",
+            confirmColor: "#3b82f6",
+            success: (res: any) => {
+                resolve(!!res.confirm);
+            },
+            fail: () => {
+                resolve(false);
+            },
+        });
+    });
+}
+
+/**
+ * @deprecated 推荐直接从库导入独立函数使用 (例如：import { showRewardAd } from '@hlw-uni/mp-vue')
  */
 export function useHlwAd() {
     return {
-        setAdPopup,
-        showAdPopup,
-        setAdReward,
-        showAdReward,
+        setPopupAd,
+        showPopupAd,
+        setRewardAd,
+        showRewardAd,
+        confirmRewardAd,
     };
 }

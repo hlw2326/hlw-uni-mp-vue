@@ -1,54 +1,114 @@
-# ad 调用文档
+# 广告模块 (Ad Utility & Component)
 
-提供微信小程序插屏广告和激励视频广告的配置与播放能力。
+提供微信小程序**插屏广告 (Interstitial Ad)** 与 **激励视频广告 (Rewarded Video Ad)** 的注册、预加载与展示播放能力，并提供了开箱即用的高层封装组件 `<hlw-reward-ad>`。
 
-## 引入
+---
 
-```ts
-import { setAdPopup, showAdPopup, setAdReward, showAdReward } from "@hlw-uni/mp-vue";
-```
+## 1. 推荐：高层组件 `<hlw-reward-ad>`
 
-## 插屏广告
+组件内部全面封装并接管了激励视频广告的完整生命周期管理：
+* **自动预加载**：组件挂载或广告 ID（`unitId`）变更时，在后台自动完成首帧广告的静默加载。
+* **Loading 状态处理**：拉起广告时自动弹出全局模态 Loading，防止穿透及多重点击。
+* **智能断点续看 (中途退出拦截)**：当用户中途关闭广告时，组件内会自动拦截并弹出二级确认对话框（“继续观看”与“取消”），选择继续将自动递归重新拉起播放。
+* **关闭后自动滚加载**：当一次广告播放流关闭（完成或中途取消）后，组件立即在后台重新静默预加载下一个广告，保证下一次秒开。
 
-```ts
-setAdPopup("adunit-popup-id", (ok) => {
-    console.log("插屏广告关闭", ok);
-});
+### 引入组件 (easycom / 直接引用)
 
-await showAdPopup(1000);
-```
+```html
+<template>
+    <hlw-reward-ad :unit-id="rewardUnitId" @onHandle="handleRewardAd">
+        <hlw-button type="primary" round>点击观看广告获取金币</hlw-button>
+    </hlw-reward-ad>
+</template>
 
-## 激励视频
+<script setup lang="ts">
+import { ref } from "vue";
+import type { AdRes } from "@hlw-uni/mp-vue";
 
-```ts
-setAdReward("adunit-reward-id", (res) => {
-    if (res.ok) {
-        // 用户完整看完激励视频
+const rewardUnitId = ref("adunit-xxx");
+
+function handleRewardAd(res: AdRes) {
+    if (res.success && res.isEnded) {
+        // 用户已成功并且完整看完激励视频广告
+        hlw.$msg.success("观看完成，奖励已发放！");
+    } else if (res.err) {
+        // 播放出错
+        hlw.$msg.toast("广告播放失败，请稍后重试");
+    } else {
+        // 用户主动中途退出并拒绝继续观看，或其它拉起失败情况
+        hlw.$msg.toast("播放中途退出或拉起失败");
     }
+}
+</script>
+```
+
+---
+
+## 2. 底层接口 (Low-Level APIs)
+
+在不需要使用标准 UI 组件而需要通过代码细粒度控盘的自定义场景下，可以直接导入并调用底层方法。
+
+```ts
+import { 
+    setPopupAd, 
+    showPopupAd, 
+    setRewardAd, 
+    showRewardAd, 
+    confirmRewardAd 
+} from "@hlw-uni/mp-vue";
+```
+
+### 插屏广告 (Interstitial Ad)
+
+```ts
+// 1. 初始化并注册插屏广告单元，提供可选的关闭回调
+setPopupAd("adunit-popup-id", (success) => {
+    console.log("插屏广告被关闭，是否播放成功:", success);
 });
 
-const result = await showAdReward();
+// 2. 延迟拉起展示插屏广告 (默认延迟 3000 毫秒展示)
+await showPopupAd(1000);
+```
 
-if (result.ok) {
-    // 发放奖励
+### 激励视频广告 (Rewarded Video Ad)
+
+```ts
+// 1. 注册并预加载激励视频广告单元
+await setRewardAd("adunit-reward-id");
+
+// 2. 立即拉起播放广告
+const res = await showRewardAd();
+
+if (res.success && res.isEnded) {
+    // 成功发放奖励
+} else {
+    // 处理退出或报错
 }
 ```
 
-## API
+---
 
-| 方法 | 说明 |
-| --- | --- |
-| `setAdPopup(adId, done?)` | 创建插屏广告实例 |
-| `showAdPopup(delay?)` | 延迟展示插屏广告，默认 3000ms |
-| `setAdReward(adId, done?)` | 创建激励视频实例 |
-| `showAdReward()` | 展示激励视频，失败时会尝试 load 后再 show |
+## 3. API 列表
 
-## 类型
+| 方法名 | 参数 | 返回值 | 说明 |
+| :--- | :--- | :--- | :--- |
+| `setPopupAd(adId, done?)` | `adId: string, done?: (ok: boolean) => void` | `boolean` | 创建/拉取缓存的插屏广告实例。 |
+| `showPopupAd(delay?)` | `delay?: number` | `Promise<boolean>` | 延迟展示已配置的插屏广告（默认 3000ms）。 |
+| `setRewardAd(adId, done?)` | `adId: string, done?: (res: AdRes) => void` | `Promise<AdRes>` | 预加载激励视频广告实例，并在 `onClose` 事件回调中自动加入重新静默预加载功能。 |
+| `showRewardAd(onShowSuccess?)` | `onShowSuccess?: () => void` | `Promise<AdRes>` | 立即拉起展示激励视频，拉起失败时自动执行 `load()` 并二次重试。 |
+| `confirmRewardAd()` | 无 | `Promise<boolean>` | 内置的通用二级确认模态框，内置灰色取消文字（`#999999`）与蓝色确认文字（`#3b82f6`）。 |
 
-```ts
-interface AdRes {
-    ok: boolean;
-    isEnded?: boolean;
-    err?: unknown;
+---
+
+## 4. 类型定义
+
+```typescript
+export interface AdRes {
+    /** 广告是否正常加载或成功展示完成 */
+    success: boolean;
+    /** 激励视频是否完全播放完毕 (仅激励视频有此属性) */
+    isEnded: boolean;
+    /** 加载或展示失败时的错误对象 */
+    err?: any;
 }
 ```

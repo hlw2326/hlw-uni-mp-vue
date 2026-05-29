@@ -1,5 +1,5 @@
 <template>
-    <navigator v-if="url" :url="url" class="hlw-cell" :class="{ 'hlw-cell--border': border }" hover-class="hlw-cell--hover">
+    <navigator v-if="url" :url="url" animation-type="none" class="hlw-cell" :class="{ 'hlw-cell--border': border }" hover-class="hlw-cell--hover">
         <view v-if="icon || $slots.icon" class="hlw-cell-icon">
             <slot name="icon"><view :class="icon" /></slot>
         </view>
