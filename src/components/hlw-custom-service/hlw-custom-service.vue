@@ -22,7 +22,7 @@
 import { computed } from "vue";
 
 /**
- * HlwCustom — 客服卡片自定义组件
+ * HlwCustomService — 客服卡片自定义组件
  *
  * 用于引导用户点击联系微信客服，支持配置标题、描述、按钮文案及原生客服卡片参数。
  *
@@ -34,7 +34,7 @@ import { computed } from "vue";
  *
  * @example
  * ```vue
- * <HlwCustom 
+ * <HlwCustomService 
  *     title="专属客服" 
  *     desc="遇到问题？点击咨询您的专属客服" 
  *     btn_title="去咨询"
@@ -42,6 +42,8 @@ import { computed } from "vue";
  * />
  * ```
  */
+
+defineOptions({ name: "HlwCustomService" });
 
 interface ContactConfig {
     send_message_title?: string;
