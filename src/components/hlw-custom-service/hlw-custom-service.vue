@@ -12,7 +12,7 @@
             :send-message-img="resolvedContact.img"
             :show-message-card="resolvedContact.show"
         >
-            <text class="i-ri-customer-service-line contact-button-icon" />
+            <span class="i-ri-customer-service-line contact-button-icon" />
             <text class="contact-button-text">{{ resolvedBtnTitle }}</text>
         </button>
     </view>

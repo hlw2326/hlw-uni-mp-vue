@@ -6,7 +6,7 @@
                 <view v-if="showHandle" class="hlw-sheet-handle" />
                 <text v-if="title" class="hlw-sheet-title">{{ title }}</text>
                 <view v-if="showClose" class="hlw-sheet-close" @tap="handleClose">
-                    <text class="i-fa6-solid-xmark" />
+                    <span class="i-fa6-solid-xmark" />
                 </view>
             </view>
 

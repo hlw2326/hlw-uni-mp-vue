@@ -3,7 +3,7 @@
         <view :style="bar_style"></view>
         <view class="header" :style="{ height: header_height + 'px' }">
             <view @tap="tapBack" class="left" v-if="props.isBack">
-                <text class="i-fa6-solid-chevron-left icon-left"></text>
+                <span class="i-fa6-solid-chevron-left icon-left"></span>
             </view>
             <text class="title">{{ title }}</text>
         </view>

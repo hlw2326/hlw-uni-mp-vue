@@ -7,7 +7,7 @@
         @tap="onTap"
     >
         <slot>
-            <text class="i-fa6-solid-chevron-up hlw-back-top__icon" />
+            <span class="i-fa6-solid-chevron-up hlw-back-top__icon" />
         </slot>
     </view>
 </template>

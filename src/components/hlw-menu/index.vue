@@ -19,7 +19,7 @@
                     <view class="hlw-menu-right">
                         <text v-if="item.value" class="hlw-menu-value">{{ item.value }}</text>
                         <text v-if="item.tag" class="hlw-menu-tag" :class="[`hlw-menu-tag--${item.tagTheme || 'rose'}`, item.tagPulse ? 'hlw-menu-tag-pulse' : '']">{{ item.tag }}</text>
-                        <text class="i-fa6-solid-chevron-right hlw-menu-arrow"></text>
+                        <span class="i-fa6-solid-chevron-right hlw-menu-arrow"></span>
                     </view>
                 </navigator>
 
@@ -44,10 +44,10 @@
                         <text class="hlw-menu-label">{{ item.label }}</text>
                     </view>
                     <view class="hlw-menu-right">
-                        <text v-if="item.loading" class="i-fa6-solid-circle-notch hlw-menu-spin hlw-menu-muted"></text>
+                        <span v-if="item.loading" class="i-fa6-solid-circle-notch hlw-menu-spin hlw-menu-muted"></span>
                         <text v-if="item.value" class="hlw-menu-value">{{ item.value }}</text>
                         <text v-if="item.tag" class="hlw-menu-tag" :class="[`hlw-menu-tag--${item.tagTheme || 'rose'}`, item.tagPulse ? 'hlw-menu-tag-pulse' : '']">{{ item.tag }}</text>
-                        <text class="i-fa6-solid-chevron-right hlw-menu-arrow"></text>
+                        <span class="i-fa6-solid-chevron-right hlw-menu-arrow"></span>
                     </view>
                 </button>
 
@@ -59,10 +59,10 @@
                         <text class="hlw-menu-label">{{ item.label }}</text>
                     </view>
                     <view class="hlw-menu-right">
-                        <text v-if="item.loading" class="i-fa6-solid-circle-notch hlw-menu-spin hlw-menu-muted"></text>
+                        <span v-if="item.loading" class="i-fa6-solid-circle-notch hlw-menu-spin hlw-menu-muted"></span>
                         <text v-if="item.value" class="hlw-menu-value">{{ item.value }}</text>
                         <text v-if="item.tag" class="hlw-menu-tag" :class="[`hlw-menu-tag--${item.tagTheme || 'rose'}`, item.tagPulse ? 'hlw-menu-tag-pulse' : '']">{{ item.tag }}</text>
-                        <text class="i-fa6-solid-chevron-right hlw-menu-arrow"></text>
+                        <span class="i-fa6-solid-chevron-right hlw-menu-arrow"></span>
                     </view>
                 </view>
 

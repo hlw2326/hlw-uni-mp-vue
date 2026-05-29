@@ -6,7 +6,7 @@
         hover-class="trigger--hover"
         @tap="onEnter"
     >
-        <text class="i-fa6-solid-pen-nib trigger-icon" />
+        <span class="i-fa6-solid-pen-nib trigger-icon" />
     </view>
 
     <!-- 全屏批注层，激活时覆盖整个页面（含 hlw-header） -->
@@ -25,7 +25,7 @@
         <!-- 顶部状态条：左关闭，右模式切换（避开右上角微信胶囊） -->
         <view class="bar">
             <view class="bar-close" hover-class="bar-close--hover" @tap="onExit">
-                <text class="i-fa6-solid-xmark bar-icon" />
+                <span class="i-fa6-solid-xmark bar-icon" />
             </view>
             <view
                 class="bar-toggle"
@@ -33,7 +33,7 @@
                 hover-class="bar-toggle--hover"
                 @tap="scrollMode = !scrollMode"
             >
-                <text :class="[scrollMode ? 'i-ri-arrow-up-down-line' : 'i-ri-pencil-line', 'bar-icon']" />
+                <span :class="[scrollMode ? 'i-ri-arrow-up-down-line' : 'i-ri-pencil-line', 'bar-icon']" />
                 <text class="bar-toggle-text">{{ scrollMode ? "滚动" : "绘画" }}</text>
             </view>
         </view>
@@ -50,7 +50,7 @@
                     hover-class="mode--hover"
                     @tap="mode = m.value"
                 >
-                    <text :class="m.icon" class="mode-icon" />
+                    <span :class="m.icon" class="mode-icon" />
                 </view>
             </view>
 
@@ -65,7 +65,7 @@
                         :style="{ background: c }"
                         @tap="color = c"
                     >
-                        <text v-if="c === color" class="i-fa6-solid-check color-check" />
+                        <span v-if="c === color" class="i-fa6-solid-check color-check" />
                     </view>
                 </view>
 
@@ -90,10 +90,10 @@
 
                 <view class="actions">
                     <view class="action" hover-class="action--hover" @tap="onUndo">
-                        <text class="i-ri-arrow-go-back-line action-icon" />
+                        <span class="i-ri-arrow-go-back-line action-icon" />
                     </view>
                     <view class="action" hover-class="action--hover" @tap="onClear">
-                        <text class="i-fa6-solid-trash-can action-icon" />
+                        <span class="i-fa6-solid-trash-can action-icon" />
                     </view>
                 </view>
             </view>

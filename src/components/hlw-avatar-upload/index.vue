@@ -3,7 +3,7 @@
         <button class="avatar-wrapper" open-type="chooseAvatar" @chooseavatar="onChooseAvatar" @click="onClick">
             <hlw-avatar :src="props.src || ''" :name="props.name || '微信用户'" :size="props.size" :border="props.border" />
             <view class="edit-avatar">
-                <text class="i-fa6-solid-camera edit-avatar-icon" />
+                <span class="i-fa6-solid-camera edit-avatar-icon" />
             </view>
         </button>
     </view>

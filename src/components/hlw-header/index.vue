@@ -9,7 +9,7 @@
                 <!-- 返回按钮 -->
                 <view class="header-back" @click="handleBack">
                     <slot name="back-icon">
-                        <text class="i-fa6-solid-chevron-left header-back-icon"></text>
+                        <span class="i-fa6-solid-chevron-left header-back-icon"></span>
                     </slot>
                 </view>
 
