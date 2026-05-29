@@ -131,6 +131,7 @@ function close() {
 
 <style lang="scss" scoped>
 .hlw-add-mini {
+    --add-mini-bg: rgba(0, 0, 0, 0.72);
     position: fixed;
     right: 22rpx;
     z-index: 999;
@@ -147,7 +148,7 @@ function close() {
     z-index: 99999;
     border-left: 12rpx solid transparent;
     border-right: 12rpx solid transparent;
-    border-bottom: 14rpx solid rgba(17, 24, 39, 0.82);
+    border-bottom: 14rpx solid var(--add-mini-bg);
 }
 
 .hlw-add-mini__content {
@@ -156,8 +157,10 @@ function close() {
     gap: 12rpx;
     padding: 16rpx 14rpx 16rpx 20rpx;
     border-radius: 14rpx;
-    background: rgba(17, 24, 39, 0.82);
-    box-shadow: 0 12rpx 34rpx rgba(15, 23, 42, 0.22);
+    background: var(--add-mini-bg);
+    backdrop-filter: blur(12rpx);
+    -webkit-backdrop-filter: blur(12rpx);
+    box-shadow: 0 12rpx 34rpx rgba(15, 23, 42, 0.15);
 }
 
 .hlw-add-mini__text {
@@ -174,11 +177,11 @@ function close() {
 }
 
 .hlw-add-mini__desc {
-    margin-top: 4rpx;
+    margin-top: 6rpx;
     color: rgba(255, 255, 255, 0.72);
     font-size: 21rpx;
     line-height: 1.3;
-    letter-spacing: 1rpx;
+    letter-spacing: 2rpx;
 }
 
 .hlw-add-mini__close {

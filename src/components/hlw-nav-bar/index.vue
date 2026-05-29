@@ -97,11 +97,11 @@ function tapBack() {
         border-bottom: var(--navbar-border-bottom, 1rpx solid #e7e7e7);
 
         .title {
-            color: var(--font-color, #303048);
+            color: var(--text-primary, #303048);
         }
 
         .icon-left {
-            color: var(--font-color, #303048);
+            color: var(--text-primary, #303048);
         }
     }
 
@@ -111,11 +111,11 @@ function tapBack() {
         border-bottom: 1rpx solid rgba(226, 232, 240, 0);
 
         .title {
-            color: var(--font-color, #303048);
+            color: var(--text-primary, #303048);
         }
 
         .icon-left {
-            color: var(--font-color, #303048);
+            color: var(--text-primary, #303048);
         }
     }
 

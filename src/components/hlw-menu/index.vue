@@ -196,13 +196,13 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 
 <style lang="scss" scoped>
 .hlw-menu {
-    --hlw-menu-icon-size: var(--font-sm, 24rpx);
-    --hlw-menu-icon-box-size: calc(var(--hlw-menu-icon-size) + 40rpx);
-    --hlw-menu-grid-icon-size: var(--font-lg, 36rpx);
+    --hlw-menu-icon-size: var(--font-md, 32rpx);
+    --hlw-menu-icon-box-size: var(--hlw-menu-icon-size);
+    --hlw-menu-grid-icon-size: var(--font-xl, 40rpx);
     --hlw-menu-grid-icon-box-size: calc(var(--hlw-menu-grid-icon-size) + 52rpx);
     background: var(--surface-card, #ffffff);
     border-radius: var(--radius-lg, 24rpx);
-    border: 1rpx solid var(--border-color, #e2e8f0);
+    border: 1rpx solid var(--border-color-light, #ececec);
     overflow: hidden;
     width: 100%;
 
@@ -224,7 +224,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 
 .hlw-menu-title-divider {
     height: 0;
-    border-bottom: 1rpx dashed var(--border-color, #e2e8f0);
+    border-bottom: 1rpx dashed var(--border-color-light, #ececec);
 }
 
 /* ========== 列表模式 ========== */
@@ -232,7 +232,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 24rpx 32rpx;
+    padding: 32rpx 36rpx;
 
     &--active {
         background: var(--surface-card-muted, #f8fafc);
@@ -246,7 +246,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     justify-content: space-between;
     width: 100%;
     margin: 0;
-    padding: 24rpx 32rpx;
+    padding: 32rpx 36rpx;
     background: transparent;
     color: inherit;
     font-size: inherit;
@@ -264,15 +264,15 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 }
 
 .hlw-menu-divider {
-    margin: 0 32rpx;
+    margin: 0 36rpx;
     height: 0;
-    border-bottom: 1rpx dashed var(--border-color, #e2e8f0);
+    border-bottom: 1rpx dashed var(--border-color-light, #ececec);
 }
 
 .hlw-menu-left {
     display: flex;
     align-items: center;
-    gap: 24rpx;
+    gap: 20rpx;
 }
 
 .hlw-menu-right {
@@ -328,7 +328,6 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 .hlw-menu-icon {
     width: var(--hlw-menu-icon-box-size);
     height: var(--hlw-menu-icon-box-size);
-    border-radius: var(--radius-md, 16rpx);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -344,7 +343,6 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     &--grid {
         width: var(--hlw-menu-grid-icon-box-size);
         height: var(--hlw-menu-grid-icon-box-size);
-        border-radius: var(--radius-lg, 24rpx);
         text {
             width: var(--hlw-menu-grid-icon-size);
             height: var(--hlw-menu-grid-icon-size);
@@ -354,48 +352,39 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     }
 
     &--orange {
-        background: #fff7ed;
         color: #f97316;
     }
     &--purple {
-        background: #faf5ff;
         color: #a855f7;
     }
     &--wechat {
-        background: #f0fdf4;
         color: #07c160;
     }
     &--cyan {
-        background: #ecfeff;
         color: #06b6d4;
     }
     &--emerald {
-        background: #ecfdf5;
         color: #10b981;
     }
     &--slate {
-        background: #f1f5f9;
         color: #64748b;
     }
     &--rose {
-        background: #fff1f2;
         color: #f43f5e;
     }
     &--blue {
-        background: var(--primary-light, rgba(76, 68, 239, 0.12));
         color: var(--primary-color, #3b82f6);
     }
     &--red {
-        background: #fef2f2;
         color: #ef4444;
     }
 }
 
 /* ========== 标签 / 角标 ========== */
 .hlw-menu-label {
-    font-size: var(--font-base, 28rpx);
-    font-weight: 500;
+    font-size: var(--font-26, 26rpx);
     color: var(--text-secondary, #334155);
+    letter-spacing: 1rpx;
 }
 
 .hlw-menu-value {
