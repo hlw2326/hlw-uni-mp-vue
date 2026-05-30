@@ -1,6 +1,5 @@
-import { computed, watch, onMounted } from "vue";
+import { computed } from "vue";
 import type { ComputedRef } from "vue";
-import { onShow } from "@dcloudio/uni-app";
 import { 
     useThemeStore, 
     themePresets, 
@@ -28,41 +27,6 @@ export function useTheme() {
     
     // 主题
     const theme: ComputedRef<string> = computed(() => store.theme);
-
-    // 辅助方法：设置系统状态栏/导航栏前景色（mono-theme 和 color-theme 设为白色，其余为黑色）
-    const updateNavbarColor = (targetTheme: string) => {
-        const isDarkTheme = ["mono-theme", "color-theme"].includes(targetTheme);
-        uni.setNavigationBarColor({
-            frontColor: isDarkTheme ? "#ffffff" : "#000000",
-            backgroundColor: isDarkTheme ? "#3b82f6" : "#ffffff",
-            fail: () => {}
-        });
-    };
-
-    // 1. 监控主题属性改变时，动态刷新
-    watch(
-        theme,
-        (newTheme) => {
-            updateNavbarColor(newTheme);
-        }
-    );
-
-    // 2. 组件/页面挂载完成时，执行一次设定
-    onMounted(() => {
-        updateNavbarColor(store.theme);
-    });
-
-    // 3. 页面显示或回退时，强行重刷前景色（try-catch 规避非 Page 的报错）
-    try {
-        onShow(() => {
-            updateNavbarColor(store.theme);
-        });
-    } catch (e) {
-        // 忽略非 Page 组件的绑定失败
-    }
-
-    // 4. 在 setup 初始化同步阶段以最快速度设定一次，尽可能规避生命周期滞后导致的闪烁
-    updateNavbarColor(store.theme);
     
     // 字体大小
     const fontSize: ComputedRef<string> = computed(() => store.fontSize);
