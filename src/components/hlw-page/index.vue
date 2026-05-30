@@ -2,7 +2,7 @@
     <view :class="[theme, fontSizeClass, fontFamilyClass]">
         <hlw-nav-bar v-if="props.isNav" :is-back="props.isBack" :title="title" :is-bar="props.isBar"></hlw-nav-bar>
         <slot></slot>
-        <view class="h-[50rpx]"></view>
+        <view class="h-[60rpx]"></view>
     </view>
 </template>
 
