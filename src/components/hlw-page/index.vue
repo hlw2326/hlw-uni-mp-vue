@@ -2,6 +2,7 @@
     <view :class="[theme, fontSizeClass, fontFamilyClass]">
         <hlw-nav-bar v-if="props.isBar" :is-back="props.isBack" :title="title" :is-bar="props.isBar"></hlw-nav-bar>
         <slot></slot>
+        <view class="h-[50rpx]"></view>
     </view>
 </template>
 
@@ -95,46 +96,46 @@ const title = ref(props.title);
         Roboto,
         Helvetica,
         Arial,
-        sans-serif !important;
+        sans-serif;
     view,
     text,
     button,
     input,
     textarea {
-        font-family: inherit !important;
+        font-family: inherit;
     }
 }
 
 .font-family-sans {
-    font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif !important;
+    font-family: "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
     view,
     text,
     button,
     input,
     textarea {
-        font-family: inherit !important;
+        font-family: inherit;
     }
 }
 
 .font-family-serif {
-    font-family: "Songti SC", "STSong", "SimSun", "Georgia", serif !important;
+    font-family: "Songti SC", "STSong", "SimSun", "Georgia", serif;
     view,
     text,
     button,
     input,
     textarea {
-        font-family: inherit !important;
+        font-family: inherit;
     }
 }
 
 .font-family-kaiti {
-    font-family: "Kaiti SC", "STKaiti", "KaiTi", "SimKai", serif !important;
+    font-family: "Kaiti SC", "STKaiti", "KaiTi", "SimKai", serif;
     view,
     text,
     button,
     input,
     textarea {
-        font-family: inherit !important;
+        font-family: inherit;
     }
 }
 </style>
