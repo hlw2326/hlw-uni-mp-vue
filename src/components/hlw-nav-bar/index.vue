@@ -23,7 +23,7 @@
  * @props
  *   title   - 导航栏标题文字
  *   isBack  - 是否显示返回按钮，默认 false；点击自动回退或回到首页
- *   isBar   - 是否占用状态栏高度，默认 false
+ *   isBar   - 是否占用状态栏高度，默认 true
  *
  * @example
  * ```vue
@@ -41,7 +41,7 @@ const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
 const props = defineProps({
     isBar: {
         type: Boolean,
-        default: false,
+        default: true,
     },
     title: {
         type: String,

@@ -1,6 +1,6 @@
 <template>
     <view :class="[theme, fontSizeClass, fontFamilyClass]">
-        <hlw-nav-bar v-if="props.isBar" :is-back="props.isBack" :title="title" :is-bar="props.isBar"></hlw-nav-bar>
+        <hlw-nav-bar v-if="props.isNav" :is-back="props.isBack" :title="title" :is-bar="props.isBar"></hlw-nav-bar>
         <slot></slot>
         <view class="h-[50rpx]"></view>
     </view>
@@ -14,13 +14,14 @@
  * 可以快捷集成自定义导航栏（HlwNavBar），保持整个页面结构的一致性。
  *
  * @props
- *   isBar  - 是否显示并使用自定义导航栏，默认 false
- *   title  - 自定义导航栏标题文字（在 isBar 为 true 时生效）
- *   isBack - 是否显示自定义导航栏的返回键（在 isBar 为 true 时生效），默认 false
+ *   isNav  - 是否显示自定义导航栏，默认 false
+ *   isBar  - 是否占用状态栏高度，默认 true
+ *   title  - 自定义导航栏标题文字
+ *   isBack - 是否显示自定义导航栏的返回键，默认 false
  *
  * @example
  * ```vue
- * <hlw-page is-bar is-back title="个人中心">
+ * <hlw-page is-nav is-back title="个人中心">
  *     <view>页面内容...</view>
  * </hlw-page>
  * ```
@@ -31,9 +32,13 @@ import { ref } from "vue";
 const { theme, fontSizeClass, fontFamilyClass } = useTheme();
 
 const props = defineProps({
-    isBar: {
+    isNav: {
         type: Boolean,
         default: false,
+    },
+    isBar: {
+        type: Boolean,
+        default: true,
     },
     title: {
         type: String,
