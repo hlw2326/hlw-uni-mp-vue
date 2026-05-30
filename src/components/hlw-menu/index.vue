@@ -396,7 +396,6 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 
 /* ========== 标签 / 角标 ========== */
 .hlw-menu-label {
-    font-size: var(--font-base);
     color: var(--text-secondary, #334155);
     letter-spacing: 1rpx;
 }
