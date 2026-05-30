@@ -86,8 +86,8 @@ const top = computed(() => {
         try {
             const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
             if (menuButtonInfo && menuButtonInfo.bottom > 0) {
-                // 胶囊底部高度 + 16px 作为气泡定位的顶部基准，保证指向绝对精确且避开胶囊
-                return `${menuButtonInfo.bottom + 10}px`;
+                // 胶囊底部高度 + 6px 作为气泡定位的顶部基准，使箭头离胶囊更近
+                return `${menuButtonInfo.bottom + 6}px`;
             }
         } catch (e) {
             // 跨端环境不支持或报错时，执行安全降级计算
