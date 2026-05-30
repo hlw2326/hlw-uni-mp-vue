@@ -87,14 +87,14 @@ const top = computed(() => {
             const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
             if (menuButtonInfo && menuButtonInfo.bottom > 0) {
                 // 胶囊底部高度 + 6px 作为气泡定位的顶部基准，使箭头离胶囊更近
-                return `${menuButtonInfo.bottom + 6}px`;
+                return `${menuButtonInfo.bottom + 3}px`;
             }
         } catch (e) {
             // 跨端环境不支持或报错时，执行安全降级计算
         }
         return `${info.status_bar_height + 50}px`;
     }
-    return "12px";
+    return "6px";
 });
 
 const arrowStyle = computed(() => {
