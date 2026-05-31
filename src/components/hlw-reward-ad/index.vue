@@ -124,6 +124,28 @@ async function handleClick() {
         isClicked.value = false;
     }
 }
+
+/**
+ * Expose a method for parent components to open the reward ad programmatically via ref.
+ * Usage: const adRef = ref(null);
+ * <hlw-reward-ad ref="adRef" :unit-id="..." />
+ * adRef.value?.open();
+ */
+defineExpose({
+    async open() {
+        if (isClicked.value) return;
+        if (!props.unitId) {
+            console.warn("[HlwRewardAd] unitId is required but empty.");
+            return;
+        }
+        isClicked.value = true;
+        try {
+            await playRewardAdFlow();
+        } finally {
+            isClicked.value = false;
+        }
+    }
+});
 </script>
 
 <style scoped>
