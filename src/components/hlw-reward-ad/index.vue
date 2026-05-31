@@ -150,6 +150,7 @@ defineExpose({
 
 <style scoped>
 .hlw-reward-ad {
-    display: inline-block;
+    display: block;
+    width: 100%;
 }
 </style>
