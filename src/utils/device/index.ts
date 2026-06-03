@@ -13,11 +13,11 @@ export interface DeviceInfo {
     /** 应用名称 */
     app_name: string;
     /** 小程序版本号（版本名称） */
-    app_version: string;
+    version: string;
     /** 小程序版本号（版本号） */
-    app_version_code: string;
+    version_code: string;
     /** 小程序来源渠道 */
-    app_channel: string;
+    channel: string;
     /** 设备 brand。如：apple、huawei */
     device_brand: string;
     /** 设备型号 */
@@ -62,33 +62,14 @@ export interface DeviceInfo {
     platform: string;
     /** 客户端语言 */
     language: string;
-    /** 客户端版本号 */
-    version: string;
 }
 
 /**
  * 过滤后常用于接口公共请求 Query 的设备字段子集。
  */
-export type DeviceQueryInfo = Pick<DeviceInfo,
-    | "appid"
-    | "device_brand"
-    | "device_model"
-    | "device_id"
-    | "device_type"
-    | "device_orientation"
-    | "platform"
-    | "system"
-    | "os"
-    | "version"
-    | "sdk_version"
-    | "host_name"
-    | "host_version"
-    | "host_language"
-    | "language"
-    | "app_version"
-    | "app_version_code"
-    | "screen_width"
-    | "screen_height"
+export type DeviceQueryInfo = Pick<
+    DeviceInfo,
+    "appid" | "device_brand" | "device_model" | "device_id" | "device_type" | "device_orientation" | "platform" | "system" | "os" | "sdk_version" | "host_name" | "host_version" | "host_language" | "language" | "version" | "version_code" | "channel" | "screen_width" | "screen_height"
 >;
 
 let deviceCache: DeviceInfo | null = null;
@@ -126,9 +107,9 @@ function collectDevice(): DeviceInfo {
     return {
         appid: getAppid(device),
         app_name: (app.appName as string) || "",
-        app_version: (app.appVersion as string) || "",
-        app_version_code: (app.appVersionCode as string) || "",
-        app_channel: (app.appChannel as string) || "",
+        version: (app.appVersion as string) || "",
+        version_code: (app.appVersionCode as string) || "",
+        channel: (app.appChannel as string) || "",
         device_brand: (device.brand as string) || "",
         device_model: (device.model as string) || "",
         device_id: (device.deviceId as string) || "",
@@ -151,7 +132,6 @@ function collectDevice(): DeviceInfo {
         host_theme: (app.hostTheme as string) || "",
         platform: (device.platform as string) || "",
         language: (app.language as string) || "",
-        version: (app.version as string) || "",
     };
 }
 
@@ -181,14 +161,14 @@ function getQueryInfo(info: DeviceInfo): DeviceQueryInfo {
         platform: info.platform,
         system: info.system,
         os: info.os,
-        version: info.version,
         sdk_version: info.sdk_version,
         host_name: info.host_name,
         host_version: info.host_version,
         host_language: info.host_language,
         language: info.language,
-        app_version: info.app_version,
-        app_version_code: info.app_version_code,
+        version: info.version,
+        version_code: info.version_code,
+        channel: info.channel,
         screen_width: info.screen_width,
         screen_height: info.screen_height,
     };
