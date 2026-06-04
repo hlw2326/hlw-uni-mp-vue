@@ -197,6 +197,30 @@ export function showRewardAd(onShowSuccess?: () => void): Promise<AdRes> {
 }
 
 /**
+ * 销毁指定 Unit ID 的激励视频广告实例，释放内存与原生渲染层绑定并清除缓存。
+ * 
+ * @param adId 广告单元 ID
+ */
+export function destroyRewardAd(adId: string) {
+    const ad = adInstances.get(adId);
+    if (ad) {
+        try {
+            ad.destroy?.();
+            console.log(`[Ad] Rewarded video destroyed: ${adId}`);
+        } catch (e) {
+            console.error("[Ad] Rewarded video destroy error:", e);
+        }
+        adInstances.delete(adId);
+    }
+    if (activeRewardId === adId) {
+        activeRewardId = "";
+        rewardCallback = undefined;
+        rewardResolve = null;
+        rewardPromise = null;
+    }
+}
+
+/**
  * 弹窗提示需要看完广告才有奖励。
  * 提供“继续观看”和“取消”按钮。
  * @returns 返回 Promise<boolean>，用户点击“继续”返回 true，点击“取消”返回 false
@@ -230,5 +254,6 @@ export function useHlwAd() {
         setRewardAd,
         showRewardAd,
         confirmRewardAd,
+        destroyRewardAd,
     };
 }

@@ -5,8 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
-import { setRewardAd, showRewardAd, confirmRewardAd } from "../../utils/ad";
+import { ref, onMounted, watch, onUnmounted } from "vue";
+import { setRewardAd, showRewardAd, confirmRewardAd, destroyRewardAd } from "../../utils/ad";
 
 defineOptions({ name: "HlwRewardAd" });
 
@@ -147,6 +147,10 @@ defineExpose({
             isClicked.value = false;
         }
     }
+});
+
+onUnmounted(() => {
+    destroyRewardAd(props.unitId);
 });
 </script>
 
