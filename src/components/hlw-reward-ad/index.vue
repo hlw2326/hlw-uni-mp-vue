@@ -18,7 +18,7 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-    (e: "onHandle", res: { success: boolean; isEnded: boolean; err?: any }): void;
+    (e: "onHandle", res: { success: boolean; isEnded: boolean; loadFailed?: boolean; err?: any }): void;
 }>();
 
 // 点击锁定状态，防止连续多次点击重复触发广告
@@ -84,6 +84,7 @@ async function playRewardAdFlow(): Promise<void> {
             emit("onHandle", {
                 success: false,
                 isEnded: false,
+                loadFailed: true,
                 err: res.err,
             });
         } else {
@@ -105,6 +106,7 @@ async function playRewardAdFlow(): Promise<void> {
         emit("onHandle", {
             success: false,
             isEnded: false,
+            loadFailed: true,
             err: e,
         });
     }
