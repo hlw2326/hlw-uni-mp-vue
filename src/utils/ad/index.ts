@@ -202,16 +202,10 @@ export function showRewardAd(onShowSuccess?: () => void): Promise<AdRes> {
  * @param adId 广告单元 ID
  */
 export function destroyRewardAd(adId: string) {
-    const ad = adInstances.get(adId);
-    if (ad) {
-        try {
-            ad.destroy?.();
-            console.log(`[Ad] Rewarded video destroyed: ${adId}`);
-        } catch (e) {
-            console.error("[Ad] Rewarded video destroy error:", e);
-        }
-        adInstances.delete(adId);
-    }
+    // 仅从本地缓存 Map 中移除该广告单元的实例引用，并清理相关状态，严禁调用 ad.destroy()
+    // 因为微信小程序的 wx.createRewardedVideoAd 在整个应用生命周期中为全局单例，
+    // 一旦销毁 (destroy) 后，后续再次 create 该广告位 ID 将永远返回已销毁的实例，导致报错 "video-ad has been destroyed"
+    adInstances.delete(adId);
     if (activeRewardId === adId) {
         activeRewardId = "";
         rewardCallback = undefined;

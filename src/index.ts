@@ -15,6 +15,7 @@ export * from "./utils";
 // 类型
 export type { HlwMenuItem } from "./components/hlw-menu/types";
 export type { HlwPagingRef, HlwPagingInstance } from "./components/hlw-paging/types";
+export type { HlwRewardAdResult } from "./components/hlw-reward-ad/types";
 
 // App 根上下文
 export { useApp } from "./app";

@@ -1,12 +1,11 @@
 <template>
-    <view class="hlw-reward-ad" @tap="handleClick">
-        <slot />
-    </view>
+    <view class="hlw-reward-ad" />
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, watch, onUnmounted } from "vue";
+import { ref, onUnmounted } from "vue";
 import { setRewardAd, showRewardAd, confirmRewardAd, destroyRewardAd } from "../../utils/ad";
+import type { HlwRewardAdResult } from "./types";
 
 defineOptions({ name: "HlwRewardAd" });
 
@@ -18,35 +17,11 @@ interface Props {
 const props = defineProps<Props>();
 
 const emit = defineEmits<{
-    (e: "onHandle", res: { success: boolean; isEnded: boolean; loadFailed?: boolean; err?: any }): void;
+    (e: "onHandle", res: HlwRewardAdResult): void;
 }>();
 
 // 点击锁定状态，防止连续多次点击重复触发广告
 const isClicked = ref(false);
-
-/**
- * 提前初始化并静默加载广告实例的辅助方法。
- */
-function preloadAd(id: string) {
-    if (!id) return;
-    // 异步静默加载，不使用 await 阻塞组件渲染或生命周期
-    setRewardAd(id).catch((err) => {
-        console.warn("[HlwRewardAd] Preload error:", err);
-    });
-}
-
-// 组件挂载时，提前执行激励视频广告的初始化与加载
-onMounted(() => {
-    preloadAd(props.unitId);
-});
-
-// 监听 unitId 的变化，确保广告单元 ID 动态改变时能够重新静默加载
-watch(
-    () => props.unitId,
-    (newId) => {
-        preloadAd(newId);
-    },
-);
 
 async function playRewardAdFlow(): Promise<void> {
     // 弹出全局模态 Loading 状态
@@ -75,6 +50,9 @@ async function playRewardAdFlow(): Promise<void> {
         // 播放流结束后（不管成功或退出），立刻关闭 Loading 状态
         hide();
 
+        // 播放结束后，立即清理本地缓存引用，以防状态重叠
+        destroyRewardAd(props.unitId);
+
         if (res.success && res.isEnded) {
             emit("onHandle", {
                 success: true,
@@ -102,6 +80,7 @@ async function playRewardAdFlow(): Promise<void> {
         }
     } catch (e) {
         hide();
+        destroyRewardAd(props.unitId);
         console.error("[HlwRewardAd] Failed to show reward ad:", e);
         emit("onHandle", {
             success: false,
@@ -109,21 +88,6 @@ async function playRewardAdFlow(): Promise<void> {
             loadFailed: true,
             err: e,
         });
-    }
-}
-
-async function handleClick() {
-    if (isClicked.value) return;
-    if (!props.unitId) {
-        console.warn("[HlwRewardAd] unitId is required but empty.");
-        return;
-    }
-
-    isClicked.value = true;
-    try {
-        await playRewardAdFlow();
-    } finally {
-        isClicked.value = false;
     }
 }
 
@@ -156,7 +120,6 @@ onUnmounted(() => {
 
 <style scoped>
 .hlw-reward-ad {
-    display: block;
-    width: 100%;
+    display: none;
 }
 </style>
