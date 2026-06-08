@@ -4,34 +4,7 @@ import { defineStore } from "pinia";
 // 1. 主题 (Theme) 预设与类型
 // ==========================================
 
-export interface ThemePreset {
-    id: string;
-    name: string;
-    color: string;
-}
 
-export const themePresets: ThemePreset[] = [
-    {
-        id: "white-theme",
-        name: "白色主题",
-        color: "#ffffff",
-    },
-    {
-        id: "light-theme",
-        name: "简洁主题",
-        color: "var(--bg-page, #f8f8f8)",
-    },
-    {
-        id: "mono-theme",
-        name: "单色主题",
-        color: "var(--primary-color, #3b82f6)",
-    },
-    {
-        id: "color-theme",
-        name: "颜色主题",
-        color: "var(--primary-color, #3b82f6)",
-    },
-];
 
 // ==========================================
 // 2. 字体大小 (FontSize) 预设与类型
@@ -105,7 +78,6 @@ export const fontFamilyPresets: FontFamilyPreset[] = [
 
 export const useThemeStore = defineStore("theme", {
     state: () => ({
-        theme: "white-theme",
         fontSize: "standard",
         fontFamily: "system",
     }),

@@ -1,6 +1,15 @@
 <template>
-    <view :class="[theme, fontSizeClass, fontFamilyClass]">
-        <hlw-nav-bar v-if="props.isNav" :is-back="props.isBack" :title="title" :is-bar="props.isBar"></hlw-nav-bar>
+    <view :class="[fontSizeClass, fontFamilyClass]">
+        <hlw-nav-bar v-if="props.isNav" 
+                     :is-back="props.isBack" 
+                     :title="title" 
+                     :is-bar="props.isBar"
+                     :title-align="props.titleAlign"
+                     :title-size="props.titleSize"
+                     :title-style="props.titleStyle"
+                     :title-weight="props.titleWeight"
+                     :border="props.border">
+        </hlw-nav-bar>
         <slot></slot>
         <view class="h-[60rpx]"></view>
     </view>
@@ -14,10 +23,15 @@
  * 可以快捷集成自定义导航栏（HlwNavBar），保持整个页面结构的一致性。
  *
  * @props
- *   isNav  - 是否显示自定义导航栏，默认 false
- *   isBar  - 是否占用状态栏高度，默认 true
- *   title  - 自定义导航栏标题文字
- *   isBack - 是否显示自定义导航栏的返回键，默认 false
+ *   isNav       - 是否显示自定义导航栏，默认 false
+ *   isBar       - 是否占用状态栏高度，默认 true
+ *   title       - 自定义导航栏标题文字
+ *   isBack      - 是否显示自定义导航栏的返回键，默认 false
+ *   titleAlign  - 标题对齐方式，'left' | 'center'
+ *   titleSize   - 标题字体大小
+ *   titleStyle  - 标题字体样式
+ *   titleWeight - 标题字重
+ *   border      - 是否显示自定义导航栏的下边框（下划线），默认 true
  *
  * @example
  * ```vue
@@ -27,9 +41,8 @@
  * ```
  */
 import { useTheme } from "@/core";
-import { onLoad, onShow } from "@dcloudio/uni-app";
 import { ref } from "vue";
-const { theme, fontSizeClass, fontFamilyClass } = useTheme();
+const { fontSizeClass, fontFamilyClass } = useTheme();
 
 const props = defineProps({
     isNav: {
@@ -48,6 +61,26 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    titleAlign: {
+        type: String,
+        default: "center",
+    },
+    titleSize: {
+        type: String,
+        default: "",
+    },
+    titleStyle: {
+        type: String,
+        default: "",
+    },
+    titleWeight: {
+        type: String,
+        default: "500",
+    },
+    border: {
+        type: Boolean,
+        default: true,
+    }
 });
 
 const title = ref(props.title);

@@ -2,7 +2,6 @@ import { computed } from "vue";
 import type { ComputedRef } from "vue";
 import { 
     useThemeStore, 
-    themePresets, 
     fontSizePresets, 
     fontFamilyPresets 
 } from "../../stores/theme";
@@ -10,8 +9,6 @@ import {
 declare const uni: any;
 
 export { 
-    themePresets, 
-    type ThemePreset, 
     fontSizePresets, 
     type FontSizePreset, 
     fontFamilyPresets, 
@@ -24,9 +21,6 @@ export {
 
 export function useTheme() {
     const store = useThemeStore();
-    
-    // 主题
-    const theme: ComputedRef<string> = computed(() => store.theme);
     
     // 字体大小
     const fontSize: ComputedRef<string> = computed(() => store.fontSize);
@@ -52,7 +46,6 @@ export function useTheme() {
     }
 
     return {
-        theme,
         fontSize,
         fontSizeClass,
         setFontSize,
@@ -67,13 +60,6 @@ export function useTheme() {
  * 首次打开小程序时，初始化默认的主题配色
  * @param defaultTheme 默认主题 ID，默认为 "mono-theme"
  */
-export function initTheme(defaultTheme = "mono-theme"): void {
-    const hasCachedTheme = uni.getStorageSync("theme");
-    if (!hasCachedTheme) {
-        const store = useThemeStore();
-        const validThemes = themePresets.map((t) => t.id);
-        if (validThemes.includes(defaultTheme)) {
-            store.theme = defaultTheme;
-        }
-    }
+export function initTheme(defaultTheme?: string): void {
+    // No-op after color theme presets removal
 }

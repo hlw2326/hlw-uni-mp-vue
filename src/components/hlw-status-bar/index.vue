@@ -1,7 +1,7 @@
 <template>
     <view 
         class="hlw-status-bar" 
-        :class="[theme, props.fixed ? 'fixed' : '', props.customClass]" 
+        :class="[props.fixed ? 'fixed' : '', props.customClass]" 
         :style="statusBarStyle"
     >
         <slot></slot>
@@ -30,9 +30,7 @@
  * ```
  */
 import { computed } from "vue";
-import { useTheme } from "@/core";
 
-const { theme } = useTheme();
 
 const props = defineProps({
     /** 是否固定在顶部 */
@@ -82,32 +80,13 @@ const statusBarStyle = computed(() => {
 <style lang="scss" scoped>
 .hlw-status-bar {
     width: 750rpx;
+    background-color: var(--navbar-bg-color, #ffffff);
     transition: background-color 0.2s ease, background 0.2s ease;
 
     &.fixed {
         position: fixed;
         top: 0;
         left: 0;
-    }
-
-    /* 白色主题：白色状态栏 */
-    &.white-theme {
-        background-color: var(--navbar-bg-color, #ffffff);
-    }
-
-    /* 简洁主题：背景色与页面全局背景色一致 */
-    &.light-theme {
-        background-color: var(--bg-page, #f8f8f8);
-    }
-
-    /* 单色主题：纯主题色状态栏 */
-    &.mono-theme {
-        background-color: var(--primary-color, #3b82f6);
-    }
-
-    /* 颜色主题：立体光影感的主题色渐变背景 */
-    &.color-theme {
-        background: linear-gradient(135deg, rgba(0, 0, 0, 0.15) 0%, rgba(255, 255, 255, 0.15) 100%), var(--primary-color, #3b82f6);
     }
 }
 </style>

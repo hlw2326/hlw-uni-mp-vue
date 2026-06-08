@@ -1,5 +1,7 @@
 <template>
-    <view class="hlw-reward-ad" />
+    <view class="hlw-reward-ad" @tap="open">
+        <slot />
+    </view>
 </template>
 
 <script setup lang="ts">
@@ -91,6 +93,20 @@ async function playRewardAdFlow(): Promise<void> {
     }
 }
 
+async function open() {
+    if (isClicked.value) return;
+    if (!props.unitId) {
+        console.warn("[HlwRewardAd] unitId is required but empty.");
+        return;
+    }
+    isClicked.value = true;
+    try {
+        await playRewardAdFlow();
+    } finally {
+        isClicked.value = false;
+    }
+}
+
 /**
  * Expose a method for parent components to open the reward ad programmatically via ref.
  * Usage: const adRef = ref(null);
@@ -98,19 +114,7 @@ async function playRewardAdFlow(): Promise<void> {
  * adRef.value?.open();
  */
 defineExpose({
-    async open() {
-        if (isClicked.value) return;
-        if (!props.unitId) {
-            console.warn("[HlwRewardAd] unitId is required but empty.");
-            return;
-        }
-        isClicked.value = true;
-        try {
-            await playRewardAdFlow();
-        } finally {
-            isClicked.value = false;
-        }
-    }
+    open
 });
 
 onUnmounted(() => {
@@ -120,6 +124,6 @@ onUnmounted(() => {
 
 <style scoped>
 .hlw-reward-ad {
-    display: none;
+    display: block;
 }
 </style>
