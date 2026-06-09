@@ -1,5 +1,5 @@
 <template>
-    <view :class="[fontSizeClass, fontFamilyClass]">
+    <view :class="[fontSizeClass, fontFamilyClass]" :style="pageStyle">
         <hlw-nav-bar v-if="props.isNav" 
                      :is-back="props.isBack" 
                      :title="title" 
@@ -41,7 +41,7 @@
  * ```
  */
 import { useTheme } from "@/core";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 const { fontSizeClass, fontFamilyClass } = useTheme();
 
 const props = defineProps({
@@ -84,6 +84,27 @@ const props = defineProps({
 });
 
 const title = ref(props.title);
+
+const navbarHeight = computed(() => {
+    if (!props.isNav) return 0;
+    const statusBarHeight = uni.getSystemInfoSync()?.statusBarHeight || 0;
+    let headerHeight = 44;
+    try {
+        const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+        if (menuButtonInfo && typeof menuButtonInfo.bottom === "number" && menuButtonInfo.bottom > 0) {
+            headerHeight = menuButtonInfo.bottom - statusBarHeight + 6;
+        }
+    } catch (e) {
+        console.warn(e);
+    }
+    return statusBarHeight + headerHeight;
+});
+
+const pageStyle = computed(() => {
+    return {
+        "--navbar-height": `${navbarHeight.value}px`,
+    };
+});
 </script>
 
 <style lang="scss">
