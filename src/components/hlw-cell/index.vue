@@ -102,13 +102,13 @@ defineEmits<{ click: [] }>();
 }
 
 .hlw-cell-icon {
-    font-size: var(--font-lg, 36rpx);
+    font-size: var(--font-lg, 38rpx);
     color: var(--primary-color, #3b82f6);
     flex-shrink: 0;
 
     view {
-        width: var(--font-lg, 36rpx);
-        height: var(--font-lg, 36rpx);
+        width: var(--font-lg, 38rpx);
+        height: var(--font-lg, 38rpx);
         display: inline-block;
     }
 }
@@ -122,18 +122,18 @@ defineEmits<{ click: [] }>();
 }
 
 .hlw-cell-title {
-    font-size: var(--font-base, 28rpx);
+    font-size: var(--font-base, 30rpx);
     color: #1e293b;
 }
 
 .hlw-cell-label {
-    font-size: var(--font-xs, 20rpx);
+    font-size: var(--font-xs, 22rpx);
     color: #94a3b8;
     margin-top: 4rpx;
 }
 
 .hlw-cell-value {
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
     color: #94a3b8;
     flex-shrink: 0;
 }

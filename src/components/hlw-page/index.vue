@@ -110,39 +110,39 @@ const pageStyle = computed(() => {
 <style lang="scss">
 /* 全局系统字体大小缩放配置 */
 .font-size-small {
-    --font-xs: 18rpx;
-    --font-sm: 22rpx;
-    --font-base: 24rpx;
-    --font-md: 28rpx;
-    --font-lg: 32rpx;
-    --font-xl: 36rpx;
+    --font-xs: 20rpx;
+    --font-sm: 24rpx;
+    --font-base: 26rpx;
+    --font-md: 30rpx;
+    --font-lg: 34rpx;
+    --font-xl: 38rpx;
 }
 
 .font-size-standard {
-    --font-xs: 20rpx;
-    --font-sm: 24rpx;
-    --font-base: 28rpx;
-    --font-md: 32rpx;
-    --font-lg: 36rpx;
-    --font-xl: 40rpx;
+    --font-xs: 22rpx;
+    --font-sm: 26rpx;
+    --font-base: 30rpx;
+    --font-md: 34rpx;
+    --font-lg: 38rpx;
+    --font-xl: 42rpx;
 }
 
 .font-size-large {
-    --font-xs: 22rpx;
-    --font-sm: 28rpx;
-    --font-base: 32rpx;
-    --font-md: 36rpx;
-    --font-lg: 40rpx;
-    --font-xl: 44rpx;
+    --font-xs: 24rpx;
+    --font-sm: 30rpx;
+    --font-base: 34rpx;
+    --font-md: 38rpx;
+    --font-lg: 42rpx;
+    --font-xl: 46rpx;
 }
 
 .font-size-extra-large {
-    --font-xs: 24rpx;
-    --font-sm: 32rpx;
-    --font-base: 36rpx;
-    --font-md: 40rpx;
-    --font-lg: 44rpx;
-    --font-xl: 48rpx;
+    --font-xs: 26rpx;
+    --font-sm: 34rpx;
+    --font-base: 38rpx;
+    --font-md: 42rpx;
+    --font-lg: 46rpx;
+    --font-xl: 50rpx;
 }
 
 /* 全局字体样式配置 */

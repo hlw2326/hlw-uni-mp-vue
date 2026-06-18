@@ -98,20 +98,20 @@ function onClear() {
 }
 
 .hlw-search-icon {
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
     flex-shrink: 0;
     opacity: 0.5;
 }
 
 .hlw-search-input {
     flex: 1;
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
     color: #1e293b;
     min-height: 40rpx;
 }
 
 .hlw-search-clear {
-    font-size: 28rpx;
+    font-size: var(--font-base, 30rpx);
     color: #94a3b8;
     line-height: 1;
     flex-shrink: 0;

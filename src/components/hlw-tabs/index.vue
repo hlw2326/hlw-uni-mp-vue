@@ -118,7 +118,7 @@ function onChange(index: number) {
 }
 
 .hlw-tab-text {
-    font-size: var(--font-base, 28rpx);
+    font-size: var(--font-base, 30rpx);
     color: #64748b;
     transition: color 0.2s;
 }

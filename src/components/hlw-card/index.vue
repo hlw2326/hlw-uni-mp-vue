@@ -164,7 +164,7 @@ const showDivider = computed(() => {
     &--radius-none { border-radius: 0; }
     &--radius-sm   { border-radius: var(--radius-sm, 8rpx); }
     &--radius-md   { border-radius: var(--radius-md, 16rpx); }
-    &--radius-lg   { border-radius: var(--radius-lg, 24rpx); }
+    &--radius-lg   { border-radius: var(--radius-lg, 30rpx); }
     &--radius-xl   { border-radius: var(--radius-xl, 32rpx); }
 
     /* 边框 — width / style / color 全部走 CSS 变量，未设置时回落 */

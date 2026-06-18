@@ -206,12 +206,12 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 
 <style lang="scss" scoped>
 .hlw-menu {
-    --hlw-menu-icon-size: var(--font-md, 32rpx);
+    --hlw-menu-icon-size: var(--font-md, 34rpx);
     --hlw-menu-icon-box-size: var(--hlw-menu-icon-size);
-    --hlw-menu-grid-icon-size: var(--font-xl, 40rpx);
+    --hlw-menu-grid-icon-size: var(--font-xl, 42rpx);
     --hlw-menu-grid-icon-box-size: calc(var(--hlw-menu-grid-icon-size) + 52rpx);
     background: var(--surface-card, #ffffff);
-    border-radius: var(--radius-lg, 24rpx);
+    border-radius: var(--radius-lg, 30rpx);
     border: 1rpx solid var(--border-color-light, #ececec);
     overflow: hidden;
     width: 100%;
@@ -225,7 +225,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 .hlw-menu-title {
     padding: 24rpx 32rpx;
     text {
-        font-size: var(--font-sm, 24rpx);
+        font-size: var(--font-sm, 26rpx);
         font-weight: 600;
         color: var(--text-subtle, #94a3b8);
         letter-spacing: 1rpx;
@@ -318,7 +318,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
     position: absolute;
     top: 0;
     right: -8rpx;
-    font-size: var(--font-xs, 20rpx);
+    font-size: var(--font-xs, 22rpx);
     color: #fff;
     padding: 0 8rpx;
     border-radius: 9999rpx;
@@ -329,7 +329,7 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 }
 
 .hlw-menu-grid-label {
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
     color: var(--text-secondary, #334155);
     text-align: center;
 }
@@ -402,12 +402,12 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 }
 
 .hlw-menu-value {
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
     color: var(--text-subtle, #94a3b8);
 }
 
 .hlw-menu-tag {
-    font-size: var(--font-xs, 20rpx);
+    font-size: var(--font-xs, 22rpx);
     color: #fff;
     padding: 2rpx 12rpx;
     border-radius: 9999rpx;
@@ -446,14 +446,14 @@ const handleGetPhoneNumber = (item: HlwMenuItem, event: unknown) => {
 
 .hlw-menu-arrow {
     color: var(--text-disabled, #d1d5db);
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
 }
 .hlw-menu-spin {
     animation: icon-spin 1s linear infinite;
 }
 .hlw-menu-muted {
     color: var(--text-subtle, #94a3b8);
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
 }
 
 @keyframes icon-spin {

@@ -111,7 +111,7 @@ function confirmNickname() {
 .nickname-dialog {
     width: 600rpx;
     padding: 40rpx;
-    border-radius: 24rpx;
+    border-radius: var(--radius-lg, 30rpx);
     background: #ffffff;
     box-shadow: 0 20rpx 60rpx rgba(0, 0, 0, 0.25);
     animation: scaleIn 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -121,7 +121,7 @@ function confirmNickname() {
     margin-bottom: 30rpx;
     color: #1e293b;
     text-align: center;
-    font-size: 32rpx;
+    font-size: var(--font-md, 34rpx);
     font-weight: 600;
     letter-spacing: 1rpx;
 }
@@ -130,7 +130,7 @@ function confirmNickname() {
     margin-bottom: 40rpx;
     padding: 20rpx 24rpx;
     border: 2rpx solid #e2e8f0;
-    border-radius: 16rpx;
+    border-radius: var(--radius-md, 16rpx);
     background: #f8fafc;
 }
 
@@ -138,7 +138,7 @@ function confirmNickname() {
     width: 100%;
     height: 48rpx;
     color: #1e293b;
-    font-size: 28rpx;
+    font-size: var(--font-base, 30rpx);
     text-align: left;
 }
 
@@ -154,9 +154,9 @@ function confirmNickname() {
     justify-content: center;
     height: 80rpx;
     margin: 0;
-    font-size: 28rpx;
+    font-size: var(--font-base, 30rpx);
     font-weight: 500;
-    border-radius: 16rpx;
+    border-radius: var(--radius-md, 16rpx);
 }
 
 .dialog-btn::after {

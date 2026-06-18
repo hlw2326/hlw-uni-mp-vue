@@ -213,7 +213,7 @@ function onCancel() {
 
 .hlw-notice-btn-text {
     color: #ffffff;
-    font-size: var(--font-base, 28rpx);
+    font-size: var(--font-base, 30rpx);
     font-weight: 600;
     letter-spacing: 1rpx;
 }
@@ -231,7 +231,7 @@ function onCancel() {
 }
 
 .hlw-notice-dismiss-text {
-    font-size: var(--font-xs, 24rpx);
+    font-size: var(--font-xs, 26rpx);
     color: var(--text-muted, #8e8e93);
     font-weight: 500;
 }

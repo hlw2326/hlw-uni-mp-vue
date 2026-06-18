@@ -86,12 +86,12 @@ const initial = computed(() => {
 }
 
 .hlw-avatar--small .hlw-avatar__initial {
-    font-size: var(--font-xs, 20rpx);
+    font-size: var(--font-xs, 22rpx);
 }
 .hlw-avatar--medium .hlw-avatar__initial {
-    font-size: var(--font-base, 28rpx);
+    font-size: var(--font-base, 30rpx);
 }
 .hlw-avatar--large .hlw-avatar__initial {
-    font-size: var(--font-xl, 40rpx);
+    font-size: var(--font-xl, 42rpx);
 }
 </style>

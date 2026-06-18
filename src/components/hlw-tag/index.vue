@@ -87,7 +87,7 @@ $colors: (
     &--medium {
         min-height: 36rpx;
         padding: 4rpx 16rpx;
-        font-size: var(--font-xs, 20rpx);
+        font-size: var(--font-xs, 22rpx);
         border-radius: var(--radius-sm, 8rpx);
     }
 

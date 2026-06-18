@@ -120,13 +120,13 @@ function onClose() {
 }
 
 .hlw-popup-title {
-    font-size: var(--font-md, 32rpx);
+    font-size: var(--font-md, 34rpx);
     font-weight: 600;
     color: #1e293b;
 }
 
 .hlw-popup-close {
-    font-size: 32rpx;
+    font-size: var(--font-md, 34rpx);
     color: #94a3b8;
     line-height: 1;
     padding: 4rpx;

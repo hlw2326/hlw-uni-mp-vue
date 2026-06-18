@@ -209,21 +209,21 @@ $semantic-colors: (
     &--small {
         min-height: 56rpx;
         padding: 12rpx 20rpx;
-        font-size: var(--font-xs, 20rpx);
+        font-size: var(--font-xs, 22rpx);
         border-radius: var(--radius-sm, 8rpx);
     }
 
     &--medium {
         min-height: 72rpx;
         padding: 18rpx 32rpx;
-        font-size: var(--font-sm, 24rpx);
+        font-size: var(--font-sm, 26rpx);
         border-radius: var(--radius-md, 16rpx);
     }
 
     &--large {
         min-height: 88rpx;
         padding: 22rpx 48rpx;
-        font-size: var(--font-base, 28rpx);
+        font-size: var(--font-base, 30rpx);
         border-radius: var(--radius-md, 16rpx);
     }
 

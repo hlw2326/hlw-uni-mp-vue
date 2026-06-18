@@ -91,13 +91,13 @@ function onCancel() {
 .hlw-modal-title {
     padding: 40rpx 32rpx 0;
     text-align: center;
-    font-size: var(--font-md, 32rpx);
+    font-size: var(--font-md, 34rpx);
     font-weight: 600;
     color: var(--text-primary, #1e293b);
 }
 
 .hlw-modal-body {
-    font-size: var(--font-base, 28rpx);
+    font-size: var(--font-base, 30rpx);
     color: var(--text-secondary, #475569);
     text-align: center;
     line-height: 1.6;
@@ -112,7 +112,7 @@ function onCancel() {
     flex: 1;
     padding: 24rpx 0;
     text-align: center;
-    font-size: var(--font-base, 28rpx);
+    font-size: var(--font-base, 30rpx);
     font-weight: 500;
 
     &:active { background: var(--surface-card-muted, #f8fafc); }

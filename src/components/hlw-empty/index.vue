@@ -50,7 +50,7 @@ defineProps<{
 }
 
 .hlw-empty__text {
-    font-size: var(--font-base, 28rpx);
+    font-size: var(--font-base, 30rpx);
     color: #bbb;
 }
 </style>

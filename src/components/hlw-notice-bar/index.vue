@@ -75,12 +75,12 @@ function onClose() {
     align-items: center;
     padding: 16rpx 24rpx;
     gap: 12rpx;
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
 }
 
 .hlw-notice-left-icon {
     flex-shrink: 0;
-    font-size: var(--font-base, 28rpx);
+    font-size: var(--font-base, 30rpx);
 }
 
 .hlw-notice-wrap {
@@ -109,7 +109,7 @@ function onClose() {
 
 .hlw-notice-close {
     flex-shrink: 0;
-    font-size: 28rpx;
+    font-size: var(--font-base, 30rpx);
     line-height: 1;
     opacity: 0.6;
     padding: 4rpx;

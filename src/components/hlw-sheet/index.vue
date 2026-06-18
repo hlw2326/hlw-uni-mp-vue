@@ -211,7 +211,7 @@ onBeforeUnmount(() => {
 }
 
 .hlw-sheet-title {
-    font-size: var(--font-md, 32rpx);
+    font-size: var(--font-md, 34rpx);
     font-weight: 700;
     color: var(--text-primary, #0f172a);
 }
@@ -228,7 +228,7 @@ onBeforeUnmount(() => {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
     transition: background 0.2s ease;
 
     &:active {
@@ -265,7 +265,7 @@ onBeforeUnmount(() => {
 }
 
 .hlw-sheet-cta-text {
-    font-size: var(--font-sm, 24rpx);
+    font-size: var(--font-sm, 26rpx);
     font-weight: 400;
     color: #ffffff;
     letter-spacing: 0.5rpx;
