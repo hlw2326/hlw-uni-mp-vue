@@ -1,5 +1,5 @@
 <template>
-    <view :class="[fontSizeClass, fontFamilyClass]" :style="pageStyle">
+    <view class="hlw-page-container" :class="[fontSizeClass, fontFamilyClass]" :style="pageStyle">
         <hlw-nav-bar v-if="props.isNav" 
                      :is-back="props.isBack" 
                      :title="title" 
@@ -10,8 +10,29 @@
                      :title-weight="props.titleWeight"
                      :border="props.border">
         </hlw-nav-bar>
-        <slot></slot>
-        <view class="h-[60rpx]"></view>
+
+        <!-- 上插槽 -->
+        <view class="hlw-page-top">
+            <slot name="top"></slot>
+        </view>
+
+        <!-- 内容插槽 scroll-view -->
+        <scroll-view 
+            class="hlw-page-content"
+            scroll-y
+            :refresher-enabled="props.refresherEnabled"
+            :refresher-triggered="props.refresherTriggered"
+            @refresherrefresh="onRefresh"
+            @scrolltolower="onScrollToLower"
+        >
+            <slot></slot>
+            <view class="h-[60rpx]"></view>
+        </scroll-view>
+
+        <!-- 下插槽 -->
+        <view class="hlw-page-bottom">
+            <slot name="bottom"></slot>
+        </view>
     </view>
 </template>
 
@@ -32,16 +53,25 @@
  *   titleStyle  - 标题字体样式
  *   titleWeight - 标题字重
  *   border      - 是否显示自定义导航栏的下边框（下划线），默认 true
+ *   refresherEnabled    - 是否开启下拉刷新，默认 false
+ *   refresherTriggered  - 设置当前下拉刷新状态，true 表示下拉刷新已被触发，false 表示下拉刷新未被触发
  *
  * @example
  * ```vue
  * <hlw-page is-nav is-back title="个人中心">
- *     <view>页面内容...</view>
+ *     <template #top>
+ *         <view>固定在顶部的内容...</view>
+ *     </template>
+ *     <view>滚动的内容...</view>
+ *     <template #bottom>
+ *         <view>固定在底部的内容...</view>
+ *     </template>
  * </hlw-page>
  * ```
  */
 import { useTheme } from "@/core";
 import { ref, computed } from "vue";
+
 const { fontSizeClass, fontFamilyClass } = useTheme();
 
 const props = defineProps({
@@ -80,8 +110,18 @@ const props = defineProps({
     border: {
         type: Boolean,
         default: true,
+    },
+    refresherEnabled: {
+        type: Boolean,
+        default: false,
+    },
+    refresherTriggered: {
+        type: Boolean,
+        default: false,
     }
 });
+
+const emit = defineEmits(["refresh", "scrolltolower"]);
 
 const title = ref(props.title);
 
@@ -105,9 +145,40 @@ const pageStyle = computed(() => {
         "--navbar-height": `${navbarHeight.value}px`,
     };
 });
+
+function onRefresh() {
+    emit("refresh");
+}
+
+function onScrollToLower() {
+    emit("scrolltolower");
+}
 </script>
 
 <style lang="scss">
+.hlw-page-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.hlw-page-top {
+    flex-shrink: 0;
+}
+
+.hlw-page-content {
+    flex: 1;
+    height: 0;
+    min-height: 0;
+    width: 100%;
+}
+
+.hlw-page-bottom {
+    flex-shrink: 0;
+}
+
 /* 全局系统字体大小缩放配置 */
 .font-size-small {
     --font-xs: 20rpx;
