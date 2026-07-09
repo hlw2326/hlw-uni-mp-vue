@@ -35,7 +35,12 @@
 import { computed, ref } from "vue";
 
 const statusBarHeight: number = uni.getSystemInfoSync()?.statusBarHeight || 0;
-const menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+let menuButtonInfo: any = null;
+try {
+    menuButtonInfo = uni.getMenuButtonBoundingClientRect();
+} catch (e) {
+    console.warn(e);
+}
 
 const props = defineProps({
     isBar: {
@@ -93,7 +98,10 @@ const bar_style = computed(() => {
     return style;
 });
 
-const header_height = ref<number>(menuButtonInfo.bottom - statusBarHeight + 6);
+const header_height = ref<number>(44);
+if (menuButtonInfo && typeof menuButtonInfo.bottom === "number" && menuButtonInfo.bottom > 0) {
+    header_height.value = menuButtonInfo.bottom - statusBarHeight + 6;
+}
 const navbar_height = ref(header_height.value + statusBarHeight);
 
 function tapBack() {
@@ -112,6 +120,8 @@ function tapBack() {
     display: flex;
     flex-direction: column;
     position: fixed;
+    top: 0;
+    left: 0;
     width: 750rpx;
     z-index: 999;
     background-color: var(--navbar-bg-color, #ffffff);

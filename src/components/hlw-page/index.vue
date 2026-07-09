@@ -1,14 +1,14 @@
 <template>
     <view class="hlw-page-container" :class="[fontSizeClass, fontFamilyClass]" :style="pageStyle">
-        <hlw-nav-bar v-if="props.isNav" 
-                     :is-back="props.isBack" 
+        <hlw-nav-bar v-if="isNav" 
+                     :is-back="isBack" 
                      :title="title" 
-                     :is-bar="props.isBar"
-                     :title-align="props.titleAlign"
-                     :title-size="props.titleSize"
-                     :title-style="props.titleStyle"
-                     :title-weight="props.titleWeight"
-                     :border="props.border">
+                     :is-bar="isBar"
+                     :title-align="titleAlign"
+                     :title-size="titleSize"
+                     :title-style="titleStyle"
+                     :title-weight="titleWeight"
+                     :border="border">
         </hlw-nav-bar>
 
         <!-- 上插槽 -->
@@ -20,9 +20,6 @@
         <scroll-view 
             class="hlw-page-content"
             scroll-y
-            :refresher-enabled="props.refresherEnabled"
-            :refresher-triggered="props.refresherTriggered"
-            @refresherrefresh="onRefresh"
             @scrolltolower="onScrollToLower"
         >
             <slot></slot>
@@ -53,8 +50,7 @@
  *   titleStyle  - 标题字体样式
  *   titleWeight - 标题字重
  *   border      - 是否显示自定义导航栏的下边框（下划线），默认 true
- *   refresherEnabled    - 是否开启下拉刷新，默认 false
- *   refresherTriggered  - 设置当前下拉刷新状态，true 表示下拉刷新已被触发，false 表示下拉刷新未被触发
+
  *
  * @example
  * ```vue
@@ -110,20 +106,12 @@ const props = defineProps({
     border: {
         type: Boolean,
         default: true,
-    },
-    refresherEnabled: {
-        type: Boolean,
-        default: false,
-    },
-    refresherTriggered: {
-        type: Boolean,
-        default: false,
     }
 });
 
-const emit = defineEmits(["refresh", "scrolltolower"]);
+const emit = defineEmits(["scrolltolower"]);
 
-const title = ref(props.title);
+const title = computed(() => props.title);
 
 const navbarHeight = computed(() => {
     if (!props.isNav) return 0;
@@ -146,9 +134,7 @@ const pageStyle = computed(() => {
     };
 });
 
-function onRefresh() {
-    emit("refresh");
-}
+
 
 function onScrollToLower() {
     emit("scrolltolower");
