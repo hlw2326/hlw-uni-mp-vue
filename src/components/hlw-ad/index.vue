@@ -54,12 +54,15 @@ interface Props {
     customStyle?: string;
     /** 自定义 class */
     customClass?: string;
+    /** 圆角大小，默认 10rpx */
+    radius?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     placement: "center",
     customStyle: "",
     customClass: "",
+    radius: "10rpx",
 });
 
 const emit = defineEmits<{
@@ -69,7 +72,16 @@ const emit = defineEmits<{
 
 /** 有 unit_id 才渲染 */
 const visible = computed(() => !!props.unitId);
-const style = computed(() => props.customStyle);
+const style = computed(() => {
+    const styles: string[] = [];
+    if (props.type !== "grid" && props.radius) {
+        styles.push(`border-radius: ${props.radius}`);
+    }
+    if (props.customStyle) {
+        styles.push(props.customStyle);
+    }
+    return styles.join(";");
+});
 
 function onLoad(event: any) {
     emit("load", event);
