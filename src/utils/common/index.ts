@@ -275,3 +275,37 @@ export async function saveVideoUrl(url: string, progress?: (value: number) => vo
         return false;
     }
 }
+
+/**
+ * 从格式化的字符串中解析出数字类型（如去除千分位逗号等）。
+ * @param valStr 待解析的字符串
+ * @returns 解析出的数字
+ */
+export function getNumber(valStr: string): number {
+    return parseFloat((valStr || "").replace(/,/g, "")) || 0;
+}
+
+/**
+ * 格式化大数值，如 12345 转换为 1.2w。
+ * @param val 待转换的值（数值或字符串）
+ * @returns 格式化后的字符串
+ */
+export function formatConvertNumber(val: number | string): string {
+    const num = parseFloat(String(val)) || 0;
+    if (num >= 10000) {
+        return (num / 10000).toFixed(1) + "w";
+    }
+    return String(val);
+}
+
+/**
+ * 兼容性的 requestAnimationFrame 封装，支持小程序与 H5 环境。
+ * @param cb 回调函数
+ */
+export function requestAnimFrame(cb: () => void): void {
+    if (typeof requestAnimationFrame !== "undefined") {
+        requestAnimationFrame(cb);
+    } else {
+        setTimeout(cb, 16);
+    }
+}
