@@ -24,11 +24,13 @@
         >
             <slot></slot>
             <view class="h-[60rpx]"></view>
+            <view class="safe-area-bottom"></view>
         </scroll-view>
 
         <!-- 下插槽 -->
         <view class="hlw-page-bottom">
             <slot name="bottom"></slot>
+            <view class="safe-area-bottom"></view>
         </view>
     </view>
 </template>
@@ -163,6 +165,12 @@ function onScrollToLower() {
 
 .hlw-page-bottom {
     flex-shrink: 0;
+}
+
+.safe-area-bottom {
+    width: 100%;
+    height: constant(safe-area-inset-bottom);
+    height: env(safe-area-inset-bottom);
 }
 
 /* 全局系统字体大小缩放配置 */
